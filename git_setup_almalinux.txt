@@ -32,3 +32,11 @@
 sudo -u apache git -C /var/www/html/ysopod fetch origin
 sudo -u apache git -C /var/www/html/ysopod reset --hard origin/main
 
+หมายเหตุข้อแตกต่างระหว่างการใช้ pull และ fetch + reset:
+--------------------------------------------------
+* หากรัน `git reset --hard` แล้วตามด้วย `git pull origin main`
+  - มีโอกาสเกิดปัญหาขัดแย้งของไฟล์ (Conflicts) หรือดึงข้อมูลไม่ผ่านหากเซิร์ฟเวอร์มีไฟล์อื่นค้างอยู่
+  - **สำคัญมาก:** เนื่องจากเราเพิ่งทำการล้างประวัติความปลอดภัยบน GitHub ไป (ทำให้ค่า Commit Hash เปลี่ยนแปลงใหม่หมด) การรัน `git pull` จะล้มเหลวเนื่องจากระบบจะมองว่าประวัติเก่าและใหม่ไม่ตรงกัน (Refusing to merge unrelated histories)
+  - ดังนั้น การรัน `git fetch` แล้วตามด้วย `git reset --hard origin/main` จะปลอดภัยและมั่นใจได้ 100% ว่าไฟล์บนเซิร์ฟเวอร์จะถูกเปลี่ยนให้ตรงกับ GitHub ล่าสุดโดยไม่มีปัญหาข้อขัดแย้งของโค้ดครับ
+
+
