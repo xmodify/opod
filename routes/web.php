@@ -4,26 +4,51 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\DashboardOPDController;
+use App\Http\Controllers\Web\DashboardClaimController;
 use App\Http\Controllers\Web\DashboardReferController;
 use App\Http\Controllers\Web\DashboardOperationController;
+use App\Http\Controllers\Web\AdminController;
+use App\Http\Controllers\Auth\BmsAutoLoginController;
 
-
-// หน้าแรก redirect ไป web
-Route::get('/', function () {
-    // return view('dashboard');
-     return redirect()->to('web/'); 
+// หน้าแรก (รองรับทั้ง Redirect ปกติ และ HOSxP Dashboard Launch ด้วย bms-session-id)
+Route::get('/', function (\Illuminate\Http\Request $request) {
+    if ($request->has('bms-session-id') || $request->has('bms_session_id') || $request->has('session_id') || $request->has('session') || $request->has('code')) {
+        return app(BmsAutoLoginController::class)->handleLaunch($request);
+    }
+    return redirect()->to(url('web')); 
 });
+
+// BMS Launch Route (สำหรับเปิดโมดูล A-EMR จาก Dashboard URL และ Patient Add-on ใน HOSxP)
+Route::get('/bms/aemr', [BmsAutoLoginController::class, 'handleLaunch'])->name('bms.aemr');
 
 // หน้า web หลัก
 Route::match(['get','post'],'web', [DashboardController::class, 'index'])->name('web.index');
 Route::get('web/bed_dep/{hospcode}', [DashboardController::class, 'bed_dep']);
 Route::match(['get','post'],'web/opd', [DashboardOPDController::class, 'index']);
+Route::match(['get','post'],'web/claim', [DashboardClaimController::class, 'index']);
 Route::match(['get','post'],'web/refer', [DashboardReferController::class, 'index']);
 Route::match(['get','post'],'web/operation', [DashboardOperationController::class, 'index']);
+Route::match(['get','post'],'web/opoh', [\App\Http\Controllers\Web\DashboardOpohController::class, 'index'])->name('web.opoh');
 
+use App\Http\Controllers\Auth\ProviderIdAuthController;
+use App\Http\Controllers\Auth\MophAlert2FAController;
 
 // Login (สำหรับ Modal login)
-Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get('/login', function () {
+    return redirect()->to(url('web'));
+})->name('login');
+Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:10,1');
+
+// 2FA MOPH Alert Routes
+Route::get('/login/verify-2fa', [MophAlert2FAController::class, 'index'])->name('auth.2fa.index');
+Route::post('/login/verify-2fa', [MophAlert2FAController::class, 'verifyOTP'])->middleware('throttle:10,1')->name('auth.2fa.verify');
+Route::post('/login/resend-2fa', [MophAlert2FAController::class, 'resendOTP'])->middleware('throttle:5,1')->name('auth.2fa.resend');
+
+// Health ID & Provider ID Routes
+Route::prefix('auth/health-id')->name('auth.health-id.')->group(function () {
+    Route::get('/redirect', [ProviderIdAuthController::class, 'redirectToProvider'])->name('redirect');
+    Route::get('/callback', [ProviderIdAuthController::class, 'handleProviderCallback'])->name('callback');
+});
 
 // Logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -31,6 +56,74 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // ถ้าคุณต้องการ page /dashboard ให้ล็อกอินก่อน
 Route::middleware('auth:web')->group(function () {
     Route::get('/dashboard', function () {
-        return redirect()->to('web/'); 
+        return redirect()->to(url('web')); 
     });
+    Route::post('/change-password', [LoginController::class, 'changePassword'])->name('change-password');
+});
+
+// Manage Area Protected Routes (Admin Only)
+Route::middleware(['auth:web', 'admin'])->group(function () {
+    Route::get('/manage/settings', [AdminController::class, 'settings'])->name('manage.settings');
+    Route::post('/manage/settings/moph', [AdminController::class, 'updateMophSettings'])->name('manage.settings.moph');
+    Route::get('/manage/settings/upgrade-stream', [AdminController::class, 'upgradeStructureStream'])->name('manage.settings.upgrade-stream');
+    Route::post('/manage/settings/upgrade-structure', [AdminController::class, 'upgradeStructure'])->name('manage.settings.upgrade-structure');
+    Route::post('/manage/settings/git-pull', [AdminController::class, 'gitPull'])->name('manage.git-pull');
+    Route::post('/manage/settings/bed-types', [AdminController::class, 'createBedType'])->name('manage.settings.bed-types.create');
+    Route::put('/manage/settings/bed-types/{bed_code}', [AdminController::class, 'updateBedType'])->name('manage.settings.bed-types.update');
+    Route::delete('/manage/settings/bed-types/{bed_code}', [AdminController::class, 'deleteBedType'])->name('manage.settings.bed-types.delete');
+
+    // User Management Routes
+    Route::get('/manage/users', [AdminController::class, 'users'])->name('manage.users');
+    Route::post('/manage/users', [AdminController::class, 'createUser'])->name('manage.users.create');
+    Route::put('/manage/users/{user}', [AdminController::class, 'updateUser'])->name('manage.users.update');
+    Route::delete('/manage/users/{user}', [AdminController::class, 'deleteUser'])->name('manage.users.delete');
+    Route::post('/manage/users/{user}/reset-password', [AdminController::class, 'resetPassword'])->name('manage.users.reset-password');
+
+    // Hospital Agent Management Routes
+    Route::get('/manage/agents', [\App\Http\Controllers\Web\AgentWebController::class, 'index'])->name('manage.agents');
+    Route::post('/manage/agents/remote-sync', [\App\Http\Controllers\Web\AgentWebController::class, 'dispatchRemoteSync'])->name('manage.agents.remote-sync');
+    Route::post('/manage/agents/remote-update', [\App\Http\Controllers\Web\AgentWebController::class, 'dispatchRemoteUpdate'])->name('manage.agents.remote-update');
+    Route::post('/manage/agents/queries', [\App\Http\Controllers\Web\AgentWebController::class, 'updateQueries'])->name('manage.agents.update-queries');
+    Route::post('/manage/agents/queries/reset', [\App\Http\Controllers\Web\AgentWebController::class, 'resetQueries'])->name('manage.agents.reset-queries');
+    Route::post('/manage/agents/lookup-icd10', [\App\Http\Controllers\Web\AgentWebController::class, 'updatePpIcd10'])->name('manage.agents.update-icd10');
+    Route::post('/manage/agents/lookup-icd10/reset', [\App\Http\Controllers\Web\AgentWebController::class, 'resetPpIcd10'])->name('manage.agents.reset-icd10');
+    Route::post('/manage/agents/{hcode}/token', [\App\Http\Controllers\Web\AgentWebController::class, 'issueToken'])->name('manage.agents.issue-token');
+    Route::post('/manage/agents/schedule', [\App\Http\Controllers\Web\AgentWebController::class, 'updateSchedule'])->name('manage.agents.update-schedule');
+    Route::get('/manage/agents/download-exe', [\App\Http\Controllers\Web\AgentWebController::class, 'downloadExe'])->name('manage.agents.download-exe');
+    Route::get('/manage/agents/{hcode}/status-logs', [\App\Http\Controllers\Web\AgentWebController::class, 'getAgentStatusLogs'])->name('manage.agents.status-logs');
+    Route::post('/manage/agents/{hcode}/clear-error', [\App\Http\Controllers\Web\AgentWebController::class, 'clearAgentError'])->name('manage.agents.clear-error');
+});
+
+// A-EMR Routes (รองรับทั้ง Web Authentication ปกติ และ HOSxP BMS Session โดยตรวจสิทธิ์ใน Controller)
+Route::post('/manage/aemr/search', [\App\Http\Controllers\Web\AemrWebController::class, 'search'])->name('manage.aemr.search');
+Route::post('/manage/aemr/visit-detail', [\App\Http\Controllers\Web\AemrWebController::class, 'visitDetail'])->name('manage.aemr.visit-detail');
+Route::get('/aemr/hosxp-viewer', [\App\Http\Controllers\Web\AemrWebController::class, 'hosxpViewer'])->name('aemr.hosxp.viewer');
+Route::get('/bms/aemr/viewer', [\App\Http\Controllers\Web\AemrWebController::class, 'hosxpViewer'])->name('bms.aemr.viewer');
+
+// Manage Data Routes (Requires Web Authentication, access checked in Controller)
+Route::middleware(['auth:web'])->group(function () {
+    Route::get('/manage', [AdminController::class, 'index'])->name('manage.index');
+    
+    // A-EMR Web Manage Routes
+    Route::get('/manage/aemr', [\App\Http\Controllers\Web\AemrWebController::class, 'index'])->name('manage.aemr.index');
+    Route::get('/manage/aemr/logs', [\App\Http\Controllers\Web\AemrWebController::class, 'logs'])->name('manage.aemr.logs');
+
+
+    Route::get('/manage/death-data', [\App\Http\Controllers\Web\DeathDataController::class, 'index'])->name('manage.death-data.index');
+    Route::post('/manage/death-data/import', [\App\Http\Controllers\Web\DeathDataController::class, 'import'])->name('manage.death-data.import');
+    Route::get('/manage/birth-data', [\App\Http\Controllers\Web\BirthDataController::class, 'index'])->name('manage.birth-data.index');
+    Route::post('/manage/birth-data/import', [\App\Http\Controllers\Web\BirthDataController::class, 'import'])->name('manage.birth-data.import');
+
+    // OPOH Doctor Management Routes
+    Route::get('/manage/opoh', [\App\Http\Controllers\Web\DashboardOpohController::class, 'manageIndex'])->name('manage.opoh.index');
+    Route::get('/manage/opoh/doctors-list', [\App\Http\Controllers\Web\DashboardOpohController::class, 'getDoctorsList'])->name('manage.opoh.doctors.list');
+    Route::post('/manage/opoh/doctors', [\App\Http\Controllers\Web\DashboardOpohController::class, 'storeDoctor'])->name('manage.opoh.doctors.store');
+    Route::match(['put', 'post'], '/manage/opoh/doctors/{id}', [\App\Http\Controllers\Web\DashboardOpohController::class, 'updateDoctor'])->name('manage.opoh.doctors.update');
+    Route::delete('/manage/opoh/doctors/{id}', [\App\Http\Controllers\Web\DashboardOpohController::class, 'deleteDoctor'])->name('manage.opoh.doctors.delete');
+    Route::post('/manage/opoh/doctors/{id}/toggle', [\App\Http\Controllers\Web\DashboardOpohController::class, 'toggleDoctorStatus'])->name('manage.opoh.doctors.toggle');
+    Route::get('/manage/opoh/doctors/{id}/income-categories', [\App\Http\Controllers\Web\DashboardOpohController::class, 'getDoctorIncomeCategories'])->name('manage.opoh.doctors.income-categories');
+    // รายเคสของแพทย์ (ข้อมูลระบุตัวผู้ป่วย - เฉพาะ allow_opoh, ดึงสดผ่าน agent)
+    Route::get('/manage/opoh/doctor-records', [\App\Http\Controllers\Web\DashboardOpohController::class, 'getDoctorRecords'])->name('manage.opoh.doctor-records');
+    Route::get('/manage/opoh/doctor-records/export', [\App\Http\Controllers\Web\DashboardOpohController::class, 'exportDoctorRecords'])->name('manage.opoh.doctor-records.export');
+    Route::get('/manage/opoh/indiv-export', [\App\Http\Controllers\Web\DashboardOpohController::class, 'exportIndiv'])->name('manage.opoh.indiv-export');
 });

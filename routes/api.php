@@ -6,23 +6,48 @@ use App\Http\Controllers\Api\OpdController;
 use App\Http\Controllers\Api\IpdController;
 use App\Http\Controllers\Api\IpdBedDepController;
 use App\Http\Controllers\Api\HospitalUpdateController;
-use App\Http\Controllers\Api\OpodSendController;
+use App\Http\Controllers\Api\ReferController;
+use App\Http\Controllers\Api\OperationController;
 
-Route::get('/hospitals/{hospcode}/tokens', [HospitalTokenController::class, 'index']);
-Route::post('/hospitals/{hospcode}/tokens', [HospitalTokenController::class, 'issue']);
-Route::delete('/hospitals/{hospcode}/tokens/{tokenId}', [HospitalTokenController::class, 'revoke']);
+// Route::get('/hospitals/{hospcode}/tokens', [HospitalTokenController::class, 'index']);
+//Route::post('/hospitals/{hospcode}/tokens', [HospitalTokenController::class, 'issue']);
+    // http://1.179.128.29:3394/api/hospitals/00025/tokens
+    // {
+    // "name": "10987-ingest",
+    // "abilities": ["ingest"]
+    // }
+// Route::delete('/hospitals/{hospcode}/tokens/{tokenId}', [HospitalTokenController::class, 'revoke']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/opd', [OpdController::class, 'opd']);
     Route::get('/opd', [OpdController::class, 'get_opd']);    
     Route::post('/ipd', [IpdController::class, 'ipd']);
     Route::get('/ipd', [IpdController::class, 'get_ipd']);
+    Route::post('/refer', [ReferController::class, 'refer']);
+    Route::get('/refer', [ReferController::class, 'get_refer']);
+    Route::post('/operation', [OperationController::class, 'operation']);
+    Route::get('/operation', [OperationController::class, 'get_operation']);
     Route::post('/ipd_bed_dep', [IpdBedDepController::class, 'ingest']);
     Route::get('/ipd_bed_dep', [IpdBedDepController::class, 'get']);
     Route::post('/hospital_config', [HospitalUpdateController::class, 'update']);
+
+    // Agent Management APIs
+    Route::post('/agent/verify', [\App\Http\Controllers\Api\AgentApiController::class, 'verifyToken']);
+    Route::get('/agent/config', [\App\Http\Controllers\Api\AgentApiController::class, 'getConfig']);
+    Route::post('/agent/heartbeat', [\App\Http\Controllers\Api\AgentApiController::class, 'heartbeat']);
+    Route::post('/agent/task/complete', [\App\Http\Controllers\Api\AgentApiController::class, 'completeTask']);
+    Route::post('/agent/aemr/poll-task', [\App\Http\Controllers\Api\AgentApiController::class, 'pollAemrTask']);
+    Route::post('/agent/aemr/submit-result', [\App\Http\Controllers\Api\AgentApiController::class, 'submitAemrResult']);
+    // OPOH Ingest API
+    Route::post('/opoh/opd', [\App\Http\Controllers\Api\OpohApiController::class, 'ingestOpd']);
+    Route::post('/opoh/ipd', [\App\Http\Controllers\Api\OpohApiController::class, 'ingestIpd']);
+    Route::post('/opoh/operation', [\App\Http\Controllers\Api\OpohApiController::class, 'ingestOperation']);
+    Route::post('/opoh/income-categories', [\App\Http\Controllers\Api\OpohApiController::class, 'ingestIncomeCategories']);
 });
 
-Route::get('/opod-send', [OpodSendController::class, 'send']);
- 
+// Public / Token-less Lookup & Download Route for Agent
+Route::get('/agent/lookups/icd10', [\App\Http\Controllers\Api\AgentApiController::class, 'getIcd10Lookup']);
+Route::get('/agent/opoh-doctors', [\App\Http\Controllers\Api\OpohApiController::class, 'getDoctors']);
+Route::get('/agent/download-latest', [\App\Http\Controllers\Web\AgentWebController::class, 'downloadExe']);
 
-
+Route::post('/death-data', [\App\Http\Controllers\Api\DeathApiController::class, 'getDeathData']);

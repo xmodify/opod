@@ -27,3 +27,7 @@ tokens_result.json
 tokens_result.json.local
 db/
 *.sql
+/agent/config.yaml
+/agent/queries_cache.json
+/agent/*.txt
+/agent/*.old

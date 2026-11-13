@@ -13,7 +13,13 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'YSOPOD'),
+
+    'province_code' => env('PROVINCE_CODE', '35'),
+    'province_name_th' => env('PROVINCE_NAME_TH', 'ยโสธร'),
+    'province_name_en' => env('PROVINCE_NAME_EN', 'Yasothon'),
+    'app_abbr' => env('APP_ABBR', 'YSOPOD'),
+    'system_title' => env('SYSTEM_TITLE', 'Yasothon One Province One Data'),
 
     /*
     |--------------------------------------------------------------------------

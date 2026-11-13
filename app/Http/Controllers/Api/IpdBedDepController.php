@@ -98,9 +98,10 @@ public function ingest(Request $request)
         }
 
         $hospcode = $hospital->hospcode;
+        $superHospcodes = ['00025']; // ผู้ดูแลพิเศษ
 
         $query = DB::table('ipd_bed_dep');
-        if (!$hospital->is_admin) {
+        if (!in_array($hospcode, $superHospcodes)) {
             $query->where('hospcode', $hospcode);
         }
 
@@ -109,7 +110,7 @@ public function ingest(Request $request)
         return response()->json([
             'ok' => true,
             'hospcode' => $hospcode,
-            'super' => $hospital->is_admin,
+            'super' => in_array($hospcode, $superHospcodes),
             'count' => $data->count(),
             'data' => $data,
         ]);

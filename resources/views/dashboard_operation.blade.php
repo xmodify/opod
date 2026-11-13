@@ -31,10 +31,10 @@
 
   <!-- HERO -->
   <header class="py-4">
-    <div class="container-fluid">      
+    <div class="container-fluid">
         <div class="row g-4 align-items-center">
-          <div class="col-lg-9">          
-            <h4 class="text-success mb-2"><strong>Yasothon One Province One Data : YSOPOD</strong></h4>          
+          <div class="col-lg-9">
+            <h4 class="text-success mb-2"><strong>Yasothon One Province One Data : YSOPOD</strong></h4>
           </div>
           <div class="col-lg-3 d-flex justify-content-lg-end">
             <span class="text-secondary my-1">
@@ -180,8 +180,8 @@
         <form method="POST" action="{{ url('web/operation') }}" enctype="multipart/form-data">
         @csrf
           <div class="row g-4 align-items-center">
-            <div class="col-lg-9">          
-              <h6 class="text-success mb-2"><strong></strong></h6>          
+            <div class="col-lg-9">
+              <h6 class="text-success mb-2"><strong></strong></h6>
             </div>
             <div class="col-lg-3 d-flex justify-content-lg-end">
               <div class="d-flex align-items-center gap-2">
@@ -204,7 +204,7 @@
   {{-- ข้อมูลบริการรายเดือน ----------------------------------------------------------------------------------------------------------}}
   <section id="hospital" class="pb-2">
     <div class="container-fluid">
-    
+
       <!-- NAV PILLS -->
       <ul class="nav nav-pills overflow-auto flex-nowrap" id="hospPills" role="tablist">
         @foreach($hospitalData as $hospcode => $data)
@@ -219,14 +219,14 @@
       <!-- TAB PANES -->
       <div class="tab-content mt-3" id="hospPillsContent">
         @foreach($hospitalData as $hospcode => $data)
-        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="pane-{{ $hospcode }}" role="tabpanel" aria-labelledby="tab-{{ $hospcode }}" tabindex="0">          
+        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="pane-{{ $hospcode }}" role="tabpanel" aria-labelledby="tab-{{ $hospcode }}" tabindex="0">
           <!-- Operation -->
           <div class="glass p-3">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h6>[{{ $hospcode }}] ข้อมูลผู้ป่วยผ่าตัด {{ $data['hospname'] }} ปีงบประมาณ {{$budget_year}}</h6>
               <span class="text-secondary small">Update {{ $data['update_at'] }}</span>
             </div>
-            
+
             <div class="row">
               <div class="col-xl-6 mb-3">
                 <div class="table-responsive">
@@ -266,7 +266,7 @@
               </div>
             </div>
 
-          </div>    
+          </div>
         </div>
         @endforeach
       </div>
@@ -301,6 +301,7 @@
 @endpush
 
 <!-- script กราฟ  ---------------------------------------------------------------------------------------->
+<!-- <script src="{{ asset('public/assets/vendor/apexcharts/apexcharts.min.js') }}"></script> -->
 <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {

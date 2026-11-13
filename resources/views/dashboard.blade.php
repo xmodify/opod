@@ -14,11 +14,11 @@
   }
   tr.table-ipd td,
   tr.table-ipd th {
-    background: linear-gradient(135deg, #f3e5f5, #fbf6fc) !important; 
+    background: linear-gradient(135deg, #f3e5f5, #fbf6fc) !important;
   }
   tr.table-refer td,
   tr.table-refer th {
-    background: linear-gradient(135deg, #ceebfa, #e8f6fc) !important;   
+    background: linear-gradient(135deg, #ceebfa, #e8f6fc) !important;
   }
 </style>
 <style>
@@ -143,10 +143,10 @@
 
   <!-- HERO -->
   <header class="py-4">
-    <div class="container-fluid">      
+    <div class="container-fluid">
         <div class="row g-4 align-items-center">
-          <div class="col-lg-9">          
-            <h4 class="text-success mb-2"><strong>Yasothon One Province One Data : YSOPOD</strong></h4>          
+          <div class="col-lg-9">
+            <h4 class="text-success mb-2"><strong>Yasothon One Province One Data : YSOPOD</strong></h4>
           </div>
           {{-- ขวาสุด: select + ปุ่ม ติดกันและชิดขวา --}}
           <div class="col-lg-3 d-flex justify-content-lg-end">
@@ -159,7 +159,7 @@
           </div>
         </div>
     </div>
-  </header>  
+  </header>
     @php
       $fmtInt   = fn($n) => number_format((int)($n ?? 0));
       $fmtMoney = fn($n) => number_format((float)($n ?? 0), 2);
@@ -226,9 +226,9 @@
         <div class="modal fade" id="AdmiitDetailModal" tabindex="-1" aria-labelledby="hospitalDetailLabel" aria-hidden="true">
           <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content border-0 shadow-lg rounded-3" style="background-color:#f5f8fc;">
-              
+
               <!-- Header -->
-              <div class="modal-header text-white rounded-top-3" 
+              <div class="modal-header text-white rounded-top-3"
                   style="background: linear-gradient(135deg, #2f6fb6, #4b8edc);">
                 <h5 class="modal-title fw-bold" id="hospitalDetailLabel">
                   <i class="fa-solid fa-bed-pulse fs-5"></i> ข้อมูลเตียง
@@ -241,7 +241,7 @@
 
                 {{-- ✅ หน้ารวมโรงพยาบาล --}}
                 <div id="hospital-list">
-                  <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden mb-0" 
+                  <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden mb-0"
                         style="background-color: #ffffff; border-radius: 0.75rem;">
                     <thead style="background-color:#d9e8fb;">
                       <tr class="text-center text-primary fw-semibold">
@@ -269,8 +269,8 @@
                         <tr>
                           <td align="right" class="text-secondary">{{ $h->hospcode }}</td>
                           <td>
-                           <a href="#" 
-                              class="fw-semibold text-dark text-decoration-none hosp-detail-link" 
+                           <a href="#"
+                              class="fw-semibold text-dark text-decoration-none hosp-detail-link"
                               data-hospcode="{{ $h->hospcode }}"
                               data-hospname="{{ $h->hospname }}">
                               {{ $h->hospname }}
@@ -345,8 +345,8 @@
               </div>
               <!-- Footer -->
               <div class="modal-footer" style="background-color:#eef4fb;">
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" 
-                        style="background-color:#3e7cc1; border-color:#3e7cc1;" 
+                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm"
+                        style="background-color:#3e7cc1; border-color:#3e7cc1;"
                         data-bs-dismiss="modal">
                   ปิด
                 </button>
@@ -516,8 +516,8 @@
         <form method="POST" action="{{ route('web.index') }}" enctype="multipart/form-data">
         @csrf
           <div class="row g-4 align-items-center">
-            <div class="col-lg-9">          
-              <h6 class="text-success mb-2"><strong></strong></h6>          
+            <div class="col-lg-9">
+              <h6 class="text-success mb-2"><strong></strong></h6>
             </div>
             {{-- ขวาสุด: select + ปุ่ม ติดกันและชิดขวา --}}
             <div class="col-lg-3 d-flex justify-content-lg-end">
@@ -541,7 +541,7 @@
   {{-- ข้อมูลบริการ----------------------------------------------------------------------------------------------------------}}
   <section id="hospital" class="pb-2">
     <div class="container-fluid">
-    
+
       <!-- NAV PILLS -->
       <ul class="nav nav-pills overflow-auto flex-nowrap" id="hospPills" role="tablist">
         @foreach($hospitalData as $hospcode => $data)
@@ -556,12 +556,12 @@
       <!-- TAB PANES -->
       <div class="tab-content mt-3" id="hospPillsContent">
         @foreach($hospitalData as $hospcode => $data)
-        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="pane-{{ $hospcode }}" role="tabpanel" aria-labelledby="tab-{{ $hospcode }}" tabindex="0">          
+        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="pane-{{ $hospcode }}" role="tabpanel" aria-labelledby="tab-{{ $hospcode }}" tabindex="0">
           <!-- IPD -->
           <div class="glass p-3">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h6>[{{ $hospcode }}] ข้อมูลบริการผู้ป่วยใน IPD {{ $data['hospname'] }} ปีงบประมาณ {{$budget_year}}</h6>
-              <span class="text-secondary small">Update {{ $data['update_at'] }}</span>              
+              <span class="text-secondary small">Update {{ $data['update_at'] }}</span>
             </div>
             <div class="table-responsive">
               <table id="table{{ $hospcode }}_ipd" class="table table-bordered table-striped my-3" width ="100%">
@@ -569,32 +569,32 @@
                   <tr class="table-ipd">
                     <th class="text-center" rowspan="2" width ="4%">เดือน</th>
                     <th class="text-center" rowspan="2">จำนวน AN</th>
-                    <th class="text-center" rowspan="2">วันนอนรวม</th> 
+                    <th class="text-center" rowspan="2">วันนอนรวม</th>
                     <th class="text-center" rowspan="2">อัตราครองเตียง (%)</th>
-                    <th class="text-center" rowspan="2">Active Base (เตียง)</th>       
-                    <th class="text-center" rowspan="2">AdjRW</th>  
+                    <th class="text-center" rowspan="2">Active Base (เตียง)</th>
+                    <th class="text-center" rowspan="2">AdjRW</th>
                     <th class="text-center" rowspan="2">CMI</th>
-                    <th class="text-center" colspan="3">ค่ารักษาพยาบาล</th>                
-                  </tr>    
-                  <tr class="table-ipd"> 
+                    <th class="text-center" colspan="3">ค่ารักษาพยาบาล</th>
+                  </tr>
+                  <tr class="table-ipd">
                     <td class="text-center text-primary">ค่ารักษารวม</td>
                     <td class="text-center text-primary">ค่า Lab</td>
-                    <td class="text-center text-primary">ค่า ยา</td>                 
-                  </tr>    
+                    <td class="text-center text-primary">ค่า ยา</td>
+                  </tr>
                 </thead>
                 <tbody>
-                  @php 
-                    $sum_an_total = 0; 
-                    $sum_admdate = 0;   
-                    $sum_adjrw = 0; 
-                    $sum_inc_total = 0;  
+                  @php
+                    $sum_an_total = 0;
+                    $sum_admdate = 0;
+                    $sum_adjrw = 0;
+                    $sum_inc_total = 0;
                     $sum_inc_lab_total = 0;
                     $sum_inc_drug_total = 0;
                     // หา bed_report จาก hospital_config เท่านั้น
                     $config = DB::table('hospital_config')->where('hospcode', $hospcode)->first();
                     $bed_report = $config->bed_report ?? 0;
-                  @endphp  
-                  @foreach($data['ipd'] as $row) 
+                  @endphp
+                  @foreach($data['ipd'] as $row)
                   <tr>
                     <td align="center"width ="4%">{{ $row->month }}</td>
                     <td align="right">{{ number_format($row->an_total) }}</td>
@@ -607,7 +607,7 @@
                     <td align="right">{{ number_format($row->inc_lab_total,2) }}</td>
                     <td align="right">{{ number_format($row->inc_drug_total,2) }}</td>
                   </tr>
-                  @php 
+                  @php
                     $sum_an_total += $row->an_total;
                     $sum_admdate += $row->admdate;
                     $sum_adjrw += $row->adjrw;
@@ -615,27 +615,27 @@
                     $sum_inc_lab_total += $row->inc_lab_total;
                     $sum_inc_drug_total += $row->inc_drug_total;
                   @endphp
-                  @endforeach 
-                  @php                   
+                  @endforeach
+                  @php
                     // ✅ อัตราครองเตียงรวม
-                    $sum_bed_occupancy = ($sum_admdate > 0 && $bed_report > 0 && $diff_days > 0) ? round(($sum_admdate * 100) / ($bed_report * $diff_days), 2) : 0;  
+                    $sum_bed_occupancy = ($sum_admdate > 0 && $bed_report > 0 && $diff_days > 0) ? round(($sum_admdate * 100) / ($bed_report * $diff_days), 2) : 0;
                     // ✅ Active Bed = วันนอนรวม ÷ จำนวนวัน
                     $sum_active_bed = ($sum_admdate > 0 && $diff_days > 0) ? round($sum_admdate / $diff_days, 2) : 0;
                     // ✅ CMI รวม
-                    $sum_cmi = ($sum_an_total > 0) ? round($sum_adjrw / $sum_an_total, 2) : 0; 
-                  @endphp   
+                    $sum_cmi = ($sum_an_total > 0) ? round($sum_adjrw / $sum_an_total, 2) : 0;
+                  @endphp
                   <tr>
                     <td align="right"><strong>รวม</strong></td>
                     <td align="right"><strong>{{number_format($sum_an_total)}}</strong></td>
                     <td align="right"><strong>{{number_format($sum_admdate)}}</strong></td>
-                    <td align="right"><strong>{{number_format($sum_bed_occupancy,2)}}</td>     
-                    <td align="right"><strong>{{number_format($sum_active_bed,2)}}</td>   
-                    <td align="right"><strong>{{number_format($sum_adjrw,4)}}</strong></td>  
-                    <td align="right"><strong>{{number_format($sum_cmi,2)}}</strong></td> 
+                    <td align="right"><strong>{{number_format($sum_bed_occupancy,2)}}</td>
+                    <td align="right"><strong>{{number_format($sum_active_bed,2)}}</td>
+                    <td align="right"><strong>{{number_format($sum_adjrw,4)}}</strong></td>
+                    <td align="right"><strong>{{number_format($sum_cmi,2)}}</strong></td>
                     <td align="right"><strong>{{number_format($sum_inc_total,2)}}</strong></td>
                     <td align="right"><strong>{{number_format($sum_inc_lab_total)}}</strong></td>
                     <td align="right"><strong>{{number_format($sum_inc_drug_total,2)}}</strong></td>
-                  </tr>   
+                  </tr>
                 </tbody>
               </table>
               <!-- กราฟ -->
@@ -664,8 +664,8 @@
                 </div>
               </div>
             </div>
-          </div>   
-    
+          </div>
+
         </div>
         @endforeach
       </div>
@@ -715,6 +715,7 @@
 @endpush
 
 <!-- script กราฟ  ---------------------------------------------------------------------------------------->
+<!-- <script src="{{ asset('public/assets/vendor/apexcharts/apexcharts.min.js') }}"></script> -->
 <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {

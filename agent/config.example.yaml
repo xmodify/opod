@@ -1,0 +1,24 @@
+hospital:
+  code: "10701"
+  name: "โรงพยาบาลยโสธร"
+  token: "YOUR_YSOPOD_API_TOKEN_HERE"
+  server_url: "http://127.0.0.1/ysopod"
+
+database:
+  driver: "mysql"
+  host: "127.0.0.1"
+  port: 3306
+  username: "your_mysql_user"
+  password: "your_mysql_password"
+  database: "hos"
+
+schedule:
+  opd_cron: "0 */2 * * *"
+  ipd_cron: "0 */2 * * *"
+  bed_cron: "*/15 * * * *"
+  sync_days_back: 10
+  chunk_size: 200
+
+web:
+  port: 8989
+  open_browser: true

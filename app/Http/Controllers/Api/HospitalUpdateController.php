@@ -36,8 +36,9 @@ class HospitalUpdateController extends Controller
             // Validate แต่ละ record
             try {
                 $validated = validator($r, [
-                    'hospcode'   => ['sometimes','string'],
-                    'bed_report' => ['required','integer','min:0'],
+                    'hospcode' => ['sometimes','string'],
+                    'bed_qty'  => ['required','integer','min:0'],
+                    'bed_use'  => ['required','integer','min:0'],
                 ])->validate();
             } catch (\Illuminate\Validation\ValidationException $e) {
                 $results[] = [
@@ -54,7 +55,8 @@ class HospitalUpdateController extends Controller
                 $affected = DB::table('hospital_config')
                     ->where('hospcode', $hospcode)
                     ->update([
-                        'bed_report' => $validated['bed_report'],
+                        'bed_qty' => $validated['bed_qty'],
+                        'bed_use' => $validated['bed_use'],
                         'updated_at' => now(),
                     ]);
 

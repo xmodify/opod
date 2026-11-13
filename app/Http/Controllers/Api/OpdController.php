@@ -28,7 +28,8 @@ class OpdController extends Controller
             'records.*.hn_total'            => ['required', 'integer', 'min:0'],
             'records.*.visit_total'         => ['required', 'integer', 'min:0'],
             'records.*.visit_total_op'      => ['required', 'integer', 'min:0'],
-            'records.*.visit_total_pp'      => ['required', 'integer', 'min:0'],            
+            'records.*.visit_total_pp'      => ['required', 'integer', 'min:0'],
+            'records.*.visit_endpoint'      => ['required', 'integer', 'min:0'],            
             'records.*.visit_ucs_incup'     => ['required', 'integer', 'min:0'],
             'records.*.visit_ucs_inprov'    => ['required', 'integer', 'min:0'],
             'records.*.visit_ucs_outprov'   => ['required', 'integer', 'min:0'],
@@ -40,14 +41,23 @@ class OpdController extends Controller
             'records.*.visit_fss'           => ['required', 'integer', 'min:0'],
             'records.*.visit_stp'           => ['required', 'integer', 'min:0'],
             'records.*.visit_pay'           => ['required', 'integer', 'min:0'],            
-            'records.*.visit_healthmed'         => ['required', 'integer', 'min:0'],
-            'records.*.visit_dent'              => ['required', 'integer', 'min:0'],
-            'records.*.visit_physic'            => ['required', 'integer', 'min:0'],
+            'records.*.visit_ppfs'          => ['nullable', 'integer', 'min:0'],
+            'records.*.visit_ppfs_claim'    => ['nullable', 'integer', 'min:0'],
+            'records.*.visit_ucs_cr'        => ['nullable', 'integer', 'min:0'],
+            'records.*.visit_ucs_cr_claim'  => ['nullable', 'integer', 'min:0'],
+            'records.*.visit_ucs_herb'          => ['nullable', 'integer', 'min:0'],
+            'records.*.visit_ucs_herb_claim'    => ['nullable', 'integer', 'min:0'],
+            'records.*.visit_ucs_healthmed'     => ['nullable', 'integer', 'min:0'],
+            'records.*.visit_healthmed'         => ['nullable', 'integer', 'min:0'],
+            'records.*.visit_dent'              => ['nullable', 'integer', 'min:0'],
+            'records.*.visit_physic'            => ['nullable', 'integer', 'min:0'],
             'records.*.visit_anc'               => ['nullable', 'integer', 'min:0'],
             'records.*.visit_telehealth'        => ['nullable', 'integer', 'min:0'],
+            'records.*.visit_moph_oapp_booking' => ['nullable', 'integer', 'min:0'],
+            'records.*.visit_moph_oapp'         => ['nullable', 'integer', 'min:0'],
             'records.*.visit_operation'         => ['nullable', 'integer', 'min:0'],
-            'records.*.visit_referout_inprov'       => ['required', 'integer', 'min:0'],           
-            'records.*.visit_referout_outprov'      => ['required', 'integer', 'min:0'],
+            'records.*.visit_referout_inprov'       => ['nullable', 'integer', 'min:0'],           
+            'records.*.visit_referout_outprov'      => ['nullable', 'integer', 'min:0'],
             'records.*.visit_referout_inprov_ipd'   => ['nullable', 'integer', 'min:0'],
             'records.*.visit_referout_outprov_ipd'  => ['nullable', 'integer', 'min:0'],
             'records.*.visit_referin_inprov'        => ['nullable', 'integer', 'min:0'],
@@ -94,6 +104,15 @@ class OpdController extends Controller
             'records.*.inc_pay'              => ['required', 'numeric', 'min:0'],
             'records.*.inc_lab_pay'          => ['required', 'numeric', 'min:0'],
             'records.*.inc_drug_pay'         => ['required', 'numeric', 'min:0'],
+            'records.*.inc_ppfs'             => ['nullable', 'numeric', 'min:0'],
+            'records.*.inc_ppfs_claim'       => ['nullable', 'numeric', 'min:0'],
+            'records.*.inc_ppfs_receive'     => ['nullable', 'numeric', 'min:0'],
+            'records.*.inc_uccr'             => ['nullable', 'numeric', 'min:0'],
+            'records.*.inc_uccr_claim'       => ['nullable', 'numeric', 'min:0'],
+            'records.*.inc_uccr_receive'     => ['nullable', 'numeric', 'min:0'],
+            'records.*.inc_herb'             => ['nullable', 'numeric', 'min:0'],
+            'records.*.inc_herb_claim'       => ['nullable', 'numeric', 'min:0'],
+            'records.*.inc_herb_receive'     => ['nullable', 'numeric', 'min:0'],
         ]);
 
         $hospcode = $hospital->hospcode;
@@ -136,6 +155,8 @@ class OpdController extends Controller
                 'visit_total'                   => $row['visit_total'] ?? 0,
                 'visit_total_op'                => $row['visit_total_op'] ?? 0,
                 'visit_total_pp'                => $row['visit_total_pp'] ?? 0,
+                'visit_endpoint'                => $row['visit_endpoint'] ?? 0,                
+                'visit_total_pp'                => $row['visit_total_pp'] ?? 0,
                 'visit_ucs_incup'               => $row['visit_ucs_incup'] ?? 0,
                 'visit_ucs_inprov'              => $row['visit_ucs_inprov'] ?? 0,
                 'visit_ucs_outprov'             => $row['visit_ucs_outprov'] ?? 0,
@@ -147,11 +168,20 @@ class OpdController extends Controller
                 'visit_fss'                     => $row['visit_fss'] ?? 0,
                 'visit_stp'                     => $row['visit_stp'] ?? 0,
                 'visit_pay'                     => $row['visit_pay'] ?? 0,
+                'visit_ppfs'                    => $row['visit_ppfs'] ?? 0,
+                'visit_ppfs_claim'              => $row['visit_ppfs_claim'] ?? 0,
+                'visit_ucs_cr'                  => $row['visit_ucs_cr'] ?? 0,
+                'visit_ucs_cr_claim'            => $row['visit_ucs_cr_claim'] ?? 0,
+                'visit_ucs_herb'                => $row['visit_ucs_herb'] ?? 0,
+                'visit_ucs_herb_claim'          => $row['visit_ucs_herb_claim'] ?? 0,
+                'visit_ucs_healthmed'           => $row['visit_ucs_healthmed'] ?? 0,
                 'visit_healthmed'               => $row['visit_healthmed'] ?? 0,
                 'visit_dent'                    => $row['visit_dent'] ?? 0,
                 'visit_physic'                  => $row['visit_physic'] ?? 0,
                 'visit_anc'                     => $row['visit_anc'] ?? 0,
                 'visit_telehealth'              => $row['visit_telehealth'] ?? 0,
+                'visit_moph_oapp_booking'       => $row['visit_moph_oapp_booking'] ?? 0,
+                'visit_moph_oapp'               => $row['visit_moph_oapp'] ?? 0,
                 'visit_operation'               => $row['visit_operation'] ?? 0,
                 'visit_referout_inprov'         => $row['visit_referout_inprov'] ?? 0,                
                 'visit_referout_outprov'        => $row['visit_referout_outprov'] ?? 0,
@@ -201,7 +231,15 @@ class OpdController extends Controller
                 'inc_pay'              => $row['inc_pay'] ?? 0,
                 'inc_lab_pay'          => $row['inc_lab_pay'] ?? 0,
                 'inc_drug_pay'         => $row['inc_drug_pay'] ?? 0,
-
+                'inc_ppfs'             => $row['inc_ppfs'] ?? 0,
+                'inc_ppfs_claim'       => $row['inc_ppfs_claim'] ?? 0,
+                'inc_ppfs_receive'     => $row['inc_ppfs_receive'] ?? 0,
+                'inc_uccr'             => $row['inc_uccr'] ?? 0,
+                'inc_uccr_claim'       => $row['inc_uccr_claim'] ?? 0,
+                'inc_uccr_receive'     => $row['inc_uccr_receive'] ?? 0,
+                'inc_herb'             => $row['inc_herb'] ?? 0,
+                'inc_herb_claim'       => $row['inc_herb_claim'] ?? 0,
+                'inc_herb_receive'     => $row['inc_herb_receive'] ?? 0,
 
                 // timestamps
                 'updated_at' => $now,
@@ -224,10 +262,12 @@ class OpdController extends Controller
                     [
                         // Visits
                         'hn_total', 'visit_total', 'visit_total_op', 'visit_total_pp',
-                        'visit_ucs_incup', 'visit_ucs_inprov', 'visit_ucs_outprov',
+                        'visit_endpoint','visit_ucs_incup', 'visit_ucs_inprov', 'visit_ucs_outprov',
                         'visit_ofc', 'visit_bkk', 'visit_bmt', 'visit_sss','visit_lgo', 'visit_fss', 
-                        'visit_healthmed', 'visit_dent', 'visit_physic',
-                        'visit_anc', 'visit_telehealth',
+                        'visit_stp', 'visit_pay','visit_ppfs', 'visit_ppfs_claim','visit_ucs_cr', 
+                        'visit_ucs_cr_claim','visit_ucs_herb', 'visit_ucs_herb_claim',
+                        'visit_ucs_healthmed','visit_healthmed','visit_dent','visit_physic',
+                        'visit_anc','visit_telehealth','visit_moph_oapp_booking','visit_moph_oapp',
                         'visit_operation','visit_referout_inprov','visit_referout_outprov',
                         'visit_referout_inprov_ipd','visit_referout_outprov_ipd',
                         'visit_referin_inprov','visit_referin_outprov',
@@ -246,6 +286,9 @@ class OpdController extends Controller
                         'inc_fss', 'inc_lab_fss', 'inc_drug_fss',
                         'inc_stp', 'inc_lab_stp', 'inc_drug_stp',
                         'inc_pay', 'inc_lab_pay', 'inc_drug_pay',
+                        'inc_ppfs', 'inc_ppfs_claim', 'inc_ppfs_receive', 
+                        'inc_uccr', 'inc_uccr_claim', 'inc_uccr_receive',
+                        'inc_herb', 'inc_herb_claim', 'inc_herb_receive',
 
                         // Timestamp
                         'updated_at',
@@ -301,7 +344,8 @@ class OpdController extends Controller
 
         $hospcode = $hospital->hospcode;
 
-
+        // ✅ รายชื่อ hospcode ที่ดูได้ทุก hospcode
+        $superHospcodes = ['00025']; // แก้ตามที่ต้องการ
 
         $start_date = $request->query('start_date') ?? Carbon::now()->subDays(10)->format('Y-m-d'); // 10 วันย้อนหลัง
         $end_date = $request->query('end_date') ?? Carbon::now()->format('Y-m-d'); // วันนี้
@@ -311,8 +355,8 @@ class OpdController extends Controller
         $query = DB::table('opd');
 
 
-        // ✅ ถ้าไม่ใช่ admin → เห็นเฉพาะของตัวเอง
-        if (!$hospital->is_admin) {
+        // ✅ ถ้าไม่ใช่ super hospcode → เห็นเฉพาะของตัวเอง
+        if (!in_array($hospcode, $superHospcodes)) {
             $query->where('hospcode', $hospcode);
         }
 
@@ -326,7 +370,7 @@ class OpdController extends Controller
         return response()->json([
             'ok' => true,
             'hospcode' => $hospcode,
-            'super' => $hospital->is_admin,
+            'super' => in_array($hospcode, $superHospcodes),
             'count' => $data->count(),
             'data' => $data,
         ]);

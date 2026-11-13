@@ -166,7 +166,8 @@ class IpdController extends Controller
 
         $hospcode = $hospital->hospcode;
 
-
+        // ✅ รายชื่อ hospcode ที่ดูได้ทุก hospcode
+        $superHospcodes = ['00025']; // แก้ตามที่ต้องการ
 
         $start_date = $request->query('start_date') ?? Carbon::now()->subDays(10)->format('Y-m-d'); // 10 วันย้อนหลัง
         $end_date = $request->query('end_date') ?? Carbon::now()->format('Y-m-d'); // วันนี้
@@ -176,8 +177,8 @@ class IpdController extends Controller
         $query = DB::table('ipd');
 
 
-        // ✅ ถ้าไม่ใช่ admin → เห็นเฉพาะของตัวเอง
-        if (!$hospital->is_admin) {
+        // ✅ ถ้าไม่ใช่ super hospcode → เห็นเฉพาะของตัวเอง
+        if (!in_array($hospcode, $superHospcodes)) {
             $query->where('hospcode', $hospcode);
         }
 
@@ -191,7 +192,7 @@ class IpdController extends Controller
         return response()->json([
             'ok' => true,
             'hospcode' => $hospcode,
-            'super' => $hospital->is_admin,
+            'super' => in_array($hospcode, $superHospcodes),
             'count' => $data->count(),
             'data' => $data,
         ]);
