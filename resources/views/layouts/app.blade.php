@@ -391,22 +391,6 @@
                   <a class="nav-menu-link {{ Request::is('web/opoh*') ? 'active-opoh' : '' }}" href="{{ url('web/opoh') }}">
                       <i class="fa-solid fa-user-doctor fs-5" style="color: #0284c7;"></i> OPOH
                   </a>
-        
-                  <a class="nav-menu-link {{ Request::is('web/claim') ? 'active-claim' : '' }}" href="{{ url('web/claim') }}">
-                      <i class="bi bi-coin fs-5" style="color: #f59e0b;"></i> Claim
-                  </a>
-        
-                  <a class="nav-menu-link" href="https://apps-amno.moph.go.th/hdcamnat/reports/insurance/report_summary2.php" target="_blank">
-                      <i class="fa-solid fa-money-bill-wave fs-5" style="color: #7e57c2;"></i> AIM
-                  </a>
-        
-                  <a class="nav-menu-link" href="https://hosoffice-chanuman.moph.go.th/inventory" target="_blank">
-                      <i class="bi bi-box-seam fs-5" style="color: #06b6d4;"></i> Inventory
-                  </a>
-                  
-                  <a class="nav-menu-link" href="https://hosoffice-chanuman.moph.go.th/pharmacy" target="_blank">
-                      <i class="bi bi-capsule-pill fs-5" style="color: #10b981;"></i> One Province One Formula
-                  </a>
               </div>
               <div class="navbar-nav ms-auto d-flex align-items-center gap-2 py-2 py-xl-0">
                   @auth

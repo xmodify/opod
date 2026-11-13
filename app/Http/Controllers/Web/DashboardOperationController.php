@@ -47,16 +47,16 @@ class DashboardOperationController extends Controller
 
         $hospitalSummary = DB::table('hospital_config')
             ->join('hospitals', 'hospital_config.hospcode', '=', 'hospitals.hospcode')
-            ->leftJoin('opd', function($join) use ($today) {
-                $join->on('hospital_config.hospcode', '=', 'opd.hospcode')
-                     ->where('opd.vstdate', '=', $today);
+            ->leftJoin('operation', function($join) use ($today) {
+                $join->on('hospital_config.hospcode', '=', 'operation.hospcode')
+                     ->where('operation.vstdate', '=', $today);
             })
             ->where('hospitals.is_admin', '!=', 1)
             ->select(
                 'hospital_config.hospcode',
                 'hospital_config.hospname',
-                DB::raw('COALESCE(opd.updated_at, hospital_config.updated_at) AS last_updated_at'),                
-                DB::raw('COALESCE(opd.visit_operation, 0) AS visit_operation')
+                DB::raw('COALESCE(operation.updated_at, hospital_config.updated_at) AS last_updated_at'),                
+                DB::raw('COALESCE(operation.visit_operation, 0) AS visit_operation')
             )
             ->orderBy('hospital_config.hospcode')
             ->get();
@@ -65,7 +65,7 @@ class DashboardOperationController extends Controller
         foreach ($hospitals_list as $h) {
             $hospitalData[$h->hospcode] = [
                 'hospname'  => $h->hospname,
-                'update_at' => DB::table('opd')->where('hospcode', $h->hospcode)->max('updated_at'),
+                'update_at' => DB::table('operation')->where('hospcode', $h->hospcode)->max('updated_at'),
                 'operation' => $this->getOperationSummary($h->hospcode, $start_date, $end_date),
             ];
         }
@@ -97,7 +97,7 @@ class DashboardOperationController extends Controller
                 WHEN MONTH(vstdate)=9  THEN CONCAT('ก.ย. ', RIGHT(YEAR(vstdate)+543, 2))
             END) AS month, 
             SUM(visit_operation) AS visit_operation
-            FROM opd
+            FROM operation
             WHERE vstdate BETWEEN ? AND ?
             AND hospcode = ?
             GROUP BY YEAR(vstdate), MONTH(vstdate)

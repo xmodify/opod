@@ -289,13 +289,6 @@
                 "default": "1",
                 "extra": ""
             },
-            "is_admin": {
-                "type": "tinyint(1)",
-                "null": "NO",
-                "key": "",
-                "default": "0",
-                "extra": ""
-            },
             "created_at": {
                 "type": "timestamp",
                 "null": "YES",
@@ -796,7 +789,7 @@
                 "type": "varchar(255)",
                 "null": "YES",
                 "key": "",
-                "default": "http://127.0.0.1:8989",
+                "default": "http:\/\/127.0.0.1:8989",
                 "extra": ""
             },
             "contact": {
@@ -1209,7 +1202,7 @@
                 "type": "int(10)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0",
                 "extra": ""
             },
             "visit_ucs_incup": {
@@ -1289,494 +1282,312 @@
                 "default": "0",
                 "extra": ""
             },
-            "visit_ppfs": {
-                "type": "int(10) unsigned",
-                "null": "NO",
-                "key": "",
-                "default": "0",
-                "extra": ""
-            },
-            "visit_ppfs_claim": {
-                "type": "int(10) unsigned",
-                "null": "YES",
-                "key": "",
-                "default": "0",
-                "extra": ""
-            },
-            "visit_ucs_cr": {
-                "type": "int(10)",
-                "null": "NO",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_ucs_cr_claim": {
-                "type": "int(10)",
-                "null": "YES",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_ucs_herb": {
-                "type": "int(10)",
-                "null": "NO",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_ucs_herb_claim": {
-                "type": "int(10)",
-                "null": "YES",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
             "visit_ucs_healthmed": {
                 "type": "int(10)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0",
                 "extra": ""
             },
             "visit_healthmed": {
                 "type": "int(10)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0",
                 "extra": ""
             },
             "visit_dent": {
                 "type": "int(10)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0",
                 "extra": ""
             },
             "visit_physic": {
                 "type": "int(10)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0",
                 "extra": ""
             },
             "visit_anc": {
                 "type": "int(10)",
                 "null": "YES",
                 "key": "",
-                "default": null,
+                "default": "0",
                 "extra": ""
             },
             "visit_telehealth": {
                 "type": "int(10)",
                 "null": "YES",
                 "key": "",
-                "default": null,
+                "default": "0",
                 "extra": ""
             },
             "visit_moph_oapp_booking": {
                 "type": "int(10)",
                 "null": "YES",
                 "key": "",
-                "default": null,
+                "default": "0",
                 "extra": ""
             },
             "visit_moph_oapp": {
                 "type": "int(10)",
                 "null": "YES",
                 "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_operation": {
-                "type": "int(10)",
-                "null": "YES",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_referout_inprov": {
-                "type": "int(10)",
-                "null": "NO",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_referout_outprov": {
-                "type": "int(10)",
-                "null": "NO",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_referout_inprov_ipd": {
-                "type": "int(10)",
-                "null": "YES",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_referout_outprov_ipd": {
-                "type": "int(10)",
-                "null": "YES",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_referin_inprov": {
-                "type": "int(10)",
-                "null": "NO",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_referin_outprov": {
-                "type": "int(10)",
-                "null": "NO",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_referin_inprov_ipd": {
-                "type": "int(10)",
-                "null": "YES",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_referin_outprov_ipd": {
-                "type": "int(10)",
-                "null": "YES",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_referback_inprov": {
-                "type": "int(10)",
-                "null": "YES",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "visit_referback_outprov": {
-                "type": "int(10)",
-                "null": "YES",
-                "key": "",
-                "default": null,
+                "default": "0",
                 "extra": ""
             },
             "inc_total": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_lab_total": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_drug_total": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_ucs_incup": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_lab_ucs_incup": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_drug_ucs_incup": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_ucs_inprov": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_lab_ucs_inprov": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_drug_ucs_inprov": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_ucs_outprov": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_lab_ucs_outprov": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_drug_ucs_outprov": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_ofc": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_lab_ofc": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_drug_ofc": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_bkk": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_lab_bkk": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_drug_bkk": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_bmt": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_lab_bmt": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_drug_bmt": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_sss": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_lab_sss": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_drug_sss": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_lgo": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_lab_lgo": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_drug_lgo": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_fss": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_lab_fss": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_drug_fss": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_stp": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_lab_stp": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_drug_stp": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_pay": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_lab_pay": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "inc_drug_pay": {
                 "type": "double(15,2)",
                 "null": "NO",
                 "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "inc_ppfs": {
-                "type": "double(15,2)",
-                "null": "NO",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "inc_ppfs_claim": {
-                "type": "double(15,2)",
-                "null": "YES",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "inc_ppfs_receive": {
-                "type": "double(15,2)",
-                "null": "YES",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "inc_uccr": {
-                "type": "double(15,2)",
-                "null": "NO",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "inc_uccr_claim": {
-                "type": "double(15,2)",
-                "null": "YES",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "inc_uccr_receive": {
-                "type": "double(15,2)",
-                "null": "YES",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "inc_herb": {
-                "type": "double(15,2)",
-                "null": "NO",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "inc_herb_claim": {
-                "type": "double(15,2)",
-                "null": "YES",
-                "key": "",
-                "default": null,
-                "extra": ""
-            },
-            "inc_herb_receive": {
-                "type": "double(15,2)",
-                "null": "YES",
-                "key": "",
-                "default": null,
+                "default": "0.00",
                 "extra": ""
             },
             "created_at": {
