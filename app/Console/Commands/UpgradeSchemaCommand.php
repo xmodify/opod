@@ -37,3 +37,4 @@ class UpgradeSchemaCommand extends Command
         return 0;
     }
 }
+
