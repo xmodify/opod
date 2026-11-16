@@ -22,19 +22,26 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::guard('web')->attempt($credentials)) {
-            $request->session()->regenerate();
+        try {
+            if (Auth::guard('web')->attempt($credentials)) {
+                $request->session()->regenerate();
 
-            $mophAlertActive = \App\Models\MainSetting::get('moph_alert_active', config('moph.alert.active', 'N'));
-            $user = Auth::guard('web')->user();
+                $mophAlertActive = \App\Models\MainSetting::get('moph_alert_active', config('moph.alert.active', 'N'));
+                $user = Auth::guard('web')->user();
 
-            if ($mophAlertActive === 'Y' && !empty($user->cid)) {
-                session(['moph_alert_2fa_verified' => false]);
-                return redirect()->route('auth.2fa.index');
+                if ($mophAlertActive === 'Y' && !empty($user->cid)) {
+                    session(['moph_alert_2fa_verified' => false]);
+                    return redirect()->route('auth.2fa.index');
+                }
+
+                session(['moph_alert_2fa_verified' => true]);
+                return redirect()->intended(route('manage.index'));
             }
-
-            session(['moph_alert_2fa_verified' => true]);
-            return redirect()->intended(route('manage.index'));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Login attempt error: ' . $e->getMessage());
+            return back()->withErrors([
+                'email' => 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
+            ])->onlyInput('email');
         }
 
         return back()->withErrors([
