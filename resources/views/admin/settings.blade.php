@@ -83,12 +83,12 @@
                                             <i class="fa-solid fa-network-wired fs-5"></i>
                                         </div>
                                         <div>
-                                            <h5 class="fw-bold mb-0 text-dark">ลิงก์ API สำหรับดึงข้อมูลไปตรวจสอบที่ HOSxP ของแต่ละ รพ.</h5>
+                                            <h5 class="fw-bold mb-0 text-dark">ลิงก์ API สำหรับดึงข้อมูลไปตรวจสอบ</h5>
                                             <span class="text-secondary small">บริการ API เชื่อมโยงข้อมูลระหว่างระบบกลางจังหวัด YSOPOD และโรงพยาบาลในเครือข่าย</span>
                                         </div>
                                     </div>
                                     <p class="text-secondary small mb-3" style="line-height: 1.6;">
-                                        โรงพยาบาลและหน่วยงานในจังหวัดยโสธร ทั้ง {{ $hospitals->count() }} แห่ง สามารถนำ API ด้านล่างนี้ไปเชื่อมต่อในโปรแกรมของ รพ. (เช่น HOSxP / Client APP) เพื่อดึงข้อมูลไปตรวจสอบ หรือสืบค้นข้อมูลสาเหตุการตาย โดยแนบ Token ประจำโรงพยาบาลใน <code>Authorization: Bearer &lt;Token&gt;</code> หรือ Request Body
+                                        โรงพยาบาลและหน่วยงานในจังหวัดยโสธร ทั้ง {{ $hospitals->count() }} แห่ง สามารถนำ API ด้านล่างนี้ไปเชื่อมต่อเพื่อดึงข้อมูลไปตรวจสอบ หรือสืบค้นข้อมูลสาเหตุการตาย โดยแนบ Token ประจำหน่วยงานใน <code>Authorization: Bearer &lt;Token&gt;</code> หรือ Request Body
                                     </p>
                                     
                                     <div class="d-flex flex-column gap-3">
@@ -209,7 +209,7 @@
                                                 </div>
                                                 <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Public / Agent</span>
                                             </div>
-                                            <p class="text-muted small mb-2" style="font-size: 0.8rem;">ดึงรายชื่อแพทย์เฉพาะทาง, เลข ว., CID, และสาขาความเชี่ยวชาญ ไปตั้งค่าหรือตรวจสอบใน HOSxP</p>
+                                            <p class="text-muted small mb-2" style="font-size: 0.8rem;">ดึงรายชื่อแพทย์เฉพาะทาง, เลข ว., CID, และสาขาความเชี่ยวชาญ ไปตั้งค่าหรือตรวจสอบในระบบ</p>
                                             <div class="input-group input-group-sm">
                                                 <code class="form-control bg-light text-break py-1 px-2.5 fs-7" id="api_url_opoh_doctors" style="color: #0284c7;">{{ url('/api/agent/opoh-doctors') }}</code>
                                                 <button class="btn btn-outline-info px-3 fw-bold copy-api-btn" data-target="api_url_opoh_doctors" type="button">
@@ -243,7 +243,7 @@
                                     <div class="bg-white p-3 p-md-4 rounded-3 border shadow-sm h-100">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-hospital text-success me-2"></i> โรงพยาบาลในเครือข่าย ({{ $hospitals->count() }} แห่ง)</h6>
-                                            <a href="{{ route('manage.agents.index') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3" style="font-size: 0.78rem;">
+                                            <a href="{{ route('manage.agents') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3" style="font-size: 0.78rem;">
                                                 <i class="fa-solid fa-key me-1"></i> ดู API Token
                                             </a>
                                         </div>
