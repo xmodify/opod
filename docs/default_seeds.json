@@ -322,5 +322,39 @@
             "updated_at": "2024-09-11 15:22:35",
             "created_at": "2024-09-11 15:22:32"
         }
+    ],
+    "main_setting": [
+        {
+            "name": "agent_latest_version",
+            "value": "1.0.0"
+        },
+        {
+            "name": "system_short_name",
+            "value": "YSOPOD"
+        },
+        {
+            "name": "system_name",
+            "value": "Yasothon One Province One Data"
+        },
+        {
+            "name": "province_name_th",
+            "value": "ยโสธร"
+        },
+        {
+            "name": "province_name_en",
+            "value": "Yasothon"
+        },
+        {
+            "name": "province_hospcodes",
+            "value": "'10701', '10963', '10964', '10965', '10966', '10967', '10968', '10969', '11444'"
+        },
+        {
+            "name": "opoh_exclude_hospcodes",
+            "value": "00023"
+        },
+        {
+            "name": "opoh_hub_hospcode",
+            "value": "10701"
+        }
     ]
 }
