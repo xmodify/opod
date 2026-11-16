@@ -1,99 +1,93 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard | YSOPOD')
+@section('title', 'Dashboard Refer | ' . config('app.app_abbr', 'YSOPOD'))
 
+@push('styles')
 <style>
-  /* === BASE GLASS CARD === */
-  .glass-card {
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(255,255,255,0.35);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
-    color: #fff;
-    min-height: 110px;
-    padding: 12px 14px !important;
-    border-radius: 16px;
-    position: relative;
+  /* === Table Styling === */
+  .custom-table {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
   }
-  .glass-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.20);
-    border: 1px solid rgba(255,255,255,0.26);
-    backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 10px;
-    right: 10px;
+  .custom-table thead th {
+    font-weight: 700 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 10px 8px !important;
+    font-size: 0.85rem !important;
   }
-  .glass-icon i {
-    color: #ffffff;
-    font-size: 1.05rem;
+  .custom-table tbody td {
+    padding: 8px !important;
+    font-size: 0.85rem !important;
+    color: #444 !important;
   }
-  .glass-title {
-    font-weight: bold;
-    font-size: .9rem;
-    margin-bottom: 2px;
+  .custom-table tbody tr:hover {
+    background-color: #f8fbff !important;
   }
-  .glass-number {
-    font-size: 1.75rem;
-    font-weight: bold;
-    margin-top: 6px;
-    text-align: center;
+  
+  /* Header Color Groups */
+  .th-blue { background: #e3f2fd !important; color: #0d47a1 !important; }
+  .th-green { background: #e8f5e9 !important; color: #1b5e20 !important; }
+  .th-orange { background: #fff3e0 !important; color: #e65100 !important; }
+  .th-purple { background: #f3e5f5 !important; color: #4a148c !important; }
+  .th-red { background: #ffebee !important; color: #b71c1c !important; }
+  .th-grey { background: #f5f5f5 !important; color: #424242 !important; }
+  
+  .tr-total {
+    background: #f1f8ff !important;
+    font-weight: 800 !important;
+    border-top: 2px solid #0d47a1 !important;
   }
 
-  /* Refer Out – Magenta Glass */
-  .glass-referout {
-    background: linear-gradient(135deg,
-                rgba(180,40,160,0.55),
-                rgba(255,115,195,0.25));
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.35);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-    color: #fff0ff;
+  .card-hover {
+    transition: all 0.3s ease-in-out;
   }
-  .glass-referout .glass-title,
-  .glass-referout .glass-number {
-    color: #fff0ff !important;
+  .card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   }
 
-  /* Refer In – Pink Red Glass */
-  .glass-referin {
-    background: linear-gradient(135deg,
-                rgba(220,40,90,0.55),
-                rgba(255,130,160,0.28));
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.35);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-    color: #ffe6ea;
+  /* Summary Cards (Crisp White + Accent Borders) */
+  .card-theme-referout {
+    background: #ffffff !important;
+    border: 1px solid var(--glass-bd) !important;
+    border-left: 6px solid #d32f2f !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
   }
-  .glass-referin .glass-title,
-  .glass-referin .glass-number {
-    color: #ffffff !important;
+  .card-theme-referin {
+    background: #ffffff !important;
+    border: 1px solid var(--glass-bd) !important;
+    border-left: 6px solid #0d47a1 !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
   }
-
-  /* Refer Back – Warm Yellow Glass */
-  .glass-referback {
-    background: linear-gradient(135deg,
-                rgba(255,180,60,0.55),
-                rgba(255,225,120,0.28));
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.35);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-    color: #5e4800;
-  }
-  .glass-referback .glass-title,
-  .glass-referback .glass-number {
-    color: #5e4800 !important;
+  .card-theme-referback {
+    background: #ffffff !important;
+    border: 1px solid var(--glass-bd) !important;
+    border-left: 6px solid #1b5e20 !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
   }
 
-  tr.table-refer td,
-  tr.table-refer th {
-    background: linear-gradient(135deg, #ceebfa, #e8f6fc) !important;   
+  /* Chart Cards Minimal */
+  .card.card-chart-referout {
+    border-top: 4px solid #d32f2f !important;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  }
+  .card.card-chart-referin {
+    border-top: 4px solid #0d47a1 !important;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  }
+  .card.card-chart-referback {
+    border-top: 4px solid #1b5e20 !important;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
   }
 </style>
+@endpush
 
 @section('content')
 
@@ -101,14 +95,23 @@
   <header class="py-4">
     <div class="container-fluid">      
         <div class="row g-4 align-items-center">
-          <div class="col-lg-9">          
-            <h4 class="text-success mb-2"><strong>Yasothon One Province One Data : YSOPOD</strong></h4>          
+          <div class="col-lg-7">          
+            <div class="d-flex align-items-center gap-3">
+              <div class="bg-danger bg-opacity-10 rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                <i class="fa-solid fa-truck-medical fs-4 text-danger"></i>
+              </div>
+              <div>
+                <h4 class="fw-bold mb-1" style="color: #1e293b;">ข้อมูลส่งต่อผู้ป่วย (Refer)</h4>
+                <p class="text-secondary small mb-0"><i class="fa-solid fa-square-poll-vertical text-green me-1"></i>{{ config('app.province_name_en', 'Yasothon') }} One Province One Data</p>
+              </div>
+            </div>          
           </div>
-          <div class="col-lg-3 d-flex justify-content-lg-end">
-            <span class="text-secondary my-1">
-                วันที่ {{ \Carbon\Carbon::now()->locale('th')->isoFormat('D MMM YYYY เวลา H:mm') }} น.&nbsp;&nbsp;
+          {{-- ขวาสุด: วันที่ + ปุ่มโหลดใหม่ --}}
+          <div class="col-lg-5 d-flex justify-content-lg-end align-items-center gap-3">
+            <span class="text-secondary small fw-medium">
+                วันที่ {{ \Carbon\Carbon::now()->locale('th')->isoFormat('D MMM YYYY เวลา H:mm') }} น.
             </span>
-            <button type="button" class="btn btn-sm btn-outline-success" onclick="location.reload();">
+            <button type="button" class="btn btn-sm btn-glass-action" onclick="location.reload();">
               <i class="bi bi-arrow-clockwise"></i> โหลดใหม่
             </button>
           </div>
@@ -121,79 +124,112 @@
     $fmtMoney = fn($n) => number_format((float)($n ?? 0), 2);
   @endphp
 
-  <!-- แถว 2 จำนวน 3 Block สำหรับ Refer -->
-  <section id="summary" class="pb-2">
+  <!-- แถว 3 Block สรุป (Refer Out, In, Back) -->
+  <section id="summary-refer" class="pb-2">
     <div class="container-fluid">      
-      <div class="row g-3">
-        
-        <!-- Refer Out ------------------------------------------------------------------------------------------>
+      <div class="row justify-content-center g-3">
+
+        <!-- Refer Out -->
         <div class="col-12 col-sm-6 col-xl-4">
-          <a href="#" data-bs-toggle="modal" data-bs-target="#ReferOutDetailModal" class="text-decoration-none text-dark">
-            <div class="glass-card glass-referout">
-              <div class="glass-icon"><i class="fa-solid fa-truck-medical"></i></div>
-              <div class="glass-title"><h6>Refer Out วันนี้</h6></div>
-              <div class="d-flex justify-content-between text-center mt-1">
-                <div class="flex-fill">
-                  <div class="small">OPD</div>
-                  <div class="glass-number fs-4">
-                    {{ $fmtInt($visit_referout_inprov + $visit_referout_outprov) }}
+          <a href="#" data-bs-toggle="modal" data-bs-target="#ReferOutDetailModal" class="text-decoration-none text-dark d-block">
+            <div class="card card-theme-referout card-hover p-3 h-100">
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <h6 class="mb-0 fw-bold" style="color: #d32f2f;">Refer Out วันนี้</h6>
+                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: rgba(211, 47, 47, 0.1);">
+                  <i class="fa-solid fa-truck-medical fs-4" style="color: #d32f2f;"></i>
+                </div>
+              </div>
+              <div class="d-flex align-items-center justify-content-around text-center">
+                <div>
+                  <div class="small text-secondary">OPD</div>
+                  <div class="fw-bold" style="font-size:1.6rem; color: #d32f2f;">
+                    {{ $fmtInt(($visit_referout_inprov ?? 0) + ($visit_referout_outprov ?? 0)) }}
                   </div>
                 </div>
-                <div class="vr mx-2 d-none d-sm-block" style="opacity:0.4;"></div>
-                <div class="flex-fill">
-                  <div class="small">IPD</div>
-                  <div class="glass-number fs-4">
-                    {{ $fmtInt($visit_referout_inprov_ipd + $visit_referout_outprov_ipd) }}
+                <div class="vr mx-2" style="opacity: 0.15;"></div>
+                <div>
+                  <div class="small text-secondary">IPD</div>
+                  <div class="fw-bold" style="font-size:1.6rem; color: #d32f2f;">
+                    {{ $fmtInt(($visit_referout_inprov_ipd ?? 0) + ($visit_referout_outprov_ipd ?? 0)) }}
+                  </div>
+                </div>
+                <div class="vr mx-2" style="opacity: 0.15;"></div>
+                <div>
+                  <div class="small text-secondary">รวม</div>
+                  <div class="fw-bold text-dark" style="font-size:1.6rem;">
+                    {{ $fmtInt(($visit_referout_inprov ?? 0) + ($visit_referout_outprov ?? 0) + ($visit_referout_inprov_ipd ?? 0) + ($visit_referout_outprov_ipd ?? 0)) }}
                   </div>
                 </div>
               </div>
             </div>
           </a>
         </div>
-        
-        <!-- Refer In  ----------------------------------------------------------------------------------------->
+
+        <!-- Refer In -->
         <div class="col-12 col-sm-6 col-xl-4">
-          <a href="#" data-bs-toggle="modal" data-bs-target="#ReferInDetailModal" class="text-decoration-none text-dark">
-            <div class="glass-card glass-referin">
-              <div class="glass-icon"><i class="fa-solid fa-truck-medical"></i></div>
-              <div class="glass-title"><h6>Refer In วันนี้</h6></div>
-              <div class="d-flex justify-content-between text-center mt-1">
-                <div class="flex-fill">
-                  <div class="small">OPD</div>
-                  <div class="glass-number fs-4">
-                    {{ $fmtInt($visit_referin_inprov + $visit_referin_outprov) }}
+          <a href="#" data-bs-toggle="modal" data-bs-target="#ReferInDetailModal" class="text-decoration-none text-dark d-block">
+            <div class="card card-theme-referin card-hover p-3 h-100">
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <h6 class="mb-0 fw-bold" style="color: #0d47a1;">Refer In วันนี้</h6>
+                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: rgba(13, 71, 161, 0.1);">
+                  <i class="fa-solid fa-truck-medical fs-4" style="color: #0d47a1;"></i>
+                </div>
+              </div>
+              <div class="d-flex align-items-center justify-content-around text-center">
+                <div>
+                  <div class="small text-secondary">OPD</div>
+                  <div class="fw-bold" style="font-size:1.6rem; color: #0d47a1;">
+                    {{ $fmtInt(($visit_referin_inprov ?? 0) + ($visit_referin_outprov ?? 0)) }}
                   </div>
                 </div>
-                <div class="vr mx-2 d-none d-sm-block" style="opacity:0.4;"></div>
-                <div class="flex-fill">
-                  <div class="small">IPD</div>
-                  <div class="glass-number fs-4">
-                    {{ $fmtInt($visit_referin_inprov_ipd + $visit_referin_outprov_ipd) }}
+                <div class="vr mx-2" style="opacity: 0.15;"></div>
+                <div>
+                  <div class="small text-secondary">IPD</div>
+                  <div class="fw-bold" style="font-size:1.6rem; color: #0d47a1;">
+                    {{ $fmtInt(($visit_referin_inprov_ipd ?? 0) + ($visit_referin_outprov_ipd ?? 0)) }}
+                  </div>
+                </div>
+                <div class="vr mx-2" style="opacity: 0.15;"></div>
+                <div>
+                  <div class="small text-secondary">รวม</div>
+                  <div class="fw-bold text-dark" style="font-size:1.6rem;">
+                    {{ $fmtInt(($visit_referin_inprov ?? 0) + ($visit_referin_outprov ?? 0) + ($visit_referin_inprov_ipd ?? 0) + ($visit_referin_outprov_ipd ?? 0)) }}
                   </div>
                 </div>
               </div>
             </div>
           </a>
         </div>
-        
-        <!-- Refer Back  --------------------------------------------------------------------------------------------->
+
+        <!-- Refer Back -->
         <div class="col-12 col-sm-6 col-xl-4">
-          <a href="#" data-bs-toggle="modal" data-bs-target="#ReferBackDetailModal" class="text-decoration-none text-dark">
-            <div class="glass-card glass-referback">
-              <div class="glass-icon"><i class="fa-solid fa-truck-medical"></i></div>
-              <div class="glass-title"><h6>Refer Back วันนี้</h6></div>
-              <div class="d-flex justify-content-between text-center mt-1">
-                <div class="flex-fill">
-                  <div class="small">ในจังหวัด</div>
-                  <div class="glass-number fs-4">
-                    {{ $fmtInt($visit_referback_inprov) }}
+          <a href="#" data-bs-toggle="modal" data-bs-target="#ReferBackDetailModal" class="text-decoration-none text-dark d-block">
+            <div class="card card-theme-referback card-hover p-3 h-100">
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <h6 class="mb-0 fw-bold" style="color: #1b5e20;">Refer Back วันนี้</h6>
+                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: rgba(27, 94, 32, 0.1);">
+                  <i class="fa-solid fa-truck-medical fs-4" style="color: #1b5e20;"></i>
+                </div>
+              </div>
+              <div class="d-flex align-items-center justify-content-around text-center">
+                <div>
+                  <div class="small text-secondary">ในจังหวัด</div>
+                  <div class="fw-bold" style="font-size:1.6rem; color: #1b5e20;">
+                    {{ $fmtInt($visit_referback_inprov ?? 0) }}
                   </div>
                 </div>
-                <div class="vr mx-2 d-none d-sm-block" style="opacity:0.4;"></div>
-                <div class="flex-fill">
-                  <div class="small">ต่างจังหวัด</div>
-                  <div class="glass-number fs-4">
-                    {{ $fmtInt($visit_referback_outprov) }}
+                <div class="vr mx-2" style="opacity: 0.15;"></div>
+                <div>
+                  <div class="small text-secondary">ต่างจังหวัด</div>
+                  <div class="fw-bold" style="font-size:1.6rem; color: #1b5e20;">
+                    {{ $fmtInt($visit_referback_outprov ?? 0) }}
+                  </div>
+                </div>
+                <div class="vr mx-2" style="opacity: 0.15;"></div>
+                <div>
+                  <div class="small text-secondary">รวม</div>
+                  <div class="fw-bold text-dark" style="font-size:1.6rem;">
+                    {{ $fmtInt(($visit_referback_inprov ?? 0) + ($visit_referback_outprov ?? 0)) }}
                   </div>
                 </div>
               </div>
@@ -205,189 +241,23 @@
     </div>
   </section>
 
-  {{-- Modals --}}
-  {{-- 1. Refer Out Modal --}}
-  <div class="modal fade" id="ReferOutDetailModal" tabindex="-1" aria-labelledby="hospitalDetailLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-      <div class="modal-content border-0 shadow-lg rounded-3" style="background-color:#f5f8fc;">
-        <div class="modal-header text-white rounded-top-3" style="background: linear-gradient(135deg, #2f6fb6, #4b8edc);">
-          <h5 class="modal-title fw-bold" id="hospitalDetailLabel">
-            <i class="bi bi-arrow-left-right me-2"></i> Refer Out วันนี้
-          </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body py-3">
-          <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden mb-0" style="background-color: #ffffff; border-radius: 0.75rem;">
-            <thead style="background-color:#d9e8fb;">
-              <tr class="text-center text-primary fw-semibold">
-                <th rowspan="2" class="text-center align-middle">รหัส</th>
-                <th rowspan="2" class="text-center align-middle">ชื่อโรงพยาบาล</th>
-                <th colspan="2" style="border-right:1px solid #aac6ec;">OPD</th>
-                <th colspan="2">IPD</th>
-              </tr>
-              <tr class="text-center text-primary fw-semibold">
-                <th>ในจังหวัด</th>
-                <th style="border-right:1px solid #aac6ec;">ต่างจังหวัด</th>
-                <th>ในจังหวัด</th>
-                <th>ต่างจังหวัด</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach($hospitalSummary as $h)
-                <tr>
-                  <td align="right" class="text-secondary">{{ $h->hospcode }}</td>
-                  <td>
-                    <span class="fw-semibold text-dark">{{ $h->hospname }}</span><br>
-                    <small class="text-muted">
-                      {{ \Carbon\Carbon::parse($h->last_updated_at)->locale('th')->isoFormat('D MMM YYYY H:mm') }} น.
-                    </small>
-                  </td>
-                  <td align="right" class="text-primary">{{ number_format($h->visit_referout_inprov) }}</td>
-                  <td align="right" class="text-success">{{ number_format($h->visit_referout_outprov) }}</td>
-                  <td align="right" class="text-primary">{{ number_format($h->visit_referout_inprov_ipd) }}</td>
-                  <td align="right" class="fw-bold text-success">{{ number_format($h->visit_referout_outprov_ipd) }}</td>
-                </tr>
-              @endforeach
-              <tr style="background-color:#eef4fb;" class="fw-bold text-end">
-                <td colspan="2" class="text-center text-dark">รวมทั้งหมด</td>
-                <td class="text-primary">{{ number_format($hospitalSummary->sum('visit_referout_inprov')) }}</td>
-                <td class="text-success">{{ number_format($hospitalSummary->sum('visit_referout_outprov')) }}</td>
-                <td class="text-primary">{{ number_format($hospitalSummary->sum('visit_referout_inprov_ipd')) }}</td>
-                <td class="text-success">{{ number_format($hospitalSummary->sum('visit_referout_outprov_ipd')) }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer" style="background-color:#eef4fb;">
-          <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" style="background-color:#3e7cc1; border-color:#3e7cc1;" data-bs-dismiss="modal">ปิด</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  {{-- MODALS FOR REFER --}}
+  @include('partials.dashboard_refer_modals')
 
-  {{-- 2. Refer In Modal --}}
-  <div class="modal fade" id="ReferInDetailModal" tabindex="-1" aria-labelledby="hospitalDetailLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-      <div class="modal-content border-0 shadow-lg rounded-3" style="background-color:#f5f8fc;">
-        <div class="modal-header text-white rounded-top-3" style="background: linear-gradient(135deg, #2f6fb6, #4b8edc);">
-          <h5 class="modal-title fw-bold" id="hospitalDetailLabel">
-            <i class="bi bi-arrow-left-right me-2"></i>Refer IN วันนี้
-          </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body py-3">
-          <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden mb-0" style="background-color: #ffffff; border-radius: 0.75rem;">
-            <thead style="background-color:#d9e8fb;">
-              <tr class="text-center text-primary fw-semibold">
-                <th rowspan="2" class="align-middle">รหัส</th>
-                <th rowspan="2" class="align-middle">ชื่อโรงพยาบาล</th>
-                <th colspan="2" style="border-right:1px solid #aac6ec;">OPD</th>
-                <th colspan="2">IPD</th>
-              </tr>
-              <tr class="text-center text-primary fw-semibold">
-                <th>ในจังหวัด</th>
-                <th style="border-right:1px solid #aac6ec;">ต่างจังหวัด</th>
-                <th>ในจังหวัด</th>
-                <th>ต่างจังหวัด</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach($hospitalSummary as $h)
-                <tr>
-                  <td align="right" class="text-secondary">{{ $h->hospcode }}</td>
-                  <td>
-                    <span class="fw-semibold text-dark">{{ $h->hospname }}</span><br>
-                    <small class="text-muted">
-                      {{ \Carbon\Carbon::parse($h->last_updated_at)->locale('th')->isoFormat('D MMM YYYY H:mm') }} น.
-                    </small>
-                  </td>
-                  <td align="right" class="text-primary">{{ number_format($h->visit_referin_inprov) }}</td>
-                  <td align="right" class="text-success">{{ number_format($h->visit_referin_outprov) }}</td>
-                  <td align="right" class="text-primary">{{ number_format($h->visit_referin_inprov_ipd) }}</td>
-                  <td align="right" class="fw-bold text-success">{{ number_format($h->visit_referin_outprov_ipd) }}</td>
-                </tr>
-              @endforeach
-              <tr style="background-color:#eef4fb;" class="fw-bold text-end">
-                <td colspan="2" class="text-center text-dark">รวมทั้งหมด</td>
-                <td class="text-primary">{{ number_format($hospitalSummary->sum('visit_referin_inprov')) }}</td>
-                <td class="text-success">{{ number_format($hospitalSummary->sum('visit_referin_outprov')) }}</td>
-                <td class="text-primary">{{ number_format($hospitalSummary->sum('visit_referin_inprov_ipd')) }}</td>
-                <td class="text-success">{{ number_format($hospitalSummary->sum('visit_referin_outprov_ipd')) }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer" style="background-color:#eef4fb;">
-          <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" style="background-color:#3e7cc1; border-color:#3e7cc1;" data-bs-dismiss="modal">ปิด</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  {{-- 3. Refer Back Modal --}}
-  <div class="modal fade" id="ReferBackDetailModal" tabindex="-1" aria-labelledby="hospitalDetailLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-      <div class="modal-content border-0 shadow-lg rounded-3" style="background-color:#f5f8fc;">
-        <div class="modal-header text-white rounded-top-3" style="background: linear-gradient(135deg, #2f6fb6, #4b8edc);">
-          <h5 class="modal-title fw-bold" id="hospitalDetailLabel">
-            <i class="bi bi-arrow-left-right me-2"></i>Refer Back วันนี้
-          </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body py-3">
-          <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden mb-0" style="background-color: #ffffff; border-radius: 0.75rem;">
-            <thead style="background-color:#d9e8fb;">
-              <tr class="text-center text-primary fw-semibold">
-                <th class="text-center">รหัส</th>
-                <th class="text-center">ชื่อโรงพยาบาล</th>
-                <th>ในจังหวัด</th>
-                <th>ต่างจังหวัด</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach($hospitalSummary as $h)
-                <tr>
-                  <td align="right" class="text-secondary">{{ $h->hospcode }}</td>
-                  <td>
-                    <span class="fw-semibold text-dark">{{ $h->hospname }}</span><br>
-                    <small class="text-muted">
-                      {{ \Carbon\Carbon::parse($h->last_updated_at)->locale('th')->isoFormat('D MMM YYYY H:mm') }} น.
-                    </small>
-                  </td>
-                  <td align="right" class="text-primary">{{ number_format($h->visit_referback_inprov) }}</td>
-                  <td align="right" class="fw-bold text-success">{{ number_format($h->visit_referback_outprov) }}</td>
-                </tr>
-              @endforeach
-              <tr style="background-color:#eef4fb;" class="fw-bold text-end">
-                <td colspan="2" class="text-center text-dark">รวมทั้งหมด</td>
-                <td class="text-primary">{{ number_format($hospitalSummary->sum('visit_referback_inprov')) }}</td>
-                <td class="text-success">{{ number_format($hospitalSummary->sum('visit_referback_outprov')) }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer" style="background-color:#eef4fb;">
-          <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" style="background-color:#3e7cc1; border-color:#3e7cc1;" data-bs-dismiss="modal">ปิด</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <br>
-  <hr>
-
-  {{-- เลือกปีงบประมาณ ----------------------------------------------------------------------------------------------------------}}
-  <section id="summary" class="pb-2">
+  <hr class="my-4">
+  
+  {{-- เลือกปีงบประมาณ --}}
+  <section id="budget-year-select" class="pb-2">
       <div class="container-fluid">
         <form method="POST" action="{{ url('web/refer') }}" enctype="multipart/form-data">
         @csrf
           <div class="row g-4 align-items-center">
-            <div class="col-lg-9">          
-              <h6 class="text-success mb-2"><strong></strong></h6>          
+            <div class="col-lg-8">          
+              <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-hospital text-primary me-2"></i>ข้อมูลจำแนกรายโรงพยาบาล</h5>          
             </div>
-            <div class="col-lg-3 d-flex justify-content-lg-end">
+            <div class="col-lg-4 d-flex justify-content-lg-end">
               <div class="d-flex align-items-center gap-2">
-                <select class="form-select" name="budget_year">
+                <select class="form-select rounded-pill px-3 shadow-sm border-0" name="budget_year" style="min-width: 160px; background-color: #ffffff;">
                   @foreach ($budget_year_select as $row)
                     <option value="{{ $row->LEAVE_YEAR_ID }}"
                       {{ (int)$budget_year === (int)$row->LEAVE_YEAR_ID ? 'selected' : '' }}>
@@ -395,7 +265,7 @@
                     </option>
                   @endforeach
                 </select>
-                <button type="submit" class="btn btn-primary">{{ __('ค้นหา') }}</button>
+                <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm"><i class="fa-solid fa-magnifying-glass me-1"></i> {{ __('ค้นหา') }}</button>
               </div>
             </div>
           </div>
@@ -403,16 +273,19 @@
       </div>
   </section>
 
-  {{-- ข้อมูลบริการ Refer แยกตามโรงพยาบาล ----------------------------------------------------------------------------------------------------------}}
-  <section id="hospital" class="pb-2">
+  <!-- ข้อมูลบริการรายโรงพยาบาล -->
+  <section id="hospital" class="pb-4">
     <div class="container-fluid">
-    
+      
       <!-- NAV PILLS -->
-      <ul class="nav nav-pills overflow-auto flex-nowrap" id="hospPills" role="tablist">
+      <ul class="nav nav-pills overflow-auto flex-nowrap pb-1" id="hospPills" role="tablist">
         @foreach($hospitalData as $hospcode => $data)
+        @php
+          $shortName = preg_replace('/^(โรงพยาบาลสมเด็จพระยุพราช|โรงพยาบาล)/u', 'รพ.', $data['hospname']);
+        @endphp
         <li class="nav-item me-2" role="presentation">
           <button class="nav-link {{ $loop->first ? 'active' : '' }}" id="tab-{{ $hospcode }}" data-bs-toggle="pill" data-bs-target="#pane-{{ $hospcode }}" type="button" role="tab" aria-controls="pane-{{ $hospcode }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}">
-            {{ $data['hospname'] }}
+            <i class="fa-solid fa-hospital me-1"></i> {{ $shortName }}
           </button>
         </li>
         @endforeach
@@ -420,71 +293,144 @@
 
       <!-- TAB PANES -->
       <div class="tab-content mt-3" id="hospPillsContent">
+
         @foreach($hospitalData as $hospcode => $data)
+        @php
+          $refer_records = $data['refer'];
+        @endphp
         <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="pane-{{ $hospcode }}" role="tabpanel" aria-labelledby="tab-{{ $hospcode }}" tabindex="0">          
-          <!-- Refer -->
-          <div class="glass p-3">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6>[{{ $hospcode }}] ข้อมูลการส่งต่อ Refer {{ $data['hospname'] }} ปีงบประมาณ {{$budget_year}}</h6>
-              <span class="text-secondary small">Update {{ $data['update_at'] }}</span>
+          <div class="glass p-3" style="background: rgba(255,255,255,0.85) !important;">
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-truck-arrow-right text-primary me-2"></i>[{{ $hospcode }}] ข้อมูลการส่งต่อ Refer {{ $data['hospname'] }} ปีงบประมาณ {{$budget_year}}</h6>
+              <div class="d-flex align-items-center gap-2">
+                <span class="text-secondary small">Update {{ $data['update_at'] ?? '-' }}</span>
+                <button class="btn btn-sm btn-success rounded-pill px-3 shadow-sm" id="btn-{{ $hospcode }}-refer">
+                  <i class="fa-solid fa-file-excel me-1"></i> ส่งออก Excel
+                </button>
+              </div>
             </div>
+
+            <!-- 3 Charts Side-by-Side (Refer Out, Refer In, Refer Back) -->
+            <div class="row g-3 mb-4">
+              {{-- Chart 1: Refer Out (Red) --}}
+              <div class="col-12 col-lg-4">
+                <div class="card card-chart-referout h-100 rounded-4 border-0">
+                  <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0" style="color: #d32f2f;"><i class="fa-solid fa-arrow-right-from-bracket me-1"></i> Refer Out</h6>
+                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill">OPD vs IPD</span>
+                  </div>
+                  <div class="card-body p-2">
+                    <div id="chart_{{ $hospcode }}_referout" style="min-height: 220px;"></div>
+                  </div>
+                </div>
+              </div>
+
+              {{-- Chart 2: Refer In (Blue) --}}
+              <div class="col-12 col-lg-4">
+                <div class="card card-chart-referin h-100 rounded-4 border-0">
+                  <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0" style="color: #0d47a1;"><i class="fa-solid fa-arrow-right-to-bracket me-1"></i> Refer In</h6>
+                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">OPD vs IPD</span>
+                  </div>
+                  <div class="card-body p-2">
+                    <div id="chart_{{ $hospcode }}_referin" style="min-height: 220px;"></div>
+                  </div>
+                </div>
+              </div>
+
+              {{-- Chart 3: Refer Back (Green) --}}
+              <div class="col-12 col-lg-4">
+                <div class="card card-chart-referback h-100 rounded-4 border-0">
+                  <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0" style="color: #1b5e20;"><i class="fa-solid fa-arrow-rotate-left me-1"></i> Refer Back</h6>
+                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill">ใน/ต่าง จว.</span>
+                  </div>
+                  <div class="card-body p-2">
+                    <div id="chart_{{ $hospcode }}_referback" style="min-height: 220px;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table -->
             <div class="table-responsive">
-              <table id="table{{ $hospcode }}_refer" class="table table-bordered table-striped my-3" width="100%">
-                <thead class="table-light">
-                  <tr class="table-refer">
-                      <th class="text-center" rowspan="2" width="8%">เดือน</th>
-                      <th class="text-center" colspan="4">Refer Out</th>
-                      <th class="text-center" colspan="4">Refer In</th>
-                      <th class="text-center" colspan="2">Refer Back</th>
+              <table id="table{{ $hospcode }}_refer" class="table custom-table my-3" width="100%">
+                <thead>
+                  <tr>
+                    <th class="th-grey" rowspan="2" width="8%">เดือน</th>
+                    <th class="th-red" colspan="4">Refer Out</th>
+                    <th class="th-blue" colspan="4">Refer In</th>
+                    <th class="th-green" colspan="2">Refer Back</th>
                   </tr>
-                  <tr class="table-refer">
-                      <th class="text-center">OPD ในจังหวัด</th>
-                      <th class="text-center">OPD ต่างจังหวัด</th>
-                      <th class="text-center">IPD ในจังหวัด</th>
-                      <th class="text-center">IPD ต่างจังหวัด</th>
-                      <th class="text-center">OPD ในจังหวัด</th>
-                      <th class="text-center">OPD ต่างจังหวัด</th>
-                      <th class="text-center">IPD ในจังหวัด</th>
-                      <th class="text-center">IPD ต่างจังหวัด</th>
-                      <th class="text-center">ในจังหวัด</th>
-                      <th class="text-center">ต่างจังหวัด</th>
+                  <tr>
+                    <th class="th-red">OPD ในจังหวัด</th>
+                    <th class="th-red">OPD ต่างจังหวัด</th>
+                    <th class="th-red">IPD ในจังหวัด</th>
+                    <th class="th-red">IPD ต่างจังหวัด</th>
+                    <th class="th-blue">OPD ในจังหวัด</th>
+                    <th class="th-blue">OPD ต่างจังหวัด</th>
+                    <th class="th-blue">IPD ในจังหวัด</th>
+                    <th class="th-blue">IPD ต่างจังหวัด</th>
+                    <th class="th-green">ในจังหวัด</th>
+                    <th class="th-green">ต่างจังหวัด</th>
                   </tr>
                 </thead>
                 <tbody>
-                @foreach($data['refer'] as $row)
-                  <tr>
-                    <td class="text-center">{{ $row->month }}</td>
-                    <td class="text-end">{{ number_format($row->visit_referout_inprov) }}</td>
-                    <td class="text-end">{{ number_format($row->visit_referout_outprov) }}</td>
-                    <td class="text-end">{{ number_format($row->visit_referout_inprov_ipd) }}</td>
-                    <td class="text-end">{{ number_format($row->visit_referout_outprov_ipd) }}</td>
-                    <td class="text-end">{{ number_format($row->visit_referin_inprov) }}</td>
-                    <td class="text-end">{{ number_format($row->visit_referin_outprov) }}</td>
-                    <td class="text-end">{{ number_format($row->visit_referin_inprov_ipd) }}</td>
-                    <td class="text-end">{{ number_format($row->visit_referin_outprov_ipd) }}</td>
-                    <td class="text-end">{{ number_format($row->visit_referback_inprov) }}</td>
-                    <td class="text-end">{{ number_format($row->visit_referback_outprov) }}</td>
-                  </tr>
-                @endforeach
-                  <tr class="table-secondary fw-bold">
-                    <td class="text-end">รวม</td>
-                    <td class="text-end">{{ number_format($data['refer']->sum('visit_referout_inprov')) }}</td>
-                    <td class="text-end">{{ number_format($data['refer']->sum('visit_referout_outprov')) }}</td>
-                    <td class="text-end">{{ number_format($data['refer']->sum('visit_referout_inprov_ipd')) }}</td>
-                    <td class="text-end">{{ number_format($data['refer']->sum('visit_referout_outprov_ipd')) }}</td>
-                    <td class="text-end">{{ number_format($data['refer']->sum('visit_referin_inprov')) }}</td>
-                    <td class="text-end">{{ number_format($data['refer']->sum('visit_referin_outprov')) }}</td>
-                    <td class="text-end">{{ number_format($data['refer']->sum('visit_referin_inprov_ipd')) }}</td>
-                    <td class="text-end">{{ number_format($data['refer']->sum('visit_referin_outprov_ipd')) }}</td>
-                    <td class="text-end">{{ number_format($data['refer']->sum('visit_referback_inprov')) }}</td>
-                    <td class="text-end">{{ number_format($data['refer']->sum('visit_referback_outprov')) }}</td>
+                  @php
+                    $t_out_op_in = 0; $t_out_op_out = 0; $t_out_ip_in = 0; $t_out_ip_out = 0;
+                    $t_in_op_in = 0; $t_in_op_out = 0; $t_in_ip_in = 0; $t_in_ip_out = 0;
+                    $t_back_in = 0; $t_back_out = 0;
+                  @endphp
+                  @foreach($refer_records as $row)
+                    @php
+                      $t_out_op_in += $row->visit_referout_inprov ?? 0;
+                      $t_out_op_out += $row->visit_referout_outprov ?? 0;
+                      $t_out_ip_in += $row->visit_referout_inprov_ipd ?? 0;
+                      $t_out_ip_out += $row->visit_referout_outprov_ipd ?? 0;
+                      $t_in_op_in += $row->visit_referin_inprov ?? 0;
+                      $t_in_op_out += $row->visit_referin_outprov ?? 0;
+                      $t_in_ip_in += $row->visit_referin_inprov_ipd ?? 0;
+                      $t_in_ip_out += $row->visit_referin_outprov_ipd ?? 0;
+                      $t_back_in += $row->visit_referback_inprov ?? 0;
+                      $t_back_out += $row->visit_referback_outprov ?? 0;
+                    @endphp
+                    <tr>
+                      <td class="text-center fw-bold">{{ $row->month }}</td>
+                      <td class="text-end">{{ number_format($row->visit_referout_inprov) }}</td>
+                      <td class="text-end">{{ number_format($row->visit_referout_outprov) }}</td>
+                      <td class="text-end text-danger fw-bold">{{ number_format($row->visit_referout_inprov_ipd) }}</td>
+                      <td class="text-end text-danger fw-bold">{{ number_format($row->visit_referout_outprov_ipd) }}</td>
+                      <td class="text-end">{{ number_format($row->visit_referin_inprov) }}</td>
+                      <td class="text-end">{{ number_format($row->visit_referin_outprov) }}</td>
+                      <td class="text-end text-primary fw-bold">{{ number_format($row->visit_referin_inprov_ipd) }}</td>
+                      <td class="text-end text-primary fw-bold">{{ number_format($row->visit_referin_outprov_ipd) }}</td>
+                      <td class="text-end text-success fw-bold">{{ number_format($row->visit_referback_inprov) }}</td>
+                      <td class="text-end text-success fw-bold">{{ number_format($row->visit_referback_outprov) }}</td>
+                    </tr>
+                  @endforeach
+                  {{-- Total Row --}}
+                  <tr class="tr-total">
+                    <td class="text-center text-primary">รวม</td>
+                    <td class="text-end text-danger">{{ number_format($t_out_op_in) }}</td>
+                    <td class="text-end text-danger">{{ number_format($t_out_op_out) }}</td>
+                    <td class="text-end text-danger">{{ number_format($t_out_ip_in) }}</td>
+                    <td class="text-end text-danger">{{ number_format($t_out_ip_out) }}</td>
+                    <td class="text-end text-primary">{{ number_format($t_in_op_in) }}</td>
+                    <td class="text-end text-primary">{{ number_format($t_in_op_out) }}</td>
+                    <td class="text-end text-primary">{{ number_format($t_in_ip_in) }}</td>
+                    <td class="text-end text-primary">{{ number_format($t_in_ip_out) }}</td>
+                    <td class="text-end text-success">{{ number_format($t_back_in) }}</td>
+                    <td class="text-end text-success">{{ number_format($t_back_out) }}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-          </div>    
+
+          </div>
         </div>
         @endforeach
+
       </div>
     </div>
   </section>
@@ -492,26 +438,152 @@
 @endsection
 
 @push('scripts')
+  <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+  
+  {{-- DataTables + Buttons --}}
+  <script src="{{ asset('assets/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/datatables/js/dataTables.bootstrap5.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/datatables-buttons/js/buttons.bootstrap5.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/jszip/jszip.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/datatables-buttons/js/buttons.print.min.js') }}"></script>
+
   <script>
-    $(function () {
-      @foreach($hospitalData as $hospcode => $data)
-        $('#table{{ $hospcode }}_refer').DataTable({
-          dom: '<"d-flex justify-content-end mb-2"B>rt',
-          buttons: [
-            {
-              extend: 'excelHtml5',
-              text: '<i class="bi bi-file-earmark-excel"></i> ส่งออก Excel',
-              className: 'btn btn-success btn-sm',
-              title: 'ข้อมูลการส่งต่อ Refer {{ $data['hospname'] }} {{ $budget_year ?? "" }}'
+    document.addEventListener("DOMContentLoaded", () => {
+      const referData = @json($hospitalData);
+
+      // Common ApexChart Area Generator
+      const createApexRefer = (elementId, seriesData, categories, colors) => {
+        const el = document.querySelector(elementId);
+        if (!el) return null;
+        const options = {
+          series: seriesData,
+          chart: {
+            type: 'area',
+            height: 220,
+            sparkline: { enabled: false },
+            toolbar: { show: false },
+            fontFamily: 'inherit',
+            animations: { enabled: true, easing: 'easeinout', speed: 500 }
+          },
+          colors: colors,
+          fill: {
+            type: 'gradient',
+            gradient: {
+              shadeIntensity: 1,
+              opacityFrom: 0.45,
+              opacityTo: 0.05,
+              stops: [0, 95, 100]
             }
+          },
+          stroke: { curve: 'smooth', width: 2.5 },
+          xaxis: {
+            categories: categories,
+            labels: { style: { fontSize: '11px', colors: '#64748b' } },
+            axisBorder: { show: false },
+            axisTicks: { show: false }
+          },
+          yaxis: {
+            labels: {
+              formatter: val => Math.round(val),
+              style: { fontSize: '11px', colors: '#64748b' }
+            }
+          },
+          dataLabels: { enabled: false },
+          legend: {
+            position: 'top',
+            horizontalAlign: 'right',
+            fontSize: '11px',
+            offsetY: -5
+          },
+          tooltip: {
+            y: {
+              formatter: val => (val || 0).toLocaleString('th-TH') + ' ราย'
+            }
+          },
+          grid: {
+            borderColor: 'rgba(0,0,0,0.05)',
+            strokeDashArray: 4
+          }
+        };
+        const chart = new ApexCharts(el, options);
+        chart.render();
+        return chart;
+      };
+
+      // Loop each hospital and render 3 ApexCharts
+      Object.entries(referData).forEach(([code, h]) => {
+        const rows = h.refer || [];
+        const months = rows.map(r => r.month);
+
+        // Chart 1: Refer Out (OPD vs IPD)
+        const refOutOpd = rows.map(r => (parseInt(r.visit_referout_inprov) || 0) + (parseInt(r.visit_referout_outprov) || 0));
+        const refOutIpd = rows.map(r => (parseInt(r.visit_referout_inprov_ipd) || 0) + (parseInt(r.visit_referout_outprov_ipd) || 0));
+        createApexRefer(
+          `#chart_${code}_referout`,
+          [
+            { name: 'OPD Refer Out', data: refOutOpd },
+            { name: 'IPD Refer Out', data: refOutIpd }
           ],
-          ordering: false,
-          paging: false,
-          info: false,
-          lengthChange: false,
-          language: { search: "ค้นหา:" }
-        });
-      @endforeach
+          months,
+          ['#ef4444', '#b91c1c']
+        );
+
+        // Chart 2: Refer In (OPD vs IPD)
+        const refInOpd = rows.map(r => (parseInt(r.visit_referin_inprov) || 0) + (parseInt(r.visit_referin_outprov) || 0));
+        const refInIpd = rows.map(r => (parseInt(r.visit_referin_inprov_ipd) || 0) + (parseInt(r.visit_referin_outprov_ipd) || 0));
+        createApexRefer(
+          `#chart_${code}_referin`,
+          [
+            { name: 'OPD Refer In', data: refInOpd },
+            { name: 'IPD Refer In', data: refInIpd }
+          ],
+          months,
+          ['#2563eb', '#1d4ed8']
+        );
+
+        // Chart 3: Refer Back (ในจังหวัด vs ต่างจังหวัด)
+        const refBackIn = rows.map(r => parseInt(r.visit_referback_inprov) || 0);
+        const refBackOut = rows.map(r => parseInt(r.visit_referback_outprov) || 0);
+        createApexRefer(
+          `#chart_${code}_referback`,
+          [
+            { name: 'ในจังหวัด', data: refBackIn },
+            { name: 'ต่างจังหวัด', data: refBackOut }
+          ],
+          months,
+          ['#10b981', '#059669']
+        );
+
+        // DataTables init for this hospital
+        const tblId = `#table${code}_refer`;
+        if ($.fn.DataTable && $(tblId).length) {
+          const dt = $(tblId).DataTable({
+            paging: false,
+            searching: false,
+            info: false,
+            responsive: true,
+            order: [],
+            buttons: [
+              {
+                extend: 'excelHtml5',
+                text: 'Excel',
+                title: `ข้อมูลการส่งต่อ Refer [${code}] ${h.hospname} ปีงบประมาณ {{ $budget_year }}`,
+                className: 'd-none'
+              }
+            ]
+          });
+          $(`#btn-${code}-refer`).on('click', () => {
+            dt.button('.buttons-excel').trigger();
+          });
+        }
+      });
+
+      // Resize listener for hidden tabs
+      $('button[data-bs-toggle="pill"]').on('shown.bs.tab', function () {
+        window.dispatchEvent(new Event('resize'));
+      });
     });
   </script>
 @endpush

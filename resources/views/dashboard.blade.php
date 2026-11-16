@@ -1,169 +1,172 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard | YSOPOD')
+@section('title', 'Dashboard | ' . config('app.app_abbr', 'YSOPOD'))
 
+@push('styles')
 <style>
   .card-hospital {
-  border: none;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease-in-out;
+    border: none;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease-in-out;
   }
-  /* เพิ่มสีม่วงสำหรับข้อความ */
   .text-purple {
     color: #8b5cf6 !important;
   }
-  tr.table-ipd td,
-  tr.table-ipd th {
-    background: linear-gradient(135deg, #f3e5f5, #fbf6fc) !important;
+  
+  /* === Table Styling สวยๆ === */
+  .custom-table {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
   }
-  tr.table-refer td,
-  tr.table-refer th {
-    background: linear-gradient(135deg, #ceebfa, #e8f6fc) !important;
+  .custom-table thead th {
+    font-weight: 700 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 10px 8px !important;
+    font-size: 0.85rem !important;
+  }
+  .custom-table tbody td {
+    padding: 8px !important;
+    font-size: 0.85rem !important;
+    color: #444 !important;
+  }
+  .custom-table tbody tr:hover {
+    background-color: #f8fbff !important;
+  }
+  
+  /* Header Color Groups */
+  .th-blue { background: #e3f2fd !important; color: #0d47a1 !important; }
+  .th-green { background: #e8f5e9 !important; color: #1b5e20 !important; }
+  .th-orange { background: #fff3e0 !important; color: #e65100 !important; }
+  .th-purple { background: #f3e5f5 !important; color: #4a148c !important; }
+  .th-red { background: #ffebee !important; color: #b71c1c !important; }
+  .th-grey { background: #f5f5f5 !important; color: #424242 !important; }
+  .tr-total {
+    background: #f1f8ff !important;
+    font-weight: 800 !important;
+    border-top: 2px solid #0d47a1 !important;
+  }
+  .text-orange { color: #e65100 !important; }
+  
+  /* === Premium Chart Cards (Minimal style) === */
+  .card.card-chart-blue {
+    border-top: 4px solid #2563eb !important;
+  }
+  .card.card-chart-blue .card-header {
+    background: transparent !important;
+    border-bottom: none !important;
+    color: #2563eb !important;
+    padding-top: 15px !important;
+    padding-bottom: 2px !important;
+  }
+  .card.card-chart-orange {
+    border-top: 4px solid #d97706 !important;
+  }
+  .card.card-chart-orange .card-header {
+    background: transparent !important;
+    border-bottom: none !important;
+    color: #d97706 !important;
+    padding-top: 15px !important;
+    padding-bottom: 2px !important;
+  }
+  .card.card-chart-green {
+    border-top: 4px solid #10b981 !important;
+  }
+  .card.card-chart-green .card-header {
+    background: transparent !important;
+    border-bottom: none !important;
+    color: #10b981 !important;
+    padding-top: 15px !important;
+    padding-bottom: 2px !important;
+  }
+  .card.card-chart-red {
+    border-top: 4px solid #ef4444 !important;
+  }
+  .card.card-chart-red .card-header {
+    background: transparent !important;
+    border-bottom: none !important;
+    color: #ef4444 !important;
+    padding-top: 15px !important;
+    padding-bottom: 2px !important;
+  }
+
+  /* Base Glass Card */
+  .card-hover {
+    transition: all 0.3s ease-in-out;
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .card-theme-admit {
+    background: #ffffff !important;
+    border: 1px solid var(--glass-bd) !important;
+    border-left: 6px solid #475569 !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
   }
 </style>
-<style>
-  /* === BASE GLASS CARD (ใช้ร่วมกันทุก block) === */
-  .glass-card {
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(255,255,255,0.35);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
-    color: #fff;
-    min-height: 110px;
-    padding: 12px 14px !important;
-    border-radius: 16px;
-    position: relative;
-  }
-  /* === ICON มุมขวาบน (ใช้ร่วมทุก block) === */
-  .glass-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.20);
-    border: 1px solid rgba(255,255,255,0.26);
-    backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
-  .glass-icon i {
-    color: #ffffff;
-    font-size: 1.05rem;
-  }
-  /* หัวข้อ */
-  .glass-title {
-    font-weight: bold;
-    font-size: .9rem;
-    margin-bottom: 2px;
-  }
-  /* ตัวเลข */
-  .glass-number {
-    font-size: 1.75rem;
-    font-weight: bold;
-    margin-top: 6px;
-    text-align: center;
-  }
-</style>
-<style>
-  /* ================================
-    1) Operation – Deep Green Glass
-  =================================*/
-  .glass-op {
-    background: linear-gradient(135deg,
-                rgba(0,120,50,0.55),
-                rgba(0,180,90,0.28));
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.35);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-    color: #ffffff;
-  }
-
-  .glass-op .glass-title,
-  .glass-op .glass-number {
-    color: #ffffff !important;
-  }
-
-  /* ================================
-    2) Refer Out – Magenta Glass
-  =================================*/
-  .glass-referout {
-    background: linear-gradient(135deg,
-                rgba(180,40,160,0.55),
-                rgba(255,115,195,0.25));
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.35);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-    color: #fff0ff;
-  }
-  .glass-referout .glass-title,
-  .glass-referout .glass-number {
-    color: #fff0ff !important;
-  }
-
-  /* ================================
-    3) Refer In – Pink Red Glass
-  =================================*/
-  .glass-referin {
-    background: linear-gradient(135deg,
-                rgba(220,40,90,0.55),
-                rgba(255,130,160,0.28));
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.35);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-    color: #ffe6ea;
-  }
-  .glass-referin .glass-title,
-  .glass-referin .glass-number {
-    color: #ffffff !important;
-  }
-
-
-  /* ================================
-    4) Refer Back – Warm Yellow Glass
-  =================================*/
-  .glass-referback {
-    background: linear-gradient(135deg,
-                rgba(255,180,60,0.55),
-                rgba(255,225,120,0.28));
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.35);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-    color: #5e4800;
-  }
-  .glass-referback .glass-title,
-  .glass-referback .glass-number {
-    color: #5e4800 !important;
-  }
-</style>
-
+@endpush
 
 @section('content')
 
   <!-- HERO -->
   <header class="py-4">
-    <div class="container-fluid">
+    <div class="container-fluid">      
         <div class="row g-4 align-items-center">
-          <div class="col-lg-9">
-            <h4 class="text-success mb-2"><strong>Yasothon One Province One Data : YSOPOD</strong></h4>
+          <div class="col-lg-7">          
+            <div class="d-flex align-items-center gap-3">
+              <div class="bg-danger bg-opacity-10 rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; border: 1px solid rgba(244, 63, 94, 0.2);">
+                <i class="fa-solid fa-bed-pulse fs-4 text-danger"></i>
+              </div>
+              <div>
+                <h4 class="fw-bold mb-1" style="color: #1e293b;">ข้อมูลบริการผู้ป่วยใน (IPD)</h4>
+                <p class="text-secondary small mb-0"><i class="fa-solid fa-square-poll-vertical text-green me-1"></i>{{ config('app.system_title', 'Yasothon One Province One Data') }}</p>
+              </div>
+            </div>          
           </div>
-          {{-- ขวาสุด: select + ปุ่ม ติดกันและชิดขวา --}}
-          <div class="col-lg-3 d-flex justify-content-lg-end">
-            <span class="text-secondary my-1">
-                วันที่ {{ \Carbon\Carbon::now()->locale('th')->isoFormat('D MMM YYYY เวลา H:mm') }} น.&nbsp;&nbsp;
+          {{-- ขวาสุด: วันที่ + ปุ่มโหลดใหม่ --}}
+          <div class="col-lg-5 d-flex justify-content-lg-end align-items-center gap-3">
+            <span class="text-secondary small fw-medium">
+                วันที่ {{ \Carbon\Carbon::now()->locale('th')->isoFormat('D MMM YYYY เวลา H:mm') }} น.
             </span>
-            <button type="button" class="btn btn-sm btn-outline-success" onclick="location.reload();">
+            <button type="button" class="btn btn-sm btn-glass-action" onclick="location.reload();">
               <i class="bi bi-arrow-clockwise"></i> โหลดใหม่
             </button>
           </div>
         </div>
     </div>
-  </header>
-    @php
-      $fmtInt   = fn($n) => number_format((int)($n ?? 0));
-      $fmtMoney = fn($n) => number_format((float)($n ?? 0), 2);
-    @endphp
+  </header>  
+
+  @php
+    $fmtInt   = fn($n) => number_format((int)($n ?? 0));
+    $fmtMoney = fn($n) => number_format((float)($n ?? 0), 2);
+
+    $hospColors = [
+      '10701' => ['border' => '#8b5cf6', 'bg_light' => '#f5f3ff', 'text' => '#7c3aed', 'icon_bg' => 'rgba(139, 92, 246, 0.12)'],
+      '10963' => ['border' => '#06b6d4', 'bg_light' => '#ecfeff', 'text' => '#0891b2', 'icon_bg' => 'rgba(6, 182, 212, 0.12)'],
+      '10964' => ['border' => '#ec4899', 'bg_light' => '#fdf2f8', 'text' => '#db2777', 'icon_bg' => 'rgba(236, 72, 153, 0.12)'],
+      '10965' => ['border' => '#f59e0b', 'bg_light' => '#fef3c7', 'text' => '#d97706', 'icon_bg' => 'rgba(245, 158, 11, 0.12)'],
+      '10966' => ['border' => '#3b82f6', 'bg_light' => '#eff6ff', 'text' => '#2563eb', 'icon_bg' => 'rgba(59, 130, 246, 0.12)'],
+      '10967' => ['border' => '#10b981', 'bg_light' => '#ecfdf5', 'text' => '#059669', 'icon_bg' => 'rgba(16, 185, 129, 0.12)'],
+      '10968' => ['border' => '#6366f1', 'bg_light' => '#eef2ff', 'text' => '#4f46e5', 'icon_bg' => 'rgba(99, 102, 241, 0.12)'],
+      '10969' => ['border' => '#14b8a6', 'bg_light' => '#f0fdfa', 'text' => '#0d9488', 'icon_bg' => 'rgba(20, 184, 166, 0.12)'],
+      '11444' => ['border' => '#f43f5e', 'bg_light' => '#fff1f2', 'text' => '#e11d48', 'icon_bg' => 'rgba(244, 63, 94, 0.12)'],
+      // Fallback for Amnat Charoen codes if used
+      '10985' => ['border' => '#8b5cf6', 'bg_light' => '#f5f3ff', 'text' => '#7c3aed', 'icon_bg' => 'rgba(139, 92, 246, 0.12)'],
+      '10986' => ['border' => '#06b6d4', 'bg_light' => '#ecfeff', 'text' => '#0891b2', 'icon_bg' => 'rgba(6, 182, 212, 0.12)'],
+      '10987' => ['border' => '#ec4899', 'bg_light' => '#fdf2f8', 'text' => '#db2777', 'icon_bg' => 'rgba(236, 72, 153, 0.12)'],
+      '10988' => ['border' => '#f59e0b', 'bg_light' => '#fef3c7', 'text' => '#d97706', 'icon_bg' => 'rgba(245, 158, 11, 0.12)'],
+      '10989' => ['border' => '#3b82f6', 'bg_light' => '#eff6ff', 'text' => '#2563eb', 'icon_bg' => 'rgba(59, 130, 246, 0.12)'],
+      '10990' => ['border' => '#10b981', 'bg_light' => '#ecfdf5', 'text' => '#059669', 'icon_bg' => 'rgba(16, 185, 129, 0.12)'],
+      '10703' => ['border' => '#f43f5e', 'bg_light' => '#fff1f2', 'text' => '#e11d48', 'icon_bg' => 'rgba(244, 63, 94, 0.12)'],
+    ];
+    $paletteList = array_values($hospColors);
+  @endphp
+
   <!-- ข้อมูลเตียง ---------------------------------------------------------------------------------------- -->
   <section id="bed" class="pb-2">
     <div class="container-fluid">
@@ -174,16 +177,14 @@
           <a href="#" data-bs-toggle="modal" data-bs-target="#AdmiitDetailModal"
             class="text-decoration-none text-dark">
 
-            <div class="p-3 h-100 rounded-4 shadow-sm"
-                style="background: linear-gradient(135deg, #ffe6e9, #ffffff); border:1px solid #ffd1d7; border-radius:20px;">
+            <div class="card card-theme-admit card-hover glass p-3 h-100">
 
               <!-- ส่วนหัว -->
               <div class="d-flex align-items-center justify-content-between mb-3">
-                <h6 class="mb-0 text-danger fw-bold">กำลังรักษาอยู่</h6>
+                <h6 class="mb-0 fw-bold" style="color: #475569;">กำลังรักษาอยู่</h6>
 
-                <div class="p-2 rounded-circle shadow-sm"
-                    style="background:white; border:1px solid #ffccd2;">
-                  <i class="fa-solid fa-hospital-user text-danger fs-4"></i>
+                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: rgba(71, 85, 105, 0.1);">
+                  <i class="fa-solid fa-hospital-user fs-4" style="color: #475569;"></i>
                 </div>
               </div>
 
@@ -222,13 +223,14 @@
             </div>
           </a>
         </div>
+
         {{-- Modal แสดงรายละเอียด รพ. (โทนน้ำเงินพาสเทลเข้ม / กรอบเล็ก) --}}
         <div class="modal fade" id="AdmiitDetailModal" tabindex="-1" aria-labelledby="hospitalDetailLabel" aria-hidden="true">
           <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content border-0 shadow-lg rounded-3" style="background-color:#f5f8fc;">
-
+              
               <!-- Header -->
-              <div class="modal-header text-white rounded-top-3"
+              <div class="modal-header text-white rounded-top-3" 
                   style="background: linear-gradient(135deg, #2f6fb6, #4b8edc);">
                 <h5 class="modal-title fw-bold" id="hospitalDetailLabel">
                   <i class="fa-solid fa-bed-pulse fs-5"></i> ข้อมูลเตียง
@@ -239,9 +241,9 @@
               <!-- Body -->
               <div class="modal-body py-3">
 
-                {{-- ✅ หน้ารวมโรงพยาบาล --}}
+                {{-- หน้ารวมโรงพยาบาล --}}
                 <div id="hospital-list">
-                  <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden mb-0"
+                  <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden mb-0" 
                         style="background-color: #ffffff; border-radius: 0.75rem;">
                     <thead style="background-color:#d9e8fb;">
                       <tr class="text-center text-primary fw-semibold">
@@ -269,8 +271,8 @@
                         <tr>
                           <td align="right" class="text-secondary">{{ $h->hospcode }}</td>
                           <td>
-                           <a href="#"
-                              class="fw-semibold text-dark text-decoration-none hosp-detail-link"
+                           <a href="#" 
+                              class="fw-semibold text-dark text-decoration-none hosp-detail-link" 
                               data-hospcode="{{ $h->hospcode }}"
                               data-hospname="{{ $h->hospname }}">
                               {{ $h->hospname }}
@@ -306,7 +308,8 @@
                     </tbody>
                   </table>
                 </div>
-                {{-- ✅ หน้ารายละเอียดเตียง (ซ่อนเริ่มต้น) --}}
+
+                {{-- หน้ารายละเอียดเตียง (ซ่อนเริ่มต้น) --}}
                 <div id="bed-detail" style="display: none;">
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 id="modal-hospname" class="fw-bold text-success mb-0"></h6>
@@ -345,8 +348,8 @@
               </div>
               <!-- Footer -->
               <div class="modal-footer" style="background-color:#eef4fb;">
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm"
-                        style="background-color:#3e7cc1; border-color:#3e7cc1;"
+                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" 
+                        style="background-color:#3e7cc1; border-color:#3e7cc1;" 
                         data-bs-dismiss="modal">
                   ปิด
                 </button>
@@ -355,160 +358,83 @@
           </div>
         </div>
 
-        <script>
-          document.addEventListener("DOMContentLoaded", () => {
-
-            const hospitalList = document.getElementById('hospital-list');
-            const bedDetail = document.getElementById('bed-detail');
-            const btnBack = document.getElementById('btn-back');
-            const tbody = document.querySelector('#bedDetailTable tbody');
-            const sumBed = document.getElementById('sum-bed');
-            const sumUse = document.getElementById('sum-use');
-            const sumEmpty = document.getElementById('sum-empty');
-            const sumRate = document.getElementById('sum-rate');
-            const hospNameEl = document.getElementById('modal-hospname');
-
-            console.log("✅ BedDetail JS Loaded");
-
-            // ✅ คลิกชื่อโรงพยาบาลเพื่อดูรายละเอียดเตียง
-            document.addEventListener('click', function (e) {
-              const link = e.target.closest('.hosp-detail-link');
-              if (!link) return;
-
-              e.preventDefault();
-              const hospcode = link.dataset.hospcode;
-              const hospname = link.dataset.hospname;
-
-              console.log("🏥 Clicked:", hospcode, hospname);
-              hospNameEl.innerText = hospname;
-              tbody.innerHTML = `<tr><td colspan="6" class="text-muted">กำลังโหลดข้อมูล...</td></tr>`;
-
-              // ✅ ดึงข้อมูลจาก Controller
-              fetch(`{{ url('web/bed_dep') }}/${hospcode}`)
-                .then(res => {
-                  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                  return res.json();
-                })
-                .then(data => {
-                  tbody.innerHTML = '';
-
-                  if (data.beds && data.beds.length > 0) {
-                    data.beds.forEach(b => {
-                      const empty = b.bed_qty - b.bed_use;
-
-                      // ✅ ตั้งสีตามอัตราครองเตียง
-                      let rateColor = 'text-success';
-                      if (b.bed_rate >= 80) rateColor = 'text-danger fw-bold';
-                      else if (b.bed_rate >= 60) rateColor = 'text-warning fw-bold';
-
-                      tbody.innerHTML += `
-                        <tr>
-                          <td class="text-center">${b.bed_code}</td>
-                          <td class="text-start">${b.bed_name ?? '-'}</td>
-                          <td class="text-end">${b.bed_qty}</td>
-                          <td class="text-end text-danger">${b.bed_use}</td>
-                          <td class="text-end text-success">${empty}</td>
-                          <td class="text-end ${rateColor}">${b.bed_rate}%</td>
-                        </tr>`;
-                    });
-                  } else {
-                    tbody.innerHTML = `<tr><td colspan="6" class="text-muted">ไม่พบข้อมูลเตียง</td></tr>`;
-                  }
-
-                  // ✅ อัปเดตผลรวม
-                  sumBed.innerText = (data.summary?.total || 0).toLocaleString();
-                  sumUse.innerText = (data.summary?.used || 0).toLocaleString();
-                  sumEmpty.innerText = (data.summary?.empty || 0).toLocaleString();
-                  sumRate.innerText = `${data.summary?.rate || 0}%`;
-
-                  // ✅ สลับหน้า
-                  hospitalList.style.display = 'none';
-                  bedDetail.style.display = 'block';
-                })
-                .catch(err => {
-                  console.error("❌ Fetch error:", err);
-                  tbody.innerHTML = `<tr><td colspan="6" class="text-danger">โหลดข้อมูลไม่สำเร็จ</td></tr>`;
-                });
-            });
-
-            // ✅ ปุ่ม "กลับ" เพื่อกลับมาหน้ารวม
-            btnBack.addEventListener('click', () => {
-              bedDetail.style.display = 'none';
-              hospitalList.style.display = 'block';
-            });
-          });
-        </script>
-        <!-- Block แยกแต่ละ รพ ----------------------------------------------------------------------------------------------->
-        @php
-          $bedColorSchemes = [
-            ['bg'=>'linear-gradient(135deg,rgba(13,110,253,0.07),rgba(13,110,253,0.01))','border'=>'rgba(13,110,253,0.2)','icon_color'=>'#0d6efd','num_color'=>'#0b5ed7','hover_shadow'=>'0 10px 28px rgba(13,110,253,0.16)'],
-            ['bg'=>'linear-gradient(135deg,rgba(24,165,115,0.07),rgba(24,165,115,0.01))','border'=>'rgba(24,165,115,0.2)','icon_color'=>'#18a573','num_color'=>'#158058','hover_shadow'=>'0 10px 28px rgba(24,165,115,0.16)'],
-            ['bg'=>'linear-gradient(135deg,rgba(217,70,239,0.07),rgba(217,70,239,0.01))','border'=>'rgba(217,70,239,0.2)','icon_color'=>'#d946ef','num_color'=>'#c026d3','hover_shadow'=>'0 10px 28px rgba(217,70,239,0.16)'],
-            ['bg'=>'linear-gradient(135deg,rgba(249,115,22,0.07),rgba(249,115,22,0.01))','border'=>'rgba(249,115,22,0.2)','icon_color'=>'#f97316','num_color'=>'#ea580c','hover_shadow'=>'0 10px 28px rgba(249,115,22,0.16)'],
-            ['bg'=>'linear-gradient(135deg,rgba(99,102,241,0.07),rgba(99,102,241,0.01))','border'=>'rgba(99,102,241,0.2)','icon_color'=>'#6366f1','num_color'=>'#4f46e5','hover_shadow'=>'0 10px 28px rgba(99,102,241,0.16)'],
-            ['bg'=>'linear-gradient(135deg,rgba(236,72,153,0.07),rgba(236,72,153,0.01))','border'=>'rgba(236,72,153,0.2)','icon_color'=>'#ec4899','num_color'=>'#db2777','hover_shadow'=>'0 10px 28px rgba(236,72,153,0.16)'],
-            ['bg'=>'linear-gradient(135deg,rgba(20,184,166,0.07),rgba(20,184,166,0.01))','border'=>'rgba(20,184,166,0.2)','icon_color'=>'#14b8a6','num_color'=>'#0d9488','hover_shadow'=>'0 10px 28px rgba(20,184,166,0.16)'],
-            ['bg'=>'linear-gradient(135deg,rgba(245,158,11,0.07),rgba(245,158,11,0.01))','border'=>'rgba(245,158,11,0.2)','icon_color'=>'#f59e0b','num_color'=>'#d97706','hover_shadow'=>'0 10px 28px rgba(245,158,11,0.16)'],
-            ['bg'=>'linear-gradient(135deg,rgba(139,92,246,0.07),rgba(139,92,246,0.01))','border'=>'rgba(139,92,246,0.2)','icon_color'=>'#8b5cf6','num_color'=>'#7c3aed','hover_shadow'=>'0 10px 28px rgba(139,92,246,0.16)'],
-          ];
-        @endphp
+        <!-- Block แยกแต่ละ รพ (การ์ดขาวขอบสี ดูสะอาดเหมือน AOPOD) ----------------------------------------------------->
         @foreach($bedData as $hospcode => $data)
-        @php $bc = $bedColorSchemes[$loop->index % count($bedColorSchemes)]; @endphp
-        <style>
-          .bed-card-{{ $hospcode }} { transition: all 0.3s ease; }
-          .bed-card-{{ $hospcode }}:hover { transform: translateY(-3px); box-shadow: {{ $bc['hover_shadow'] }} !important; border-color: {{ $bc['icon_color'] }} !important; }
-        </style>
+        @php
+          $c = $hospColors[$hospcode] ?? $paletteList[$loop->index % count($paletteList)];
+        @endphp
         <div class="col-12 col-sm-6 col-xl-3">
-            <div class="card bed-card-{{ $hospcode }} p-3 h-100 rounded-4"
-                  style="background: {{ $bc['bg'] }}; border: 1px solid {{ $bc['border'] }}; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
+            <div class="card card-hover glass p-3 h-100" style="background: #ffffff !important; border: 1px solid var(--glass-bd) !important; border-left: 6px solid {{ $c['border'] }} !important; box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;">
 
                 <!-- หัวข้อ Card -->
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                  <div style="font-size:0.82rem; font-weight:700; color:{{ $bc['num_color'] }}; line-height:1.4;">
-                    {{ $data['hospname'] }}
-                    <span style="font-size:0.7rem; font-weight:500; color:{{ $bc['icon_color'] }}; opacity:0.75;">&nbsp;({{ $hospcode }})</span>
-                  </div>
-                  <div style="width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,0.6);border:1px solid {{ $bc['border'] }};display:flex;align-items:center;justify-content:center;">
-                    <i class="fa-solid fa-bed-pulse" style="color:{{ $bc['icon_color'] }};font-size:0.9rem;"></i>
-                  </div>
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <h6 class="mb-1 fw-bold" style="color: {{ $c['text'] }};">
+                            ข้อมูลเตียง{{ $data['hospname'] }}
+                        </h6>
+                        @if(!empty($data['updated_at']))
+                            <small class="text-muted d-block" style="font-size: 0.73rem;">
+                                <i class="fa-regular fa-clock me-1 text-secondary"></i>อัปเดต {{ \Carbon\Carbon::parse($data['updated_at'])->locale('th')->isoFormat('D MMM YYYY H:mm') }} น.
+                            </small>
+                        @else
+                            <small class="text-muted d-block" style="font-size: 0.73rem;">
+                                <i class="fa-regular fa-clock me-1 text-secondary"></i>ยังไม่มีข้อมูล
+                            </small>
+                        @endif
+                    </div>
+                    <div class="rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0 ms-2" style="width: 35px; height: 35px; background: {{ $c['icon_bg'] }};">
+                      <i class="fa-solid fa-bed-pulse fs-5" style="color: {{ $c['border'] }} !important;"></i>
+                    </div>
                 </div>
-
                 <!-- Header -->
                 <div class="row mb-1">
                     <div class="col-4 small text-secondary">แผนก</div>
-                    <div class="col-2 small text-secondary text-center">เตียง</div>
+                    <div class="col-2 small text-secondary text-center">จำนวนเตียง</div>
                     <div class="col-2 small text-secondary text-center">Admit</div>
-                    <div class="col-2 small text-secondary text-center">ว่าง</div>
-                    <div class="col-2 small text-secondary text-center">%</div>
+                    <div class="col-2 small text-secondary text-center">เตียงว่าง</div>
+                    <div class="col-2 small text-secondary text-center">อัตราใช้เตียง</div>
                 </div>
-                <hr class="my-1" style="border-color:{{ $bc['border'] }};">
+                <hr class="my-2" style="border-top: 1px solid rgba(0,0,0,0.15); opacity: 1; margin: 6px 0;">
                 <!-- รายการเตียงแต่ละแผนก -->
                 @foreach($data['beds'] as $b)
-                    @php $empty = $b->bed_qty - $b->bed_use; @endphp
+                    @php 
+                        $empty = $b->bed_qty - $b->bed_use;
+                    @endphp
                     <div class="row mb-1 small align-items-center">
-                        <div class="col-4 fw-semibold text-secondary">{{ $b->bed_name }}</div>
-                        <div class="col-2 text-center fw-bold" style="color:{{ $bc['num_color'] }};">{{ $b->bed_qty }}</div>
-                        <div class="col-2 text-center fw-bold text-danger">{{ $b->bed_use }}</div>
-                        <div class="col-2 text-center fw-bold text-success">{{ $empty }}</div>
+                        <div class="col-4 fw-bold">
+                            {{ $b->bed_name }}
+                        </div>
+                        <div class="col-2 text-center fw-bold">
+                            {{ $b->bed_qty }}
+                        </div>
+                        <div class="col-2 text-center fw-bold text-danger">
+                            {{ $b->bed_use }}
+                        </div>
+                        <div class="col-2 text-center fw-bold text-success">
+                            {{ $empty }}
+                        </div>
+                        <!-- อัตราครองเตียงพร้อมสี (เขียว / ส้ม / แดง) -->
                         <div class="col-2 text-center fw-bold"
-                            @if($b->bed_rate >= 80) style="color:#d32f2f;"
-                            @elseif($b->bed_rate >= 60) style="color:#f59e0b;"
-                            @else style="color:{{ $bc['icon_color'] }};"
-                            @endif>
+                            @if($b->bed_rate >= 80)
+                                style="color:#f43f5e;"      {{-- แดง (สูง) --}}
+                            @elseif($b->bed_rate >= 60)
+                                style="color:#f59e0b;"      {{-- ส้ม (ปานกลาง) --}}
+                            @else
+                                style="color:#10b981;"      {{-- เขียว (ปกติ) --}}
+                            @endif
+                        >
                             {{ $b->bed_rate }}%
                         </div>
                     </div>
                 @endforeach
             </div>
         </div>
-        @endforeach
+        @endforeach        
       </div>
     </div>
   </section>
-  <br>
 
-
-<hr>
+  <hr>
 
   {{-- เลือกปีงบประมาณ ----------------------------------------------------------------------------------------------------------}}
   <section id="summary" class="pb-2">
@@ -516,8 +442,8 @@
         <form method="POST" action="{{ route('web.index') }}" enctype="multipart/form-data">
         @csrf
           <div class="row g-4 align-items-center">
-            <div class="col-lg-9">
-              <h6 class="text-success mb-2"><strong></strong></h6>
+            <div class="col-lg-9">          
+              <h6 class="text-success mb-2"><strong></strong></h6>          
             </div>
             {{-- ขวาสุด: select + ปุ่ม ติดกันและชิดขวา --}}
             <div class="col-lg-3 d-flex justify-content-lg-end">
@@ -541,13 +467,16 @@
   {{-- ข้อมูลบริการ----------------------------------------------------------------------------------------------------------}}
   <section id="hospital" class="pb-2">
     <div class="container-fluid">
-
-      <!-- NAV PILLS -->
-      <ul class="nav nav-pills overflow-auto flex-nowrap" id="hospPills" role="tablist">
+    
+      <!-- NAV PILLS (ปุ่มโรงพยาบาลสไตล์โมเดิร์นพร้อมไอคอน) -->
+      <ul class="nav nav-pills overflow-auto flex-nowrap pb-1" id="hospPills" role="tablist">
         @foreach($hospitalData as $hospcode => $data)
+        @php
+          $shortName = preg_replace('/^(โรงพยาบาลสมเด็จพระยุพราช|โรงพยาบาล)/u', 'รพ.', $data['hospname']);
+        @endphp
         <li class="nav-item me-2" role="presentation">
           <button class="nav-link {{ $loop->first ? 'active' : '' }}" id="tab-{{ $hospcode }}" data-bs-toggle="pill" data-bs-target="#pane-{{ $hospcode }}" type="button" role="tab" aria-controls="pane-{{ $hospcode }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}">
-            {{ $data['hospname'] }}
+            <i class="fa-solid fa-hospital me-1"></i> {{ $shortName }}
           </button>
         </li>
         @endforeach
@@ -555,204 +484,335 @@
 
       <!-- TAB PANES -->
       <div class="tab-content mt-3" id="hospPillsContent">
+
         @foreach($hospitalData as $hospcode => $data)
-        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="pane-{{ $hospcode }}" role="tabpanel" aria-labelledby="tab-{{ $hospcode }}" tabindex="0">
+        @php
+          $ipd_records = $data['ipd'];
+          $config = DB::table('hospital_config')->where('hospcode', $hospcode)->first();
+          $bed_report = $config->bed_report ?? 30;
+        @endphp
+        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="pane-{{ $hospcode }}" role="tabpanel" aria-labelledby="tab-{{ $hospcode }}" tabindex="0">          
           <!-- IPD -->
-          <div class="glass p-3">
+          <div class="glass p-3" style="background: rgba(255,255,255,0.85) !important;">
             <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6>[{{ $hospcode }}] ข้อมูลบริการผู้ป่วยใน IPD {{ $data['hospname'] }} ปีงบประมาณ {{$budget_year}}</h6>
-              <span class="text-secondary small">Update {{ $data['update_at'] }}</span>
+              <h6 class="fw-bold"><i class="fa-solid fa-hospital-user text-primary me-2"></i>[{{ $hospcode }}] ข้อมูลบริการผู้ป่วยใน IPD {{ $data['hospname'] }} ปีงบประมาณ {{$budget_year}}</h6>
+              <div class="d-flex align-items-center gap-2">
+                <span class="text-secondary small">Update {{ $data['update_at'] ?? '-' }}</span>
+              </div>
             </div>
-            <div class="table-responsive">
-              <table id="table{{ $hospcode }}_ipd" class="table table-bordered table-striped my-3" width ="100%">
-                <thead class="table-light">
-                  <tr class="table-ipd">
-                    <th class="text-center" rowspan="2" width ="4%">เดือน</th>
-                    <th class="text-center" rowspan="2">จำนวน AN</th>
-                    <th class="text-center" rowspan="2">วันนอนรวม</th>
-                    <th class="text-center" rowspan="2">อัตราครองเตียง (%)</th>
-                    <th class="text-center" rowspan="2">Active Base (เตียง)</th>
-                    <th class="text-center" rowspan="2">AdjRW</th>
-                    <th class="text-center" rowspan="2">CMI</th>
-                    <th class="text-center" colspan="3">ค่ารักษาพยาบาล</th>
-                  </tr>
-                  <tr class="table-ipd">
-                    <td class="text-center text-primary">ค่ารักษารวม</td>
-                    <td class="text-center text-primary">ค่า Lab</td>
-                    <td class="text-center text-primary">ค่า ยา</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  @php
-                    $sum_an_total = 0;
-                    $sum_admdate = 0;
-                    $sum_adjrw = 0;
-                    $sum_inc_total = 0;
-                    $sum_inc_lab_total = 0;
-                    $sum_inc_drug_total = 0;
-                    // หา bed_report จาก hospital_config เท่านั้น
-                    $config = DB::table('hospital_config')->where('hospcode', $hospcode)->first();
-                    $bed_report = $config->bed_report ?? 0;
-                  @endphp
-                  @foreach($data['ipd'] as $row)
-                  <tr>
-                    <td align="center"width ="4%">{{ $row->month }}</td>
-                    <td align="right">{{ number_format($row->an_total) }}</td>
-                    <td align="right">{{ number_format($row->admdate) }}</td>
-                    <td align="right">{{ number_format($row->bed_occupancy,2) }}</td>
-                    <td align="right">{{ number_format($row->active_bed,2) }}</td>
-                    <td align="right">{{ number_format($row->adjrw,5) }}</td>
-                    <td align="right">{{ number_format($row->cmi,2) }}</td>
-                    <td align="right">{{ number_format($row->inc_total,2) }}</td>
-                    <td align="right">{{ number_format($row->inc_lab_total,2) }}</td>
-                    <td align="right">{{ number_format($row->inc_drug_total,2) }}</td>
-                  </tr>
-                  @php
-                    $sum_an_total += $row->an_total;
-                    $sum_admdate += $row->admdate;
-                    $sum_adjrw += $row->adjrw;
-                    $sum_inc_total += $row->inc_total;
-                    $sum_inc_lab_total += $row->inc_lab_total;
-                    $sum_inc_drug_total += $row->inc_drug_total;
-                  @endphp
-                  @endforeach
-                  @php
-                    // ✅ อัตราครองเตียงรวม
-                    $sum_bed_occupancy = ($sum_admdate > 0 && $bed_report > 0 && $diff_days > 0) ? round(($sum_admdate * 100) / ($bed_report * $diff_days), 2) : 0;
-                    // ✅ Active Bed = วันนอนรวม ÷ จำนวนวัน
-                    $sum_active_bed = ($sum_admdate > 0 && $diff_days > 0) ? round($sum_admdate / $diff_days, 2) : 0;
-                    // ✅ CMI รวม
-                    $sum_cmi = ($sum_an_total > 0) ? round($sum_adjrw / $sum_an_total, 2) : 0;
-                  @endphp
-                  <tr>
-                    <td align="right"><strong>รวม</strong></td>
-                    <td align="right"><strong>{{number_format($sum_an_total)}}</strong></td>
-                    <td align="right"><strong>{{number_format($sum_admdate)}}</strong></td>
-                    <td align="right"><strong>{{number_format($sum_bed_occupancy,2)}}</td>
-                    <td align="right"><strong>{{number_format($sum_active_bed,2)}}</td>
-                    <td align="right"><strong>{{number_format($sum_adjrw,4)}}</strong></td>
-                    <td align="right"><strong>{{number_format($sum_cmi,2)}}</strong></td>
-                    <td align="right"><strong>{{number_format($sum_inc_total,2)}}</strong></td>
-                    <td align="right"><strong>{{number_format($sum_inc_lab_total)}}</strong></td>
-                    <td align="right"><strong>{{number_format($sum_inc_drug_total,2)}}</strong></td>
-                  </tr>
-                </tbody>
-              </table>
-              <!-- กราฟ -->
-              <div class="row mt-4">
-                <!-- กราฟอัตราครองเตียง -->
-                <div class="col-md-6 mb-4">
-                  <div class="card shadow-sm">
-                    <div class="card-body">
-                      <h6 class="text-center text-primary mb-1">
-                        📈 อัตราครองเตียง (%)
-                      </h6>
-                      <div id="bed_occupancy_{{ $hospcode }}"></div>
-                    </div>
+
+            <!-- 4 ApexCharts Minimal Style Cards -->
+            <div class="row mt-3">
+              <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0 rounded-4 overflow-hidden card-chart-blue">
+                  <div class="card-header py-2">
+                    <h6 class="text-center fw-bold mb-0">📈 จำนวน AN</h6>
+                  </div>
+                  <div class="card-body">
+                    <div id="an_chart_{{ $hospcode }}"></div>
                   </div>
                 </div>
-                <!-- กราฟ CMI -->
-                <div class="col-md-6 mb-4">
-                  <div class="card shadow-sm">
-                    <div class="card-body">
-                      <h6 class="text-center text-danger mb-1">
-                        📊 CMI
-                      </h6>
-                      <div id="cmi_chart_{{ $hospcode }}"></div>
-                    </div>
+              </div>
+              <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0 rounded-4 overflow-hidden card-chart-green">
+                  <div class="card-header py-2">
+                    <h6 class="text-center fw-bold mb-0">📈 อัตราครองเตียง (%)</h6>
+                  </div>
+                  <div class="card-body">
+                    <div id="bed_occupancy_{{ $hospcode }}"></div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0 rounded-4 overflow-hidden card-chart-orange">
+                  <div class="card-header py-2">
+                    <h6 class="text-center fw-bold mb-0">📊 AdjRW</h6>
+                  </div>
+                  <div class="card-body">
+                    <div id="adjrw_chart_{{ $hospcode }}"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0 rounded-4 overflow-hidden card-chart-red">
+                  <div class="card-header py-2">
+                    <h6 class="text-center fw-bold mb-0">📊 CMI</h6>
+                  </div>
+                  <div class="card-body">
+                    <div id="cmi_chart_{{ $hospcode }}"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
+            <!-- Export Buttons & Table -->
+            <div class="d-flex justify-content-end mb-2">
+              <div id="btn-{{ $hospcode }}-ipd"></div>
+            </div>
+            <div class="table-responsive">
+              <table id="table{{ $hospcode }}_ipd" class="table custom-table my-3" width="100%">
+                <thead>
+                  <tr>
+                    <th class="th-grey" rowspan="2" width="4%">เดือน</th>
+                    <th class="th-blue" rowspan="2">จำนวน AN</th>
+                    <th class="th-blue" rowspan="2">วันนอนรวม</th> 
+                    <th class="th-green" rowspan="2">อัตราครองเตียง (%)</th>
+                    <th class="th-green" rowspan="2">Active Base (เตียง)</th>       
+                    <th class="th-orange" rowspan="2">AdjRW</th>  
+                    <th class="th-orange" rowspan="2">CMI</th>
+                    <th class="th-purple" colspan="3">ค่ารักษาพยาบาล</th>                
+                  </tr>    
+                  <tr> 
+                    <th class="th-purple">ค่ารักษารวม</th>
+                    <th class="th-purple">ค่า Lab</th>
+                    <th class="th-purple">ค่า ยา</th>                 
+                  </tr>    
+                </thead>
+                <tbody>
+                  @php 
+                    $sum_an_total = 0; 
+                    $sum_admdate = 0;   
+                    $sum_adjrw = 0; 
+                    $sum_inc_total = 0;  
+                    $sum_inc_lab_total = 0;
+                    $sum_inc_drug_total = 0;
+                  @endphp
+                  @foreach($ipd_records as $row) 
+                  <tr>
+                    <td align="center">{{ $row->month }}</td>
+                    <td align="right">{{ number_format($row->an_total) }}</td>
+                    <td align="right">{{ number_format($row->admdate) }}</td>
+                    <td align="right" class="fw-bold text-success">{{ number_format($row->bed_occupancy, 2) }}%</td>
+                    <td align="right">{{ number_format($row->active_bed, 2) }}</td>
+                    <td align="right">{{ number_format($row->adjrw, 4) }}</td>
+                    <td align="right" class="text-primary">{{ number_format($row->cmi, 2) }}</td>
+                    <td align="right">{{ number_format($row->inc_total, 2) }}</td>
+                    <td align="right">{{ number_format($row->inc_lab_total, 2) }}</td>
+                    <td align="right">{{ number_format($row->inc_drug_total, 2) }}</td>
+                  </tr>
+                  @php 
+                    $sum_an_total += $row->an_total; 
+                    $sum_admdate += $row->admdate; 
+                    $sum_adjrw += $row->adjrw;
+                    $sum_inc_total += $row->inc_total; 
+                    $sum_inc_lab_total += $row->inc_lab_total; 
+                    $sum_inc_drug_total += $row->inc_drug_total;
+                  @endphp
+                  @endforeach 
+                  @php                   
+                    $sum_bed_occupancy = ($sum_admdate > 0 && $bed_report > 0 && $diff_days > 0) ? round(($sum_admdate * 100) / ($bed_report * $diff_days), 2) : 0;  
+                    $sum_active_bed = ($sum_admdate > 0 && $diff_days > 0) ? round($sum_admdate / $diff_days, 2) : 0;
+                    $sum_cmi = ($sum_an_total > 0) ? round($sum_adjrw / $sum_an_total, 2) : 0; 
+                  @endphp   
+                  <tr class="tr-total">
+                    <td align="center">รวม</td>
+                    <td align="right">{{ number_format($sum_an_total) }}</td>
+                    <td align="right">{{ number_format($sum_admdate) }}</td>
+                    <td align="right">{{ number_format($sum_bed_occupancy, 2) }}%</td>     
+                    <td align="right">{{ number_format($sum_active_bed, 2) }}</td>   
+                    <td align="right">{{ number_format($sum_adjrw, 4) }}</td>  
+                    <td align="right" class="text-primary">{{ number_format($sum_cmi, 2) }}</td> 
+                    <td align="right">{{ number_format($sum_inc_total, 2) }}</td>
+                    <td align="right">{{ number_format($sum_inc_lab_total, 2) }}</td>
+                    <td align="right">{{ number_format($sum_inc_drug_total, 2) }}</td>
+                  </tr>   
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <br>
         </div>
         @endforeach
+
       </div>
     </div>
   </section>
 
-<!-- แจังเตือน login--------------------------------------------------------------------------------------------------- -->
-   @if($errors->any())
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'ผิดพลาด',
-            text: '{{ $errors->first() }}', // แสดง error แรก
-            confirmButtonText: 'ตกลง'
-        });
-    </script>
-    @endif
-
 @endsection
 
-<!-- script datatable  ---------------------------------------------------------------------------------------->
 @push('scripts')
-  <script>
-    $(function () {
-      @foreach($hospitalData as $hospcode => $data)
-        // IPD Table
-        $('#table{{ $hospcode }}_ipd').DataTable({
-          dom: '<"d-flex justify-content-end mb-2"B>rt',
-          buttons: [
-            {
-              extend: 'excelHtml5',
-              text: '<i class="bi bi-file-earmark-excel"></i> ส่งออก Excel',
-              className: 'btn btn-success btn-sm',
-              title: 'ข้อมูลบริการผู้ป่วยใน IPD {{ $data['hospname'] }} {{ $budget_year ?? "" }}'
-            }
-          ],
-          ordering: false,
-          paging: false,
-          info: false,
-          lengthChange: false,
-          language: { search: "ค้นหา:" }
-        });
+  {{-- ApexCharts Library --}}
+  <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
 
-      @endforeach
+  {{-- Interactive Script for Bed Detail Modal --}}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const hospitalList = document.getElementById('hospital-list');
+      const bedDetail = document.getElementById('bed-detail');
+      const btnBack = document.getElementById('btn-back');
+      const tbody = document.querySelector('#bedDetailTable tbody');
+      const sumBed = document.getElementById('sum-bed');
+      const sumUse = document.getElementById('sum-use');
+      const sumEmpty = document.getElementById('sum-empty');
+      const sumRate = document.getElementById('sum-rate');
+      const hospNameEl = document.getElementById('modal-hospname');
+
+      // คลิกชื่อโรงพยาบาลเพื่อดูรายละเอียดเตียง
+      document.addEventListener('click', function (e) {
+        const link = e.target.closest('.hosp-detail-link');
+        if (!link) return;
+
+        e.preventDefault();
+        const hospcode = link.dataset.hospcode;
+        const hospname = link.dataset.hospname;
+
+        hospNameEl.innerText = hospname;
+        tbody.innerHTML = `<tr><td colspan="6" class="text-muted">กำลังโหลดข้อมูล...</td></tr>`;
+
+        fetch(`{{ url('web/bed_dep') }}/${hospcode}`)
+          .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.json();
+          })
+          .then(data => {
+            tbody.innerHTML = '';
+
+            if (data.beds && data.beds.length > 0) {
+              data.beds.forEach(b => {
+                const empty = b.bed_qty - b.bed_use;
+                let rateColor = 'text-success';
+                if (b.bed_rate >= 80) rateColor = 'text-danger fw-bold';
+                else if (b.bed_rate >= 60) rateColor = 'text-warning fw-bold';
+
+                tbody.innerHTML += `
+                  <tr>
+                    <td class="text-center">${b.bed_code}</td>
+                    <td class="text-start">${b.bed_name ?? '-'}</td>
+                    <td class="text-end">${b.bed_qty}</td>
+                    <td class="text-end text-danger">${b.bed_use}</td>
+                    <td class="text-end text-success">${empty}</td>
+                    <td class="text-end ${rateColor}">${b.bed_rate}%</td>
+                  </tr>`;
+              });
+            } else {
+              tbody.innerHTML = `<tr><td colspan="6" class="text-muted">ไม่พบข้อมูลเตียง</td></tr>`;
+            }
+
+            sumBed.innerText = (data.summary?.total || 0).toLocaleString();
+            sumUse.innerText = (data.summary?.used || 0).toLocaleString();
+            sumEmpty.innerText = (data.summary?.empty || 0).toLocaleString();
+            sumRate.innerText = `${data.summary?.rate || 0}%`;
+
+            hospitalList.style.display = 'none';
+            bedDetail.style.display = 'block';
+          })
+          .catch(err => {
+            console.error("❌ Fetch error:", err);
+            tbody.innerHTML = `<tr><td colspan="6" class="text-danger">โหลดข้อมูลไม่สำเร็จ</td></tr>`;
+          });
+      });
+
+      // ปุ่มกลับ
+      if (btnBack) {
+        btnBack.addEventListener('click', () => {
+          bedDetail.style.display = 'none';
+          hospitalList.style.display = 'block';
+        });
+      }
+    });
+  </script>
+
+  {{-- Dynamic ApexCharts & DataTables Rendering for all Hospitals --}}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const hospitalsData = {
+        @foreach($hospitalData as $hospcode => $data)
+        "{{ $hospcode }}": {
+          hospname: @json($data['hospname']),
+          months: @json(collect($data['ipd'])->pluck('month')),
+          an_total: @json(collect($data['ipd'])->pluck('an_total')),
+          adjrw: @json(collect($data['ipd'])->pluck('adjrw')),
+          bed_occupancy: @json(collect($data['ipd'])->pluck('bed_occupancy')),
+          cmi: @json(collect($data['ipd'])->pluck('cmi'))
+        },
+        @endforeach
+      };
+
+      const commonAreaChartOptions = (seriesName, categories, data, color, unit, formatFn) => ({
+        series: [{ name: seriesName, data: data }],
+        chart: {
+          height: 250,
+          type: 'area',
+          toolbar: { show: false },
+          animations: { enabled: true, easing: 'easeinout', speed: 800 }
+        },
+        colors: [color],
+        markers: { size: 4 },
+        fill: {
+          type: "gradient",
+          gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.4, stops: [0, 90, 100] }
+        },
+        stroke: { curve: 'smooth', width: 2 },
+        dataLabels: {
+          enabled: true,
+          formatter: formatFn,
+          style: { fontSize: '11px', colors: [color] },
+          background: { enabled: true, foreColor: '#fff', borderRadius: 2 }
+        },
+        xaxis: {
+          categories: categories,
+          labels: { style: { fontSize: '13px' } }
+        },
+        yaxis: {
+          title: { text: unit },
+          labels: { formatter: val => val ? Math.round(val).toLocaleString('th-TH') : 0 }
+        }
+      });
+
+      Object.entries(hospitalsData).forEach(([code, h]) => {
+        // 1. Chart AN
+        const anEl = document.querySelector("#an_chart_" + code);
+        if (anEl) {
+          new ApexCharts(anEl, commonAreaChartOptions('จำนวน AN', h.months, h.an_total, '#2563eb', 'ราย', val => val ? Math.round(val).toLocaleString('th-TH') : '')).render();
+        }
+
+        // 2. Chart Bed Occupancy
+        const bedEl = document.querySelector("#bed_occupancy_" + code);
+        if (bedEl) {
+          new ApexCharts(bedEl, commonAreaChartOptions('อัตราครองเตียง (%)', h.months, h.bed_occupancy, '#10b981', 'ร้อยละ (%)', val => val ? parseFloat(val).toFixed(1) + '%' : '')).render();
+        }
+
+        // 3. Chart AdjRW
+        const adjrwEl = document.querySelector("#adjrw_chart_" + code);
+        if (adjrwEl) {
+          new ApexCharts(adjrwEl, commonAreaChartOptions('AdjRW', h.months, h.adjrw, '#d97706', 'AdjRW', val => val ? parseFloat(val).toFixed(2) : '')).render();
+        }
+
+        // 4. Chart CMI
+        const cmiEl = document.querySelector("#cmi_chart_" + code);
+        if (cmiEl) {
+          new ApexCharts(cmiEl, commonAreaChartOptions('CMI', h.months, h.cmi, '#ef4444', 'ค่า CMI', val => val ? parseFloat(val).toFixed(2) : '')).render();
+        }
+
+        // 5. DataTables
+        const tableEl = $('#table' + code + '_ipd');
+        if (tableEl.length && $.fn.DataTable) {
+          const dt = tableEl.DataTable({
+            dom: 'rt',
+            ordering: false,
+            paging: false,
+            info: false,
+            lengthChange: false,
+            language: { search: "ค้นหา:" },
+            buttons: [{
+              extend: 'excelHtml5',
+              text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+              className: 'btn btn-success btn-sm rounded-pill px-3',
+              title: 'ข้อมูลบริการผู้ป่วยใน IPD ' + h.hospname
+            }]
+          });
+          dt.buttons().container().appendTo('#btn-' + code + '-ipd');
+        }
+      });
+
+      // Recalculate chart dimensions when switching tab
+      document.querySelectorAll('button[data-bs-toggle="pill"]').forEach(tab => {
+        tab.addEventListener('shown.bs.tab', () => {
+          window.dispatchEvent(new Event('resize'));
+        });
+      });
     });
   </script>
 @endpush
-
-<!-- script กราฟ  ---------------------------------------------------------------------------------------->
-<!-- <script src="{{ asset('public/assets/vendor/apexcharts/apexcharts.min.js') }}"></script> -->
-<script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    @foreach($hospitalData as $hospcode => $data)
-      @php
-        $months = $data['ipd']->pluck('month');
-        $bed_occupancy = $data['ipd']->pluck('bed_occupancy');
-        $cmi = $data['ipd']->pluck('cmi');
-      @endphp
-
-      (function() {
-        const months = {!! json_encode($months) !!};
-        const bedData = {!! json_encode($bed_occupancy) !!};
-        const cmiData = {!! json_encode($cmi) !!};
-
-        // 🩵 กราฟอัตราครองเตียง
-        new ApexCharts(document.querySelector("#bed_occupancy_{{ $hospcode }}"), {
-          series: [{ name: 'อัตราครองเตียง (%)', data: bedData }],
-          chart: { height: 250, type: 'area', toolbar: { show: false } },
-          colors: ['#4154f1'],
-          stroke: { curve: 'smooth', width: 2 },
-          xaxis: { categories: months },
-          yaxis: { labels: { formatter: val => val.toFixed(1) } },
-          dataLabels: { enabled: true }
-        }).render();
-
-        // ❤️ กราฟ CMI
-        new ApexCharts(document.querySelector("#cmi_chart_{{ $hospcode }}"), {
-          series: [{ name: 'CMI', data: cmiData }],
-          chart: { height: 250, type: 'line', toolbar: { show: false } },
-          colors: ['#ff771d'],
-          stroke: { curve: 'smooth', width: 2 },
-          xaxis: { categories: months },
-          yaxis: { labels: { formatter: val => val.toFixed(2) } },
-          dataLabels: { enabled: true }
-        }).render();
-      })();
-    @endforeach
-  });
-</script>

@@ -70,10 +70,13 @@ class DashboardOperationController extends Controller
             ];
         }
 
+        $visit_operation = (int)$hospitalSummary->sum('visit_operation');
+
         return view('dashboard_operation', compact(
             'budget_year_select',
             'budget_year',
             'diff_days',
+            'visit_operation',
             'hospitalData',
             'hospitalSummary'
         ));

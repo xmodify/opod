@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'ยอดสะสมผู้รับบริการแยกรายสาขา (OPOH) | AOPOD')
+@section('title', 'ยอดสะสมผู้รับบริการแยกรายสาขา (OPOH) | ' . config('app.app_abbr', 'YSOPOD'))
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('assets/vendor/flatpickr/flatpickr.min.css') }}">

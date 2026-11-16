@@ -1,17 +1,145 @@
 @extends('layouts.app')
 
+@section('title', 'Dashboard OPD | ' . config('app.app_abbr', 'YSOPOD'))
+
+@push('styles')
 <style>
-  tr.table-opd td,
-  tr.table-opd th {
-    background: linear-gradient(135deg, #f3e5f5, #fbf6fc) !important; 
+  /* === Table Styling === */
+  .custom-table {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
   }
-  tr.table-inc td,
-  tr.table-inc th {
-    background: linear-gradient(135deg, #ceebfa, #e8f6fc) !important;       
+  .custom-table thead th {
+    font-weight: 700 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 10px 8px !important;
+    font-size: 0.85rem !important;
+  }
+  .custom-table tbody td {
+    padding: 8px !important;
+    font-size: 0.85rem !important;
+    color: #444 !important;
+  }
+  .custom-table tbody tr:hover {
+    background-color: #f8fbff !important;
+  }
+  
+  /* Header Color Groups */
+  .th-blue { background: #e3f2fd !important; color: #0d47a1 !important; }
+  .th-green { background: #e8f5e9 !important; color: #1b5e20 !important; }
+  .th-orange { background: #fff3e0 !important; color: #e65100 !important; }
+  .th-purple { background: #f3e5f5 !important; color: #4a148c !important; }
+  .th-red { background: #ffebee !important; color: #b71c1c !important; }
+  .th-cyan { background: #e0f7fa !important; color: #006064 !important; }
+  .th-grey { background: #f5f5f5 !important; color: #424242 !important; }
+  
+  .tr-total {
+    background: #f1f8ff !important;
+    font-weight: 800 !important;
+    border-top: 2px solid #0d47a1 !important;
+  }
+
+  .card-hover {
+    transition: all 0.3s ease-in-out;
+  }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Theme Specific Cards (Crisp White + Left Accent) */
+  .card-theme-opd {
+    background: #ffffff !important;
+    border: 1px solid var(--glass-bd) !important;
+    border-left: 6px solid #1976d2 !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+  }
+  .card-theme-chart {
+    background: #ffffff !important;
+    border: 1px solid var(--glass-bd) !important;
+    border-left: 6px solid #10b981 !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+  }
+  .card-theme-dent {
+    background: #ffffff !important;
+    border: 1px solid var(--glass-bd) !important;
+    border-left: 6px solid #ab47bc !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+  }
+  .card-theme-phy {
+    background: #ffffff !important;
+    border: 1px solid var(--glass-bd) !important;
+    border-left: 6px solid #ff7043 !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+  }
+  .card-theme-anc {
+    background: #ffffff !important;
+    border: 1px solid var(--glass-bd) !important;
+    border-left: 6px solid #ec407a !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+  }
+  .card-theme-hm {
+    background: #ffffff !important;
+    border: 1px solid var(--glass-bd) !important;
+    border-left: 6px solid #26a69a !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+  }
+  .card-theme-tele {
+    background: #ffffff !important;
+    border: 1px solid var(--glass-bd) !important;
+    border-left: 6px solid #26c6da !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+  }
+  .card-theme-oapp {
+    background: #ffffff !important;
+    border: 1px solid var(--glass-bd) !important;
+    border-left: 6px solid #66bb6a !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+  }
+
+  /* Minimal Style Chart Cards */
+  .card.card-chart-blue {
+    border-top: 4px solid #2563eb !important;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  }
+  .card.card-chart-blue .card-header {
+    background: transparent !important;
+    border-bottom: none !important;
+    color: #2563eb !important;
+    padding-top: 15px !important;
+    padding-bottom: 2px !important;
+  }
+  .card.card-chart-green {
+    border-top: 4px solid #10b981 !important;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  }
+  .card.card-chart-green .card-header {
+    background: transparent !important;
+    border-bottom: none !important;
+    color: #10b981 !important;
+    padding-top: 15px !important;
+    padding-bottom: 2px !important;
+  }
+  .card.card-chart-purple {
+    border-top: 4px solid #8b5cf6 !important;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  }
+  .card.card-chart-purple .card-header {
+    background: transparent !important;
+    border-bottom: none !important;
+    color: #8b5cf6 !important;
+    padding-top: 15px !important;
+    padding-bottom: 2px !important;
   }
 </style>
-
-@section('title', 'Dashboard | YSOPOD')
+@endpush
 
 @section('content')
 
@@ -19,15 +147,23 @@
   <header class="py-4">
     <div class="container-fluid">      
         <div class="row g-4 align-items-center">
-          <div class="col-lg-9">          
-            <h4 class="text-success mb-2"><strong>Yasothon One Province One Data : YSOPOD</strong></h4>          
+          <div class="col-lg-7">          
+            <div class="d-flex align-items-center gap-3">
+              <div class="bg-success bg-opacity-10 rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                <i class="fa-solid fa-address-card fs-4 text-success"></i>
+              </div>
+              <div>
+                <h4 class="fw-bold mb-1" style="color: #1e293b;">ข้อมูลบริการผู้ป่วยนอก (OPD)</h4>
+                <p class="text-secondary small mb-0"><i class="fa-solid fa-square-poll-vertical text-green me-1"></i>{{ config('app.province_name_en', 'Yasothon') }} One Province One Data</p>
+              </div>
+            </div>          
           </div>
-          {{-- ขวาสุด: select + ปุ่ม ติดกันและชิดขวา --}}
-          <div class="col-lg-3 d-flex justify-content-lg-end">
-            <span class="text-secondary my-1">
-                วันที่ {{ \Carbon\Carbon::now()->locale('th')->isoFormat('D MMM YYYY เวลา H:mm') }} น.&nbsp;&nbsp;
+          {{-- ขวาสุด: วันที่ + ปุ่มโหลดใหม่ --}}
+          <div class="col-lg-5 d-flex justify-content-lg-end align-items-center gap-3">
+            <span class="text-secondary small fw-medium">
+                วันที่ {{ \Carbon\Carbon::now()->locale('th')->isoFormat('D MMM YYYY เวลา H:mm') }} น.
             </span>
-            <button type="button" class="btn btn-sm btn-outline-success" onclick="location.reload();">
+            <button type="button" class="btn btn-sm btn-glass-action" onclick="location.reload();">
               <i class="bi bi-arrow-clockwise"></i> โหลดใหม่
             </button>
           </div>
@@ -35,561 +171,231 @@
     </div>
   </header>
 
-  <!-- SUMMARY (4 blocks, no foreach) -->
-  <section id="summary" class="pb-2">
-    <div class="container-fluid">
-      @php
-        $fmtInt   = fn($n) => number_format((int)($n ?? 0));
-        $fmtMoney = fn($n) => number_format((float)($n ?? 0), 2);
-      @endphp
+  @php
+    $fmtInt   = fn($n) => number_format((int)($n ?? 0));
+    $fmtMoney = fn($n) => number_format((float)($n ?? 0), 2);
+  @endphp
 
+  <!-- SUMMARY ROW 1 (ผู้ป่วยนอกวันนี้ + กราฟแยกสิทธิ) -->
+  <section id="summary-opd" class="pb-2">
+    <div class="container-fluid">
       <div class="row g-3">  
         
-        {{--  ผู้ป่วยนอก ----------------------------------------------------------------------------------------------- --}}
-        <div class="col-12 col-sm-6 col-xl-4">
+        {{-- ผู้ป่วยนอก OPD วันนี้ --}}
+        <div class="col-12 col-xl-4">
           <a href="#" data-bs-toggle="modal" data-bs-target="#VisitDetailModal" class="text-decoration-none text-dark">
-            <div class="card-opd card glass p-3 h-100" style="background: linear-gradient(145deg, #e0f7fa, #ffffff); border:1px solid #b3e5fc;">
+            <div class="card card-theme-opd card-hover p-3 h-100">
               <!-- Header -->
               <div class="d-flex align-items-center justify-content-between mb-3">
-                <h6 class="mb-0 text-primary fw-semibold">ผู้ป่วยนอก OPD วันนี้</h6>
-                <i class="bi bi-person-heart fs-4 text-primary"></i>
+                <h6 class="mb-0 text-primary fw-bold">ผู้ป่วยนอก OPD วันนี้</h6>
+                <div class="bg-primary bg-opacity-10 rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                  <i class="bi bi-person-heart fs-4 text-primary"></i>
+                </div>
               </div>
               <!-- Body Numbers -->
               <div class="d-flex justify-content-between align-items-center text-center">
                 <!-- visit op -->
                 <div class="flex-fill">
-                  <div class="small text-secondary">visit op</div>
-                  <div class="fw-bold" style="font-size:1.85rem;">
+                  <div class="small text-secondary">Visit OP</div>
+                  <div class="fw-bold" style="font-size:1.85rem; color: #1e293b;">
                     {{ $fmtInt($visit_total_op ?? 0) }}
                   </div>
                 </div>
                 <div class="vr mx-2 d-none d-sm-block" style="opacity:0.15;"></div>
+                <!-- visit pp -->
                 <div class="flex-fill">
-                  <div class="small text-secondary">visit pp</div>
+                  <div class="small text-secondary">Visit PP</div>
                   <div class="fw-bold text-primary" style="font-size:1.85rem;">
                     {{ $fmtInt($visit_total_pp ?? 0) }}
+                  </div>
+                </div>
+                <div class="vr mx-2 d-none d-sm-block" style="opacity:0.15;"></div>
+                <!-- endpoint สปสช -->
+                <div class="flex-fill">
+                  <div class="small text-secondary">ปิดสิทธิ สปสช.</div>
+                  <div class="fw-bold text-success" style="font-size:1.85rem;">
+                    {{ $fmtInt($visit_endpoint ?? 0) }}
                   </div>
                 </div>
               </div>
             </div>
           </a>
         </div>
-        {{-- Modal แสดงรายละเอียด รพ. (โทนน้ำเงินพาสเทลเข้ม / modal-lg) --}}
-        <div class="modal fade" id="VisitDetailModal" tabindex="-1" aria-labelledby="hospitalDetailLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow-lg rounded-3" style="background-color:#f5f8fc;">
-              <!-- Header -->
-              <div class="modal-header text-white rounded-top-3"
-                  style="background: linear-gradient(135deg, #2f6fb6, #4b8edc);">
-                <h5 class="modal-title fw-bold" id="hospitalDetailLabel">
-                  <i class="bi bi-person-lines-fill me-2"></i> ผู้ป่วยนอก (OPD)
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <!-- Body -->
-              <div class="modal-body py-3">
-                <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden mb-0"
-                      style="background-color: #ffffff; border-radius: 0.75rem;">
-                  <thead style="background-color:#d9e8fb;">
-                    <tr class="text-center text-primary fw-semibold">
-                      <th>รหัส</th>
-                      <th>ชื่อโรงพยาบาล</th>
-                      <th>Visit OP</th>
-                      <th>Visit PP</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($hospitalSummary as $h)
-                      <tr>
-                        <td align="right" class="text-secondary">{{ $h->hospcode }}</td>
-                        <td>
-                          <span class="fw-semibold text-dark">{{ $h->hospname }}</span><br>
-                          <small class="text-muted">
-                            {{ \Carbon\Carbon::parse($h->last_updated_at)->locale('th')->isoFormat('D MMM YYYY H:mm') }} น.
-                          </small>
-                        </td>
-                        <td align="right" class="text-primary">{{ number_format($h->visit_total_op) }}</td>
-                        <td align="right" class="text-info">{{ number_format($h->visit_total_pp) }}</td>
-                      </tr>
-                    @endforeach
-                  </tbody>
-                </table>
-              </div>
-              <!-- Footer -->
-              <div class="modal-footer" style="background-color:#eef4fb;">
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm"
-                        style="background-color:#3e7cc1; border-color:#3e7cc1;"
-                        data-bs-dismiss="modal">
-                  ปิด
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {{--  กราฟแยกสิทธิ------------------------------------------------------------------------------------------------ --}}
-        <div class="col-12 col-sm-6 col-xl-8">
-          <div class="card-opd card glass p-3 h-100" style="background: linear-gradient(145deg, #effdff, #ffffff); border:1px solid #b3e5fc;">
-            <canvas id="visitRightsChart" height="200"></canvas>
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-            <script>
-              document.addEventListener("DOMContentLoaded", () => {
-                new Chart(document.querySelector('#visitRightsChart'), {
-                  type: 'bar',
-                  data: {
-                    labels: ['ประกันสุขภาพในจังหวัด','ประกันสุขภาพต่างจังหวัด', 'กรมบัญชีกลาง', 'อปท.', 'ประกันสังคม', 'พรบ./ชำระเงิน'],
-                    datasets: [{
-                      label: 'ผู้ป่วยนอกตามสิทธิ วันนี้',   // ไม่เกี่ยวกับ tooltip
-                      data: [
-                        {{ $visit_ucs_incup ?? 0 }},
-                        {{ $visit_ucs_outprov ?? 0 }},
-                        {{ $visit_ofc ?? 0 }},
-                        {{ $visit_lgo ?? 0 }},
-                        {{ $visit_sss ?? 0 }},
-                        {{ $visit_pay ?? 0 }},
-                      ],
-                      backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(255, 205, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(153, 102, 255, 0.2)'
-                      ],
-                      borderColor: [
-                        'rgb(255, 99, 132)',
-                        'rgb(255, 159, 64)',
-                        'rgb(255, 205, 86)',
-                        'rgb(75, 192, 192)',
-                        'rgb(54, 162, 235)',
-                        'rgb(153, 102, 255)'
-                      ],
-                      borderWidth: 1
-                    }]
-                  },
-                  options: {
-                    plugins: {
-                      legend: {
-                        display: true,
-                        labels: {
-                          usePointStyle: true,
-                          pointStyle: 'line',
-                          boxWidth: 0
-                        }
-                      },
-                      tooltip: {
-                        callbacks: {
-                          label: function(context) {
-                            return context.formattedValue.toLocaleString();  // ⭐ ตรงนี้ทำให้ตัดคำว่า Visit
-                          }
-                        }
-                      }
-                    },
-                    scales: {
-                      y: { beginAtZero: true }
-                    }
-                  }
-                });
-              });
-            </script>
+        {{-- กราฟแยกสิทธิ วันนี้ --}}
+        <div class="col-12 col-xl-8">
+          <div class="card card-theme-chart card-hover p-3 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0 text-success fw-bold"><i class="fa-solid fa-chart-bar me-1"></i> ผู้ป่วยนอกตามสิทธิ วันนี้</h6>
+              <span class="text-muted small">รวม 6 กลุ่มสิทธิหลัก</span>
+            </div>
+            <div style="height: 140px; position: relative;">
+              <canvas id="visitRightsChart"></canvas>
+            </div>
           </div>          
         </div>
 
-        {{-- -------------------------------------------------------------------------------------------------------------- --}}
       </div>
     </div>  
   </section>
 
-  <!-- SUMMARY (6 blocks, no foreach) ----------------------------------------------------------------------------------------->
-  <section id="summary" class="pb-2">
+  <!-- SUMMARY ROW 2 (6 คลินิกบริการเฉพาะทาง) -->
+  <section id="summary-clinics" class="py-2">
     <div class="container-fluid">
-      @php
-        $fmtInt   = fn($n) => number_format((int)($n ?? 0));
-        $fmtMoney = fn($n) => number_format((float)($n ?? 0), 2);
-      @endphp
-
       <div class="row g-3">     
 
-        {{--  ทันตกรรม วันนี้ -------------------------------------------------------------------------------}}
+        {{-- ทันตกรรม --}}
         <div class="col-12 col-sm-6 col-xl-2">
           <a href="#" data-bs-toggle="modal" data-bs-target="#DentDetailModal" class="text-decoration-none text-dark">
-            <div class="card-opd card glass p-3 h-100"
-                style="background: linear-gradient(145deg, #e0f7fa, #ffffff); border:1px solid #b3e5fc;">
-              <!-- หัวข้อซ้าย + ไอคอนขวา -->
+            <div class="card card-theme-dent card-hover p-3 h-100">
               <div class="d-flex align-items-center justify-content-between mb-2">
-                <h6 class="mb-0" style="color:#D946EF;"><strong>ทันตกรรม วันนี้</strong></h6>
-                <i class="fa-solid fa-tooth fs-4" style="color:#D946EF;"></i>
+                <h6 class="mb-0 fw-bold" style="color:#ab47bc; font-size: 0.9rem;">ทันตกรรม วันนี้</h6>
+                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background-color: rgba(171, 71, 188, 0.1);">
+                  <i class="fa-solid fa-tooth fs-5" style="color:#ab47bc;"></i>
+                </div>
               </div>
-              <!-- เนื้อหาตรงกลาง -->
-              <div class="text-center mt-3">                
-                <div class="fw-bold " style="font-size:1.7rem; color:#D946EF;">
+              <div class="text-center mt-2">                
+                <div class="fw-bold" style="font-size:1.7rem; color:#D946EF;">
                   {{ $fmtInt($visit_dent ?? 0) }}
                 </div>
-                <div class="small text-secondary">visit</div>
+                <div class="small text-secondary">Visit</div>
               </div>
             </div>
           </a>
         </div>
-        {{-- Modal แสดงรายละเอียด รพ. (โทนน้ำเงินพาสเทลเข้ม / modal-lg) --}}
-        <div class="modal fade" id="DentDetailModal" tabindex="-1" aria-labelledby="hospitalDetailLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow-lg rounded-3" style="background-color:#f5f8fc;">
-              <!-- Header -->
-              <div class="modal-header text-white rounded-top-3"
-                  style="background: linear-gradient(135deg, #2f6fb6, #4b8edc);">
-                <h5 class="modal-title fw-bold" id="hospitalDetailLabel">
-                  <i class="bi bi-building-check me-2"></i>ทันตกรรม วันนี้
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <!-- Body -->
-              <div class="modal-body py-3">
-                <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden mb-0"
-                      style="background-color: #ffffff; border-radius: 0.75rem;">
-                  <thead style="background-color:#d9e8fb;">
-                    <tr class="text-center text-primary fw-semibold">
-                      <th>รหัส</th>
-                      <th>ชื่อโรงพยาบาล</th>
-                      <th>Visit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($hospitalSummary as $h)
-                      <tr>
-                        <td align="right" class="text-secondary">{{ $h->hospcode }}</td>
-                        <td>
-                          <span class="fw-semibold text-dark">{{ $h->hospname }}</span><br>
-                          <small class="text-muted">
-                            {{ \Carbon\Carbon::parse($h->last_updated_at)->locale('th')->isoFormat('D MMM YYYY H:mm') }} น.
-                          </small>
-                        </td>
-                        <td align="right" class="text-primary">{{ number_format($h->visit_dent) }}</td>
-                      </tr>
-                    @endforeach
-                  </tbody>
-                </table>
-              </div>
-              <!-- Footer -->
-              <div class="modal-footer" style="background-color:#eef4fb;">
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm"
-                        style="background-color:#3e7cc1; border-color:#3e7cc1;"
-                        data-bs-dismiss="modal">
-                  ปิด
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {{--  กายภาพบำบัด วันนี้ -------------------------------------------------------------------------------}}
+        {{-- กายภาพบำบัด --}}
         <div class="col-12 col-sm-6 col-xl-2">
           <a href="#" data-bs-toggle="modal" data-bs-target="#PhyDetailModal" class="text-decoration-none text-dark">
-            <div class="card-opd card glass p-3 h-100"
-                style="background: linear-gradient(145deg, #e0f7fa, #ffffff); border:1px solid #b3e5fc;">
-              <!-- หัวข้อซ้าย + ไอคอนขวา -->
+            <div class="card card-theme-phy card-hover p-3 h-100">
               <div class="d-flex align-items-center justify-content-between mb-2">
-                <h6 class="mb-0" style="color:#ff8a65;"><strong>กายภาพบำบัด วันนี้</strong></h6>
-                 <i class="fa-solid fa-person-walking fs-4" style="color:#ff8a65;"></i>
+                <h6 class="mb-0 fw-bold" style="color:#ff7043; font-size: 0.9rem;">กายภาพบำบัด วันนี้</h6>
+                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background-color: rgba(255, 112, 67, 0.1);">
+                  <i class="fa-solid fa-person-walking fs-5" style="color:#ff7043;"></i>
+                </div>
               </div>
-              <!-- เนื้อหาตรงกลาง -->
-              <div class="text-center mt-3">                
+              <div class="text-center mt-2">                
                 <div class="fw-bold" style="font-size:1.7rem; color:#ff8a65;">
                   {{ $fmtInt($visit_physic ?? 0) }}
                 </div>
-                <div class="small text-secondary">visit</div>
+                <div class="small text-secondary">Visit</div>
               </div>
             </div>
           </a>
         </div>
-        {{-- Modal แสดงรายละเอียด รพ. (โทนน้ำเงินพาสเทลเข้ม / modal-lg) --}}
-        <div class="modal fade" id="PhyDetailModal" tabindex="-1" aria-labelledby="hospitalDetailLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow-lg rounded-3" style="background-color:#f5f8fc;">
-              <!-- Header -->
-              <div class="modal-header text-white rounded-top-3"
-                  style="background: linear-gradient(135deg, #2f6fb6, #4b8edc);">
-                <h5 class="modal-title fw-bold" id="hospitalDetailLabel">
-                  <i class="bi bi-person-vcard me-2"></i> กายภาพบำบัด วันนี้
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <!-- Body -->
-              <div class="modal-body py-3">
-                <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden mb-0"
-                      style="background-color: #ffffff; border-radius: 0.75rem;">
-                  <thead style="background-color:#d9e8fb;">
-                    <tr class="text-center text-primary fw-semibold">
-                      <th>รหัส</th>
-                      <th>ชื่อโรงพยาบาล</th>
-                      <th>Visit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($hospitalSummary as $h)
-                      <tr>
-                        <td align="right" class="text-secondary">{{ $h->hospcode }}</td>
-                        <td>
-                          <span class="fw-semibold text-dark">{{ $h->hospname }}</span><br>
-                          <small class="text-muted">
-                            {{ \Carbon\Carbon::parse($h->last_updated_at)->locale('th')->isoFormat('D MMM YYYY H:mm') }} น.
-                          </small>
-                        </td>
-                        <td align="right" class="text-primary">{{ number_format($h->visit_physic) }}</td>
-                      </tr>
-                    @endforeach
-                  </tbody>
-                </table>
-              </div>
-              <!-- Footer -->
-              <div class="modal-footer" style="background-color:#eef4fb;">
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm"
-                        style="background-color:#3e7cc1; border-color:#3e7cc1;"
-                        data-bs-dismiss="modal">
-                  ปิด
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {{-- ฝากครรภ์ วันนี้ -------------------------------------------------------------------------------}}
+        {{-- ฝากครรภ์ ANC --}}
         <div class="col-12 col-sm-6 col-xl-2">
           <a href="#" data-bs-toggle="modal" data-bs-target="#AncDetailModal" class="text-decoration-none text-dark">
-            <div class="card-opd card glass p-3 h-100"
-                style="background: linear-gradient(145deg, #e0f7fa, #ffffff); border:1px solid #b3e5fc;">
-              <!-- หัวข้อซ้าย + ไอคอนขวา -->
+            <div class="card card-theme-anc card-hover p-3 h-100">
               <div class="d-flex align-items-center justify-content-between mb-2">
-                <h6 class="mb-0" style="color:#F06292;"><strong>ฝากครรภ์ วันนี้</strong></h6>
-                <i class="fa-solid fa-person-pregnant fs-4" style="color:#F06292;"></i>
+                <h6 class="mb-0 fw-bold" style="color:#ec407a; font-size: 0.9rem;">ฝากครรภ์ วันนี้</h6>
+                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background-color: rgba(236, 64, 122, 0.1);">
+                  <i class="fa-solid fa-person-pregnant fs-5" style="color:#ec407a;"></i>
+                </div>
               </div>
-              <!-- เนื้อหาตรงกลาง -->
-              <div class="text-center mt-3">                
-                <div class="fw-bold" style="font-size:1.7rem; color:#F06292;">
+              <div class="text-center mt-2">                
+                <div class="fw-bold" style="font-size:1.7rem; color:#f06292;">
                   {{ $fmtInt($visit_anc ?? 0) }}
                 </div>
-                <div class="small text-secondary">visit</div>
+                <div class="small text-secondary">Visit</div>
               </div>
             </div>
           </a>
         </div>
-        {{-- Modal แสดงรายละเอียด รพ. (โทนน้ำเงินพาสเทลเข้ม / modal-lg) --}}
-        <div class="modal fade" id="AncDetailModal" tabindex="-1" aria-labelledby="hospitalDetailLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow-lg rounded-3" style="background-color:#f5f8fc;">
-              <!-- Header -->
-              <div class="modal-header text-white rounded-top-3"
-                  style="background: linear-gradient(135deg, #2f6fb6, #4b8edc);">
-                <h5 class="modal-title fw-bold" id="hospitalDetailLabel">
-                  <i class="bi bi-cash-coin me-2"></i> ฝากครรภ์ วันนี้
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <!-- Body -->
-              <div class="modal-body py-3">
-                <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden mb-0"
-                      style="background-color: #ffffff; border-radius: 0.75rem;">
-                  <thead style="background-color:#d9e8fb;">
-                    <tr class="text-center text-primary fw-semibold">
-                      <th>รหัส</th>
-                      <th>ชื่อโรงพยาบาล</th>
-                      <th>Visit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($hospitalSummary as $h)
-                      <tr>
-                        <td align="right" class="text-secondary">{{ $h->hospcode }}</td>
-                        <td>
-                          <span class="fw-semibold text-dark">{{ $h->hospname }}</span><br>
-                          <small class="text-muted">
-                            {{ \Carbon\Carbon::parse($h->last_updated_at)->locale('th')->isoFormat('D MMM YYYY H:mm') }} น.
-                          </small>
-                        </td>
-                        <td align="right" class="text-primary">{{ number_format($h->visit_anc) }}</td>
-                      </tr>
-                    @endforeach
-                  </tbody>
-                </table>
-              </div>
-              <!-- Footer -->
-              <div class="modal-footer" style="background-color:#eef4fb;">
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm"
-                        style="background-color:#3e7cc1; border-color:#3e7cc1;"
-                        data-bs-dismiss="modal">
-                  ปิด
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {{--  บริการแพทย์แผนไทย -------------------------------------------------------------------------------}}
+        {{-- การแพทย์แผนไทย --}}
         <div class="col-12 col-sm-6 col-xl-2">
-          <a href="#" data-bs-toggle="modal" data-bs-target="#HMDetailModal" class="text-decoration-none text-dark">
-            <div class="card-opd card glass p-3 h-100"
-                style="background: linear-gradient(145deg, #e0f7fa, #ffffff); border:1px solid #b3e5fc;">
-              <!-- หัวข้อซ้าย + ไอคอนขวา -->
+          <a href="#" data-bs-toggle="modal" data-bs-target="#HmDetailModal" class="text-decoration-none text-dark">
+            <div class="card card-theme-hm card-hover p-3 h-100">
               <div class="d-flex align-items-center justify-content-between mb-2">
-                <h6 class="mb-0" style="color:#009688;"><strong>แพทย์แผนไทย วันนี้</strong></h6>
-                <i class="bi bi-person-arms-up fs-4" style="color:#009688;"></i>
+                <h6 class="mb-0 fw-bold" style="color:#26a69a; font-size: 0.9rem;">แพทย์แผนไทย วันนี้</h6>
+                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background-color: rgba(38, 166, 154, 0.1);">
+                  <i class="fa-solid fa-leaf fs-5" style="color:#26a69a;"></i>
+                </div>
               </div>
-              <!-- เนื้อหาตรงกลาง -->
-              <div class="text-center mt-3">                
-                <div class="fw-bold" style="font-size:1.7rem; color:#009688;">
+              <div class="text-center mt-2">                
+                <div class="fw-bold" style="font-size:1.7rem; color:#4db6ac;">
                   {{ $fmtInt($visit_healthmed ?? 0) }}
                 </div>
-                <div class="small text-secondary">visit</div>
+                <div class="small text-secondary">Visit</div>
               </div>
             </div>
           </a>
         </div>
-        {{-- Modal แสดงรายละเอียด รพ. (โทนน้ำเงินพาสเทลเข้ม / modal-lg) --}}
-        <div class="modal fade" id="HMDetailModal" tabindex="-1" aria-labelledby="hospitalDetailLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow-lg rounded-3" style="background-color:#f5f8fc;">
-              <!-- Header -->
-              <div class="modal-header text-white rounded-top-3"
-                  style="background: linear-gradient(135deg, #2f6fb6, #4b8edc);">
-                <h5 class="modal-title fw-bold" id="hospitalDetailLabel">
-                  <i class="bi bi-clipboard2-pulse me-2"></i>แพทย์แผนไทย วันนี้
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <!-- Body -->
-              <div class="modal-body py-3">
-                <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden mb-0"
-                      style="background-color: #ffffff; border-radius: 0.75rem;">
-                  <thead style="background-color:#d9e8fb;">
-                    <tr class="text-center text-primary fw-semibold">
-                      <th>รหัส</th>
-                      <th>ชื่อโรงพยาบาล</th>
-                      <th>Visit</th>                      
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($hospitalSummary as $h)
-                      <tr>
-                        <td align="right" class="text-secondary">{{ $h->hospcode }}</td>
-                        <td>
-                          <span class="fw-semibold text-dark">{{ $h->hospname }}</span><br>
-                          <small class="text-muted">
-                            {{ \Carbon\Carbon::parse($h->last_updated_at)->locale('th')->isoFormat('D MMM YYYY H:mm') }} น.
-                          </small>
-                        </td>
-                        <td align="right" class="text-primary">{{ number_format($h->visit_healthmed) }}</td>
-                      </tr>
-                    @endforeach
-                  </tbody>
-                </table>
-              </div>
-              <!-- Footer -->
-              <div class="modal-footer" style="background-color:#eef4fb;">
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm"
-                        style="background-color:#3e7cc1; border-color:#3e7cc1;"
-                        data-bs-dismiss="modal">
-                  ปิด
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {{-- การแพทย์ทางไกล วันนี้ -------------------------------------------------------------------------------}}
+        {{-- การแพทย์ทางไกล --}}
         <div class="col-12 col-sm-6 col-xl-2">
           <a href="#" data-bs-toggle="modal" data-bs-target="#TeleDetailModal" class="text-decoration-none text-dark">
-            <div class="card-opd card glass p-3 h-100"
-                style="background: linear-gradient(145deg, #e0f7fa, #ffffff); border:1px solid #b3e5fc;">
-              <!-- หัวข้อซ้าย + ไอคอนขวา -->
+            <div class="card card-theme-tele card-hover p-3 h-100">
               <div class="d-flex align-items-center justify-content-between mb-2">
-                <h6 class="mb-0" style="color:#00bcd4;"><strong>การแพทย์ทางไกล วันนี้</strong></h6>
-                <i class="fa-solid fa-video fs-4" style="color:#00bcd4;"></i>
+                <h6 class="mb-0 fw-bold" style="color:#26c6da; font-size: 0.9rem;">การแพทย์ทางไกล</h6>
+                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background-color: rgba(38, 198, 218, 0.1);">
+                  <i class="fa-solid fa-video fs-5" style="color:#26c6da;"></i>
+                </div>
               </div>
-              <!-- เนื้อหาตรงกลาง -->
-              <div class="text-center mt-3">                
+              <div class="text-center mt-2">                
                 <div class="fw-bold" style="font-size:1.7rem; color:#00bcd4;">
                   {{ $fmtInt($visit_telehealth ?? 0) }}
                 </div>
-                <div class="small text-secondary">visit</div>
+                <div class="small text-secondary">Visit</div>
               </div>
             </div>
           </a>
         </div>
-        {{-- Modal แสดงรายละเอียด รพ. (โทนน้ำเงินพาสเทลเข้ม / modal-lg) --}}
-        <div class="modal fade" id="TeleDetailModal" tabindex="-1" aria-labelledby="hospitalDetailLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow-lg rounded-3" style="background-color:#f5f8fc;">
-              <!-- Header -->
-              <div class="modal-header text-white rounded-top-3"
-                  style="background: linear-gradient(135deg, #2f6fb6, #4b8edc);">
-                <h5 class="modal-title fw-bold" id="hospitalDetailLabel">
-                  <i class="bi bi-cash-coin me-2"></i> การแพทย์ทางไกล วันนี้
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+
+        {{-- นัดหมายออนไลน์ วันนี้ --}}
+        <div class="col-12 col-sm-6 col-xl-2">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#OappDetailModal" class="text-decoration-none text-dark">
+            <div class="card card-theme-oapp card-hover p-3 h-100">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <h6 class="mb-0 fw-bold" style="color:#66bb6a; font-size: 0.9rem;">นัดหมายออนไลน์</h6>
+                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background-color: rgba(102, 187, 106, 0.1);">
+                  <i class="fa-solid fa-calendar-days fs-5" style="color:#66bb6a;"></i>
+                </div>
               </div>
-              <!-- Body -->
-              <div class="modal-body py-3">
-                <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden mb-0"
-                      style="background-color: #ffffff; border-radius: 0.75rem;">
-                  <thead style="background-color:#d9e8fb;">
-                    <tr class="text-center text-primary fw-semibold">
-                      <th>รหัส</th>
-                      <th>ชื่อโรงพยาบาล</th>
-                      <th>Visit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($hospitalSummary as $h)
-                      <tr>
-                        <td align="right" class="text-secondary">{{ $h->hospcode }}</td>
-                        <td>
-                          <span class="fw-semibold text-dark">{{ $h->hospname }}</span><br>
-                          <small class="text-muted">
-                            {{ \Carbon\Carbon::parse($h->last_updated_at)->locale('th')->isoFormat('D MMM YYYY H:mm') }} น.
-                          </small>
-                        </td>
-                        <td align="right" class="text-primary">{{ number_format($h->visit_telehealth) }}</td>
-                      </tr>
-                    @endforeach
-                  </tbody>
-                </table>
-              </div>
-              <!-- Footer -->
-              <div class="modal-footer" style="background-color:#eef4fb;">
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm"
-                        style="background-color:#3e7cc1; border-color:#3e7cc1;"
-                        data-bs-dismiss="modal">
-                  ปิด
-                </button>
+              <div class="text-center mt-2">
+                <div class="d-flex justify-content-center align-items-center gap-2">
+                  <div>
+                    <div class="fw-bold" style="font-size:1.4rem; color:#42bd41;">
+                      {{ $fmtInt($visit_moph_oapp_booking ?? 0) }}
+                    </div>
+                    <div class="text-secondary" style="font-size: 0.7rem;">จองคิว</div>
+                  </div>
+                  <div class="vr mx-1" style="opacity:0.2;"></div>
+                  <div>
+                    <div class="fw-bold" style="font-size:1.4rem; color:#2e7d32;">
+                      {{ $fmtInt($visit_moph_oapp ?? 0) }}
+                    </div>
+                    <div class="text-secondary" style="font-size: 0.7rem;">รับบริการ</div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </a>
         </div>
 
-
-
-        {{-- -------------------------------------------------------------------------------------------------------------- --}}
-          
       </div>
     </div>  
   </section>
 
-<br>
-<hr>
+  {{-- MODALS FOR SUMMARY CARDS --}}
+  @include('partials.dashboard_opd_modals')
 
-  {{-- เลือกปีงบประมาณ ----------------------------------------------------------------------------------------------------------}}
-  <section id="summary" class="pb-2">
+  <hr class="my-4">
+
+  {{-- เลือกปีงบประมาณ --}}
+  <section id="budget-filter" class="pb-2">
       <div class="container-fluid">
         <form method="POST" action="{{ url('web/opd') }}" enctype="multipart/form-data">
         @csrf
           <div class="row g-4 align-items-center">
-            <div class="col-lg-9">          
-              <h6 class="text-success mb-2"><strong></strong></h6>          
+            <div class="col-lg-8">          
+              <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-hospital text-primary me-2"></i>ข้อมูลจำแนกรายโรงพยาบาล</h5>          
             </div>
-            {{-- ขวาสุด: select + ปุ่ม ติดกันและชิดขวา --}}
-            <div class="col-lg-3 d-flex justify-content-lg-end">
+            <div class="col-lg-4 d-flex justify-content-lg-end">
               <div class="d-flex align-items-center gap-2">
-                <select class="form-select" name="budget_year">
+                <select class="form-select rounded-pill px-3 shadow-sm border-0" name="budget_year" style="min-width: 160px; background-color: #ffffff;">
                   @foreach ($budget_year_select as $row)
                     <option value="{{ $row->LEAVE_YEAR_ID }}"
                       {{ (int)$budget_year === (int)$row->LEAVE_YEAR_ID ? 'selected' : '' }}>
@@ -597,7 +403,7 @@
                     </option>
                   @endforeach
                 </select>
-                <button type="submit" class="btn btn-primary">{{ __('ค้นหา') }}</button>
+                <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm"><i class="fa-solid fa-magnifying-glass me-1"></i> {{ __('ค้นหา') }}</button>
               </div>
             </div>
           </div>
@@ -605,15 +411,19 @@
       </div>
   </section>
 
-  {{-- ข้อมูลบริการ----------------------------------------------------------------------------------------------------------}}
-  <section id="hospital" class="pb-2">
+  {{-- ข้อมูลบริการรายโรงพยาบาล --}}
+  <section id="hospital" class="pb-4">
     <div class="container-fluid">
     
-      <ul class="nav nav-pills overflow-auto flex-nowrap" id="hospPills" role="tablist">
+      <!-- NAV PILLS -->
+      <ul class="nav nav-pills overflow-auto flex-nowrap pb-1" id="hospPills" role="tablist">
         @foreach($hospitalData as $hospcode => $data)
+        @php
+          $shortName = preg_replace('/^(โรงพยาบาลสมเด็จพระยุพราช|โรงพยาบาล)/u', 'รพ.', $data['hospname']);
+        @endphp
         <li class="nav-item me-2" role="presentation">
           <button class="nav-link {{ $loop->first ? 'active' : '' }}" id="tab-{{ $hospcode }}" data-bs-toggle="pill" data-bs-target="#pane-{{ $hospcode }}" type="button" role="tab" aria-controls="pane-{{ $hospcode }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}">
-            {{ $data['hospname'] }}
+            <i class="fa-solid fa-hospital me-1"></i> {{ $shortName }}
           </button>
         </li>
         @endforeach
@@ -623,206 +433,165 @@
       <div class="tab-content mt-3" id="hospPillsContent">
 
         @foreach($hospitalData as $hospcode => $data)
+        @php
+          $opd_records = $data['total'];
+        @endphp
         <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="pane-{{ $hospcode }}" role="tabpanel" aria-labelledby="tab-{{ $hospcode }}" tabindex="0">
-          <div class="glass p-3">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6>[{{ $hospcode }}] ข้อมูลบริการผู้ป่วยนอก OPD {{ $data['hospname'] }} ปีงบประมาณ {{$budget_year}}</h6>
-              <span class="text-secondary small">Update {{ $data['update_at'] }}</span>              
+          <div class="glass p-3" style="background: rgba(255,255,255,0.85) !important;">
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-chart-column text-primary me-2"></i>[{{ $hospcode }}] ข้อมูลบริการผู้ป่วยนอก OPD {{ $data['hospname'] }} ปีงบประมาณ {{$budget_year}}</h6>
+              <div class="d-flex align-items-center gap-2">
+                <span class="text-secondary small">Update {{ $data['update_at'] ?? '-' }}</span>
+                <button class="btn btn-sm btn-success rounded-pill px-3 shadow-sm" id="btn-{{ $hospcode }}-opd">
+                  <i class="fa-solid fa-file-excel me-1"></i> ส่งออก Excel
+                </button>
+              </div>
             </div>
+
+            <!-- 3 ApexCharts Minimal Style Cards -->
+            <div class="row g-3 mb-4">
+              {{-- Chart 1: Visits (Blue) --}}
+              <div class="col-12 col-lg-4">
+                <div class="card card-chart-blue h-100 rounded-4 border-0">
+                  <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0"><i class="fa-solid fa-users me-1"></i> ปริมาณผู้รับบริการ OPD</h6>
+                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">รายเดือน</span>
+                  </div>
+                  <div class="card-body p-2">
+                    <div id="chart_{{ $hospcode }}_visits" style="min-height: 220px;"></div>
+                  </div>
+                </div>
+              </div>
+
+              {{-- Chart 2: Income (Green) --}}
+              <div class="col-12 col-lg-4">
+                <div class="card card-chart-green h-100 rounded-4 border-0">
+                  <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0"><i class="fa-solid fa-hand-holding-dollar me-1"></i> ค่ารักษาพยาบาล (บาท)</h6>
+                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill">รายได้</span>
+                  </div>
+                  <div class="card-body p-2">
+                    <div id="chart_{{ $hospcode }}_income" style="min-height: 220px;"></div>
+                  </div>
+                </div>
+              </div>
+
+              {{-- Chart 3: Specialty Clinics (Purple) --}}
+              <div class="col-12 col-lg-4">
+                <div class="card card-chart-purple h-100 rounded-4 border-0">
+                  <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0"><i class="fa-solid fa-stethoscope me-1"></i> คลินิกบริการเฉพาะทาง</h6>
+                    <span class="badge rounded-pill" style="background-color: rgba(139, 92, 246, 0.1); color: #8b5cf6;">Visit</span>
+                  </div>
+                  <div class="card-body p-2">
+                    <div id="chart_{{ $hospcode }}_specialty" style="min-height: 220px;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table -->
             <div class="table-responsive">
-              <table id="table{{ $hospcode }}" class="table table-bordered table-striped my-3" width ="100%">
-                <thead class="table-light">
-                  <tr class="table-opd">
-                    <th class="text-center" rowspan="2" width ="4%">เดือน</th>
-                    <th class="text-center" colspan="7">ทั้งหมด</th>  
-                    <td class="text-center text-primary" rowspan="2">Visit ทันตกรรม</td>   
-                    <td class="text-center text-primary" rowspan="2">Visit กายภาพบำบัด</td> 
-                    <td class="text-center text-primary" rowspan="2">Visit ฝากครรภ์</td> 
-                    <td class="text-center text-primary" rowspan="2">Visit แพทย์แผนไทย</td>  
-                    <td class="text-center text-primary" rowspan="2">Visit การแพทย์ทางไกล</td>                         
-                  </tr>    
-                  <tr class="table-opd">        
-                    <td class="text-center text-primary">HN Total</td>
-                    <td class="text-center text-primary">Visit Total</td>
-                    <td class="text-center text-primary">Visit OP</td>
-                    <td class="text-center text-primary">Visit PP</td>
-                    <td class="text-center text-primary">ค่ารักษารวม</td>
-                    <td class="text-center text-primary">ค่า Lab</td>
-                    <td class="text-center text-primary">ค่า ยา</td>  
-                  </tr>    
-                </thead>
-                <tbody>
-                  @foreach($data['total'] as $row) 
+              <table id="table{{ $hospcode }}_opd" class="table custom-table my-3" width="100%">
+                <thead>
                   <tr>
-                    <td align="center" width ="4%">{{ $row->month }}</td>
-                    <td align="right">{{ number_format($row->hn_total) }}</td>
-                    <td align="right">{{ number_format($row->visit_total) }}</td>
-                    <td align="right">{{ number_format($row->visit_total_op) }}</td>
-                    <td align="right">{{ number_format($row->visit_total_pp) }}</td>
-                    <td align="right">{{ number_format($row->inc_total,2) }}</td>
-                    <td align="right">{{ number_format($row->inc_lab_total,2) }}</td>
-                    <td align="right">{{ number_format($row->inc_drug_total,2) }}</td>
-                    <td align="right">{{ number_format($row->visit_dent) }}</td>
-                    <td align="right">{{ number_format($row->visit_physic) }}</td>
-                    <td align="right">{{ number_format($row->visit_anc) }}</td>
-                    <td align="right">{{ number_format($row->visit_healthmed) }}</td>
-                    <td align="right">{{ number_format($row->visit_telehealth) }}</td>
-                  </tr>       
-                  @endforeach    
+                    <th rowspan="2" class="th-grey" width="6%">เดือน</th>
+                    <th colspan="3" class="th-blue">ปริมาณบริการ</th>
+                    <th colspan="3" class="th-green">ค่ารักษาพยาบาล (บาท)</th>
+                    <th colspan="4" class="th-purple">คลินิกเฉพาะทาง</th>
+                    <th colspan="5" class="th-orange">ผู้ป่วยนอกแยกตามสิทธิ (Visit)</th>
+                  </tr>
                   <tr>
-                    <td class="text-end"><strong>รวม</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('hn_total')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_total')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_total_op')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_total_pp')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_total'), 2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_lab_total'), 2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_drug_total'), 2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_dent')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_physic')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_anc')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_healthmed')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_telehealth')) }}</strong></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <br>   
-          <!-- ค่ารักษาพยาบาลแยกกลุ่มสิทธิ -->
-          <div class="glass p-3">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6>[{{ $hospcode }}] ข้อมูลค่ารักษาพยาบาลผู้ป่วยนอก OPD แยกกลุ่มสิทธิ {{ $data['hospname'] }} ปีงบประมาณ {{$budget_year}}</h6>
-              <span class="text-secondary small">Update {{ $data['update_at'] }}</span>              
-            </div>
-            <div class="table-responsive">
-              <table id="table{{ $hospcode }}_inc" class="table table-bordered table-striped my-3" width="100%">
-                <thead class="table-light">
-                  <tr class="table-inc">
-                    <th class="text-center" rowspan="2" width="4%">เดือน</th>
-                    <th class="text-center" colspan="4">UCS ใน CUP</th>
-                    <th class="text-center" colspan="4">UCS ในจังหวัด</th>
-                    <th class="text-center" colspan="4">UCS นอกจังหวัด</th>
-                    <th class="text-center" colspan="4">OFC ข้าราชการ</th>
-                    <th class="text-center" colspan="4">BKK กทม.</th>
-                    <th class="text-center" colspan="4">BMT ขสมก.</th>
-                    <th class="text-center" colspan="4">SSS ประกันสังคม</th>
-                    <th class="text-center" colspan="4">LGO อปท.</th>
-                    <th class="text-center" colspan="4">FSS ต่างด้าว</th>
-                    <th class="text-center" colspan="4">STP Stateless</th>
-                    <th class="text-center" colspan="4">ชำระเงิน/พรบ.</th>
-                  </tr>
-                  <tr class="table-inc">
-                    @for ($i = 0; $i < 11; $i++)
-                        <td class="text-center text-primary">Visit</td>
-                        <td class="text-center text-primary">ค่ารักษารวม</td>
-                        <td class="text-center text-primary">ค่า Lab</td>
-                        <td class="text-center text-primary">ค่า ยา</td>
-                    @endfor
+                    {{-- ปริมาณบริการ --}}
+                    <th class="th-blue">Visit รวม</th>
+                    <th class="th-blue">Visit OP</th>
+                    <th class="th-blue">Visit PP</th>
+                    {{-- ค่ารักษา --}}
+                    <th class="th-green">ค่ารักษารวม</th>
+                    <th class="th-green">ค่ายา</th>
+                    <th class="th-green">ค่า Lab</th>
+                    {{-- คลินิกเฉพาะทาง --}}
+                    <th class="th-purple">ทันตกรรม</th>
+                    <th class="th-purple">กายภาพ</th>
+                    <th class="th-purple">แผนไทย</th>
+                    <th class="th-purple">ฝากครรภ์</th>
+                    {{-- สิทธิ --}}
+                    <th class="th-orange">บัตรทองในคัพ</th>
+                    <th class="th-orange">บัตรทองนอก จว.</th>
+                    <th class="th-orange">ข้าราชการ</th>
+                    <th class="th-orange">อปท.</th>
+                    <th class="th-orange">ประกันสังคม</th>
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($data['total'] as $row)
-                  <tr>
-                      <td class="text-center">{{ $row->month }}</td>
+                  @php
+                    $t_visit = 0; $t_op = 0; $t_pp = 0;
+                    $t_inc = 0; $t_drug = 0; $t_lab = 0;
+                    $t_dent = 0; $t_phy = 0; $t_hm = 0; $t_anc = 0;
+                    $t_ucs_in = 0; $t_ucs_out = 0; $t_ofc = 0; $t_lgo = 0; $t_sss = 0;
+                  @endphp
+                  @foreach($opd_records as $row)
+                    @php
+                      $t_visit += $row->visit_total ?? 0;
+                      $t_op += $row->visit_total_op ?? 0;
+                      $t_pp += $row->visit_total_pp ?? 0;
+                      $t_inc += $row->inc_total ?? 0;
+                      $t_drug += $row->inc_drug_total ?? 0;
+                      $t_lab += $row->inc_lab_total ?? 0;
+                      $t_dent += $row->visit_dent ?? 0;
+                      $t_phy += $row->visit_physic ?? 0;
+                      $t_hm += $row->visit_healthmed ?? 0;
+                      $t_anc += $row->visit_anc ?? 0;
+                      $t_ucs_in += $row->visit_ucs_incup ?? 0;
+                      $t_ucs_out += $row->visit_ucs_outprov ?? 0;
+                      $t_ofc += $row->visit_ofc ?? 0;
+                      $t_lgo += $row->visit_lgo ?? 0;
+                      $t_sss += $row->visit_sss ?? 0;
+                    @endphp
+                    <tr>
+                      <td class="text-center fw-bold">{{ $row->month }}</td>
+                      <td class="text-end fw-bold text-primary">{{ number_format($row->visit_total) }}</td>
+                      <td class="text-end">{{ number_format($row->visit_total_op) }}</td>
+                      <td class="text-end">{{ number_format($row->visit_total_pp) }}</td>
+                      <td class="text-end fw-bold text-success">{{ number_format($row->inc_total, 2) }}</td>
+                      <td class="text-end">{{ number_format($row->inc_drug_total, 2) }}</td>
+                      <td class="text-end">{{ number_format($row->inc_lab_total, 2) }}</td>
+                      <td class="text-end">{{ number_format($row->visit_dent) }}</td>
+                      <td class="text-end">{{ number_format($row->visit_physic) }}</td>
+                      <td class="text-end">{{ number_format($row->visit_healthmed) }}</td>
+                      <td class="text-end">{{ number_format($row->visit_anc) }}</td>
                       <td class="text-end">{{ number_format($row->visit_ucs_incup) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_ucs_incup,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_lab_ucs_incup,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_drug_ucs_incup,2) }}</td>
-                      <td class="text-end">{{ number_format($row->visit_ucs_inprov) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_ucs_inprov,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_lab_ucs_inprov,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_drug_ucs_inprov,2) }}</td>
                       <td class="text-end">{{ number_format($row->visit_ucs_outprov) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_ucs_outprov,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_lab_ucs_outprov,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_drug_ucs_outprov,2) }}</td>
                       <td class="text-end">{{ number_format($row->visit_ofc) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_ofc,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_lab_ofc,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_drug_ofc,2) }}</td>
-                      <td class="text-end">{{ number_format($row->visit_bkk) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_bkk,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_lab_bkk,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_drug_bkk,2) }}</td>
-                      <td class="text-end">{{ number_format($row->visit_bmt) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_bmt,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_lab_bmt,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_drug_bmt,2) }}</td>
-                      <td class="text-end">{{ number_format($row->visit_sss) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_sss,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_lab_sss,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_drug_sss,2) }}</td>
                       <td class="text-end">{{ number_format($row->visit_lgo) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_lgo,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_lab_lgo,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_drug_lgo,2) }}</td>
-                      <td class="text-end">{{ number_format($row->visit_fss) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_fss,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_lab_fss,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_drug_fss,2) }}</td>
-                      <td class="text-end">{{ number_format($row->visit_stp) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_stp,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_lab_stp,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_drug_stp,2) }}</td>
-                      <td class="text-end">{{ number_format($row->visit_pay) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_pay,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_lab_pay,2) }}</td>
-                      <td class="text-end">{{ number_format($row->inc_drug_pay,2) }}</td>
-                  </tr>
+                      <td class="text-end">{{ number_format($row->visit_sss) }}</td>
+                    </tr>
                   @endforeach
-                  {{-- แถวรวมทั้งหมด --}}
-                  <tr>
-                    <td class="text-end"><strong>รวม</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_ucs_incup')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_ucs_incup'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_lab_ucs_incup'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_drug_ucs_incup'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_ucs_inprov')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_ucs_inprov'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_lab_ucs_inprov'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_drug_ucs_inprov'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_ucs_outprov')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_ucs_outprov'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_lab_ucs_outprov'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_drug_ucs_outprov'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_ofc')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_ofc'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_lab_ofc'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_drug_ofc'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_bkk')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_bkk'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_lab_bkk'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_drug_bkk'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_bmt')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_bmt'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_lab_bmt'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_drug_bmt'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_sss')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_sss'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_lab_sss'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_drug_sss'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_lgo')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_lgo'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_lab_lgo'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_drug_lgo'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_fss')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_fss'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_lab_fss'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_drug_fss'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_stp')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_stp'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_lab_stp'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_drug_stp'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('visit_pay')) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_pay'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_lab_pay'),2) }}</strong></td>
-                    <td class="text-end"><strong>{{ number_format($data['total']->sum('inc_drug_pay'),2) }}</strong></td>
+                  {{-- TOTAL ROW --}}
+                  <tr class="tr-total">
+                    <td class="text-center text-primary">รวม</td>
+                    <td class="text-end text-primary">{{ number_format($t_visit) }}</td>
+                    <td class="text-end">{{ number_format($t_op) }}</td>
+                    <td class="text-end">{{ number_format($t_pp) }}</td>
+                    <td class="text-end text-success">{{ number_format($t_inc, 2) }}</td>
+                    <td class="text-end">{{ number_format($t_drug, 2) }}</td>
+                    <td class="text-end">{{ number_format($t_lab, 2) }}</td>
+                    <td class="text-end">{{ number_format($t_dent) }}</td>
+                    <td class="text-end">{{ number_format($t_phy) }}</td>
+                    <td class="text-end">{{ number_format($t_hm) }}</td>
+                    <td class="text-end">{{ number_format($t_anc) }}</td>
+                    <td class="text-end">{{ number_format($t_ucs_in) }}</td>
+                    <td class="text-end">{{ number_format($t_ucs_out) }}</td>
+                    <td class="text-end">{{ number_format($t_ofc) }}</td>
+                    <td class="text-end">{{ number_format($t_lgo) }}</td>
+                    <td class="text-end">{{ number_format($t_sss) }}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-          </div>                  
+
+          </div>
         </div>
         @endforeach
 
@@ -830,60 +599,213 @@
     </div>
   </section>
 
-<!-- แจังเตือน login--------------------------------------------------------------------------------------------------- -->
-   @if($errors->any())
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'ผิดพลาด',
-            text: '{{ $errors->first() }}', // แสดง error แรก
-            confirmButtonText: 'ตกลง'
-        });
-    </script>
-    @endif
-
 @endsection
 
-<!-- script datatable  ---------------------------------------------------------------------------------------->
 @push('scripts')
-  @foreach($hospitalData as $hospcode => $data)
+  <script src="{{ asset('assets/vendor/chart.js/chart.umd.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+  
+  {{-- DataTables + Buttons --}}
+  <script src="{{ asset('assets/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/datatables/js/dataTables.bootstrap5.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/datatables-buttons/js/buttons.bootstrap5.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/jszip/jszip.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/datatables-buttons/js/buttons.print.min.js') }}"></script>
+
   <script>
-    $(function () {
-      $('#table{{ $hospcode }}').DataTable({
-        dom: '<"d-flex justify-content-end mb-2"B>rt',
-        buttons: [
-          {
-            extend: 'excelHtml5',
-            text: '<i class="bi bi-file-earmark-excel"></i> ส่งออก Excel',
-            className: 'btn btn-success btn-sm',
-            title: 'ข้อมูลบริการผู้ป่วยนอก OPD {{ $data["hospname"] }} {{ $budget_year ?? "" }}'
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Visit Rights Chart (Bar Chart)
+      const ctxRights = document.querySelector('#visitRightsChart');
+      if (ctxRights) {
+        new Chart(ctxRights, {
+          type: 'bar',
+          data: {
+            labels: ['บัตรทองในคัพ','บัตรทองนอก จว.', 'กรมบัญชีกลาง', 'อปท.', 'ประกันสังคม', 'ชำระเงิน/อื่นๆ'],
+            datasets: [{
+              label: 'ผู้ป่วยนอก วันนี้',
+              data: [
+                {{ $visit_ucs_incup ?? 0 }},
+                {{ $visit_ucs_outprov ?? 0 }},
+                {{ $visit_ofc ?? 0 }},
+                {{ $visit_lgo ?? 0 }},
+                {{ $visit_sss ?? 0 }},
+                {{ $visit_pay ?? 0 }},
+              ],
+              backgroundColor: [
+                'rgba(37, 99, 235, 0.75)',
+                'rgba(14, 165, 233, 0.75)',
+                'rgba(245, 158, 11, 0.75)',
+                'rgba(16, 185, 129, 0.75)',
+                'rgba(139, 92, 246, 0.75)',
+                'rgba(244, 63, 94, 0.75)'
+              ],
+              borderRadius: 6,
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return context.formattedValue.toLocaleString() + ' ราย';
+                  }
+                }
+              }
+            },
+            scales: {
+              y: { 
+                beginAtZero: true,
+                grid: { color: 'rgba(0,0,0,0.05)' }
+              },
+              x: {
+                grid: { display: false }
+              }
+            }
           }
-        ],
-        ordering: false,
-        paging: false,
-        info: false,
-        lengthChange: false,
-        language: { search: "ค้นหา:" }
+        });
+      }
+
+      // 2. Data from Controller
+      const opdData = @json($hospitalData);
+
+      // Common ApexChart Options Generator
+      const createApexArea = (elementId, seriesData, categories, colors, yUnit) => {
+        const el = document.querySelector(elementId);
+        if (!el) return null;
+        const options = {
+          series: seriesData,
+          chart: {
+            type: 'area',
+            height: 220,
+            sparkline: { enabled: false },
+            toolbar: { show: false },
+            fontFamily: 'inherit',
+            animations: { enabled: true, easing: 'easeinout', speed: 500 }
+          },
+          colors: colors,
+          fill: {
+            type: 'gradient',
+            gradient: {
+              shadeIntensity: 1,
+              opacityFrom: 0.45,
+              opacityTo: 0.05,
+              stops: [0, 95, 100]
+            }
+          },
+          stroke: { curve: 'smooth', width: 2.5 },
+          xaxis: {
+            categories: categories,
+            labels: { style: { fontSize: '11px', colors: '#64748b' } },
+            axisBorder: { show: false },
+            axisTicks: { show: false }
+          },
+          yaxis: {
+            labels: {
+              formatter: val => val >= 1000000 ? (val/1000000).toFixed(1) + 'M' : (val >= 1000 ? (val/1000).toFixed(0) + 'k' : Math.round(val)),
+              style: { fontSize: '11px', colors: '#64748b' }
+            }
+          },
+          dataLabels: { enabled: false },
+          legend: {
+            position: 'top',
+            horizontalAlign: 'right',
+            fontSize: '11px',
+            offsetY: -5
+          },
+          tooltip: {
+            y: {
+              formatter: val => val ? Math.round(val).toLocaleString('th-TH') + ' ' + (yUnit || '') : '0'
+            }
+          },
+          grid: {
+            borderColor: 'rgba(0,0,0,0.05)',
+            strokeDashArray: 4
+          }
+        };
+        const chart = new ApexCharts(el, options);
+        chart.render();
+        return chart;
+      };
+
+      // Loop each hospital and render 3 ApexCharts
+      Object.entries(opdData).forEach(([code, h]) => {
+        const rows = h.total || [];
+        const months = rows.map(r => r.month);
+
+        // Chart 1: Visits
+        createApexArea(
+          `#chart_${code}_visits`,
+          [
+            { name: 'Visit รวม', data: rows.map(r => parseInt(r.visit_total || 0)) },
+            { name: 'Visit OP', data: rows.map(r => parseInt(r.visit_total_op || 0)) },
+            { name: 'Visit PP', data: rows.map(r => parseInt(r.visit_total_pp || 0)) }
+          ],
+          months,
+          ['#2563eb', '#0284c7', '#06b6d4'],
+          'ครั้ง'
+        );
+
+        // Chart 2: Income
+        createApexArea(
+          `#chart_${code}_income`,
+          [
+            { name: 'ค่ารักษารวม', data: rows.map(r => parseFloat(r.inc_total || 0)) },
+            { name: 'ค่ายา', data: rows.map(r => parseFloat(r.inc_drug_total || 0)) },
+            { name: 'ค่า Lab', data: rows.map(r => parseFloat(r.inc_lab_total || 0)) }
+          ],
+          months,
+          ['#10b981', '#059669', '#34d399'],
+          'บาท'
+        );
+
+        // Chart 3: Specialty Clinics
+        createApexArea(
+          `#chart_${code}_specialty`,
+          [
+            { name: 'ทันตกรรม', data: rows.map(r => parseInt(r.visit_dent || 0)) },
+            { name: 'กายภาพ', data: rows.map(r => parseInt(r.visit_physic || 0)) },
+            { name: 'แผนไทย', data: rows.map(r => parseInt(r.visit_healthmed || 0)) },
+            { name: 'ฝากครรภ์', data: rows.map(r => parseInt(r.visit_anc || 0)) }
+          ],
+          months,
+          ['#8b5cf6', '#a855f7', '#ec4899', '#f43f5e'],
+          'Visit'
+        );
+
+        // DataTables init for this hospital
+        const tblId = `#table${code}_opd`;
+        if ($.fn.DataTable && $(tblId).length) {
+          const dt = $(tblId).DataTable({
+            paging: false,
+            searching: false,
+            info: false,
+            responsive: true,
+            order: [],
+            buttons: [
+              {
+                extend: 'excelHtml5',
+                text: 'Excel',
+                title: `ข้อมูลบริการผู้ป่วยนอก OPD [${code}] ${h.hospname} ปีงบประมาณ {{ $budget_year }}`,
+                className: 'd-none'
+              }
+            ]
+          });
+          $(`#btn-${code}-opd`).on('click', () => {
+            dt.button('.buttons-excel').trigger();
+          });
+        }
       });
 
-      $('#table{{ $hospcode }}_inc').DataTable({
-        dom: '<"d-flex justify-content-end mb-2"B>rt',
-        buttons: [
-          {
-            extend: 'excelHtml5',
-            text: '<i class="bi bi-file-earmark-excel"></i> ส่งออก Excel',
-            className: 'btn btn-success btn-sm',
-            title: 'ข้อมูลค่ารักษาพยาบาลผู้ป่วยนอก OPD แยกกลุ่มสิทธิ {{ $data["hospname"] }} {{ $budget_year ?? "" }}'
-          }
-        ],
-        ordering: false,
-        paging: false,
-        info: false,
-        lengthChange: false,
-        language: { search: "ค้นหา:" }
+      // Resize listener for hidden tabs
+      $('button[data-bs-toggle="pill"]').on('shown.bs.tab', function () {
+        window.dispatchEvent(new Event('resize'));
       });
     });
   </script>
-  @endforeach
 @endpush
-

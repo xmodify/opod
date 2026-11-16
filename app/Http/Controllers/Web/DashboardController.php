@@ -105,8 +105,9 @@ class DashboardController extends Controller
                 ->get();
             // เก็บข้อมูลแยกตาม hospcode
             $bedData[$h->hospcode] = [
-                'hospname' => $h->hospname,
-                'beds' => $beds
+                'hospname'   => $h->hospname,
+                'beds'       => $beds,
+                'updated_at' => $ipd_bed_dep->firstWhere('hospcode', $h->hospcode)?->updated_at
             ];
         }        
 

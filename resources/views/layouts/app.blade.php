@@ -193,8 +193,19 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
     }
 
-    /* Hospital-specific Active Tab Styling */
-    #tab-10985.active {
+    /* Modern Default Active Tab Pill */
+    .nav-pills .nav-link.active {
+      background: linear-gradient(135deg, #f5f3ff 0%, #ffffff 100%) !important;
+      border-left: 5px solid #8b5cf6 !important;
+      border-top: 1px solid rgba(139, 92, 246, 0.18) !important;
+      border-right: 1px solid rgba(139, 92, 246, 0.18) !important;
+      border-bottom: 1px solid rgba(139, 92, 246, 0.18) !important;
+      color: #7c3aed !important;
+      box-shadow: 0 6px 15px rgba(139, 92, 246, 0.14) !important;
+    }
+
+    /* Hospital-specific Active Tab Styling (Yasothon & Amnatcharoen) */
+    #tab-10701.active, #tab-10985.active {
       background: linear-gradient(135deg, #f5f3ff 0%, #ffffff 100%) !important;
       border-left: 5px solid #8b5cf6 !important;
       border-top: 1px solid rgba(139, 92, 246, 0.15) !important;
@@ -203,7 +214,7 @@
       color: #7c3aed !important;
       box-shadow: 0 6px 15px rgba(139, 92, 246, 0.12) !important;
     }
-    #tab-10986.active {
+    #tab-10963.active, #tab-10986.active {
       background: linear-gradient(135deg, #ecfeff 0%, #ffffff 100%) !important;
       border-left: 5px solid #06b6d4 !important;
       border-top: 1px solid rgba(6, 182, 212, 0.15) !important;
@@ -212,7 +223,7 @@
       color: #0891b2 !important;
       box-shadow: 0 6px 15px rgba(6, 182, 212, 0.12) !important;
     }
-    #tab-10987.active {
+    #tab-10964.active, #tab-10987.active {
       background: linear-gradient(135deg, #fdf2f8 0%, #ffffff 100%) !important;
       border-left: 5px solid #ec4899 !important;
       border-top: 1px solid rgba(236, 72, 153, 0.15) !important;
@@ -221,7 +232,7 @@
       color: #db2777 !important;
       box-shadow: 0 6px 15px rgba(236, 72, 153, 0.12) !important;
     }
-    #tab-10988.active {
+    #tab-10965.active, #tab-10988.active {
       background: linear-gradient(135deg, #fef3c7 0%, #ffffff 100%) !important;
       border-left: 5px solid #f59e0b !important;
       border-top: 1px solid rgba(245, 158, 11, 0.15) !important;
@@ -230,7 +241,7 @@
       color: #d97706 !important;
       box-shadow: 0 6px 15px rgba(245, 158, 11, 0.12) !important;
     }
-    #tab-10989.active {
+    #tab-10966.active, #tab-10989.active {
       background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%) !important;
       border-left: 5px solid #3b82f6 !important;
       border-top: 1px solid rgba(59, 130, 246, 0.15) !important;
@@ -239,7 +250,7 @@
       color: #2563eb !important;
       box-shadow: 0 6px 15px rgba(59, 130, 246, 0.12) !important;
     }
-    #tab-10990.active {
+    #tab-10967.active, #tab-10990.active {
       background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%) !important;
       border-left: 5px solid #10b981 !important;
       border-top: 1px solid rgba(16, 185, 129, 0.15) !important;
@@ -248,7 +259,25 @@
       color: #059669 !important;
       box-shadow: 0 6px 15px rgba(16, 185, 129, 0.12) !important;
     }
-    #tab-10703.active {
+    #tab-10968.active {
+      background: linear-gradient(135deg, #eef2ff 0%, #ffffff 100%) !important;
+      border-left: 5px solid #6366f1 !important;
+      border-top: 1px solid rgba(99, 102, 241, 0.15) !important;
+      border-right: 1px solid rgba(99, 102, 241, 0.15) !important;
+      border-bottom: 1px solid rgba(99, 102, 241, 0.15) !important;
+      color: #4f46e5 !important;
+      box-shadow: 0 6px 15px rgba(99, 102, 241, 0.12) !important;
+    }
+    #tab-10969.active {
+      background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%) !important;
+      border-left: 5px solid #14b8a6 !important;
+      border-top: 1px solid rgba(20, 184, 166, 0.15) !important;
+      border-right: 1px solid rgba(20, 184, 166, 0.15) !important;
+      border-bottom: 1px solid rgba(20, 184, 166, 0.15) !important;
+      color: #0d9488 !important;
+      box-shadow: 0 6px 15px rgba(20, 184, 166, 0.12) !important;
+    }
+    #tab-11444.active, #tab-10703.active {
       background: linear-gradient(135deg, #fff1f2 0%, #ffffff 100%) !important;
       border-left: 5px solid #f43f5e !important;
       border-top: 1px solid rgba(244, 63, 94, 0.15) !important;
