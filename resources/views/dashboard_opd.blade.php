@@ -592,6 +592,284 @@
             </div>
 
           </div>
+
+          <!-- ข้อมูลค่ารักษาพยาบาลผู้ป่วยนอก OPD แยกกลุ่มสิทธิ -->
+          <div class="glass p-3 mt-4" style="background: rgba(255,255,255,0.85) !important;">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="fw-bold mb-0"><i class="fa-solid fa-file-invoice-dollar text-success me-2"></i>[{{ $hospcode }}] ข้อมูลค่ารักษาพยาบาลผู้ป่วยนอก OPD แยกกลุ่มสิทธิ {{ $data['hospname'] }} ปีงบประมาณ {{$budget_year}}</h6>
+              <div class="d-flex align-items-center gap-2">
+                <span class="text-secondary small">Update {{ $data['update_at'] ?? '-' }}</span>
+              </div>
+            </div>
+
+            <!-- 2x2 Donut Charts Grid (ซ้าย 5 ขวา 6 กลางวงกลม) -->
+            <!-- Row 1: Visit & Total Income -->
+            <div class="row g-3 mb-3 mt-2">
+              <!-- Donut Chart 1: Visit by Rights -->
+              <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3 bg-white bg-opacity-75" style="border-top: 4px solid #2563eb !important; height: 100%;">
+                  <h6 class="fw-bold text-center mb-3" style="color: #6f42c1;"><i class="fa-solid fa-chart-pie me-1"></i>สัดส่วน Visit แยกสิทธิ</h6>
+                  <div class="row align-items-center">
+                    <!-- Left Legend (5 items) -->
+                    <div class="col-md-3 d-flex flex-column gap-2 small py-2">
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#2563eb; flex-shrink:0;"></span> UCS ใน CUP</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#3b82f6; flex-shrink:0;"></span> UCS ในจังหวัด</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#60a5fa; flex-shrink:0;"></span> UCS นอกจังหวัด</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#10b981; flex-shrink:0;"></span> OFC ข้าราชการ</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#a855f7; flex-shrink:0;"></span> BKK กทม.</span><span class="fw-bold text-dark legend-val"></span></span>
+                    </div>
+                    <!-- Center Donut -->
+                    <div class="col-md-6 text-center">
+                      <div id="chart_{{ $hospcode }}_inc_visit" style="min-height: 220px;"></div>
+                    </div>
+                    <!-- Right Legend (6 items) -->
+                    <div class="col-md-3 d-flex flex-column gap-2 small py-2">
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#ec4899; flex-shrink:0;"></span> BMT ขสมก.</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#f59e0b; flex-shrink:0;"></span> SSS ประกันสังคม</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#f97316; flex-shrink:0;"></span> LGO อปท.</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#06b6d4; flex-shrink:0;"></span> FSS ต่างด้าว</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#84cc16; flex-shrink:0;"></span> STP Stateless</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#6b7280; flex-shrink:0;"></span> ชำระเงิน/พรบ.</span><span class="fw-bold text-dark legend-val"></span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Donut Chart 2: Income by Rights -->
+              <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3 bg-white bg-opacity-75" style="border-top: 4px solid #10b981 !important; height: 100%;">
+                  <h6 class="fw-bold text-center mb-3" style="color: #6f42c1;"><i class="fa-solid fa-chart-pie me-1"></i>สัดส่วนค่ารักษา แยกสิทธิ</h6>
+                  <div class="row align-items-center">
+                    <!-- Left Legend (5 items) -->
+                    <div class="col-md-3 d-flex flex-column gap-2 small py-2">
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#2563eb; flex-shrink:0;"></span> UCS ใน CUP</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#3b82f6; flex-shrink:0;"></span> UCS ในจังหวัด</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#60a5fa; flex-shrink:0;"></span> UCS นอกจังหวัด</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#10b981; flex-shrink:0;"></span> OFC ข้าราชการ</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#a855f7; flex-shrink:0;"></span> BKK กทม.</span><span class="fw-bold text-dark legend-val"></span></span>
+                    </div>
+                    <!-- Center Donut -->
+                    <div class="col-md-6 text-center">
+                      <div id="chart_{{ $hospcode }}_inc_total" style="min-height: 220px;"></div>
+                    </div>
+                    <!-- Right Legend (6 items) -->
+                    <div class="col-md-3 d-flex flex-column gap-2 small py-2">
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#ec4899; flex-shrink:0;"></span> BMT ขสมก.</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#f59e0b; flex-shrink:0;"></span> SSS ประกันสังคม</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#f97316; flex-shrink:0;"></span> LGO อปท.</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#06b6d4; flex-shrink:0;"></span> FSS ต่างด้าว</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#84cc16; flex-shrink:0;"></span> STP Stateless</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#6b7280; flex-shrink:0;"></span> ชำระเงิน/พรบ.</span><span class="fw-bold text-dark legend-val"></span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: Lab & Drug -->
+            <div class="row g-3 mb-4">
+              <!-- Donut Chart 3: Lab by Rights -->
+              <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3 bg-white bg-opacity-75" style="border-top: 4px solid #f59e0b !important; height: 100%;">
+                  <h6 class="fw-bold text-center mb-3" style="color: #6f42c1;"><i class="fa-solid fa-chart-pie me-1"></i>สัดส่วนค่า Lab แยกสิทธิ</h6>
+                  <div class="row align-items-center">
+                    <!-- Left Legend (5 items) -->
+                    <div class="col-md-3 d-flex flex-column gap-2 small py-2">
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#2563eb; flex-shrink:0;"></span> UCS ใน CUP</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#3b82f6; flex-shrink:0;"></span> UCS ในจังหวัด</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#60a5fa; flex-shrink:0;"></span> UCS นอกจังหวัด</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#10b981; flex-shrink:0;"></span> OFC ข้าราชการ</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#a855f7; flex-shrink:0;"></span> BKK กทม.</span><span class="fw-bold text-dark legend-val"></span></span>
+                    </div>
+                    <!-- Center Donut -->
+                    <div class="col-md-6 text-center">
+                      <div id="chart_{{ $hospcode }}_inc_lab" style="min-height: 220px;"></div>
+                    </div>
+                    <!-- Right Legend (6 items) -->
+                    <div class="col-md-3 d-flex flex-column gap-2 small py-2">
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#ec4899; flex-shrink:0;"></span> BMT ขสมก.</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#f59e0b; flex-shrink:0;"></span> SSS ประกันสังคม</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#f97316; flex-shrink:0;"></span> LGO อปท.</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#06b6d4; flex-shrink:0;"></span> FSS ต่างด้าว</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#84cc16; flex-shrink:0;"></span> STP Stateless</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#6b7280; flex-shrink:0;"></span> ชำระเงิน/พรบ.</span><span class="fw-bold text-dark legend-val"></span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Donut Chart 4: Drug by Rights -->
+              <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3 bg-white bg-opacity-75" style="border-top: 4px solid #8b5cf6 !important; height: 100%;">
+                  <h6 class="fw-bold text-center mb-3" style="color: #6f42c1;"><i class="fa-solid fa-chart-pie me-1"></i>สัดส่วนค่ายา แยกสิทธิ</h6>
+                  <div class="row align-items-center">
+                    <!-- Left Legend (5 items) -->
+                    <div class="col-md-3 d-flex flex-column gap-2 small py-2">
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#2563eb; flex-shrink:0;"></span> UCS ใน CUP</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#3b82f6; flex-shrink:0;"></span> UCS ในจังหวัด</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#60a5fa; flex-shrink:0;"></span> UCS นอกจังหวัด</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#10b981; flex-shrink:0;"></span> OFC ข้าราชการ</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#a855f7; flex-shrink:0;"></span> BKK กทม.</span><span class="fw-bold text-dark legend-val"></span></span>
+                    </div>
+                    <!-- Center Donut -->
+                    <div class="col-md-6 text-center">
+                      <div id="chart_{{ $hospcode }}_inc_drug" style="min-height: 220px;"></div>
+                    </div>
+                    <!-- Right Legend (6 items) -->
+                    <div class="col-md-3 d-flex flex-column gap-2 small py-2">
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#ec4899; flex-shrink:0;"></span> BMT ขสมก.</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#f59e0b; flex-shrink:0;"></span> SSS ประกันสังคม</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#f97316; flex-shrink:0;"></span> LGO อปท.</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#06b6d4; flex-shrink:0;"></span> FSS ต่างด้าว</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#84cc16; flex-shrink:0;"></span> STP Stateless</span><span class="fw-bold text-dark legend-val"></span></span>
+                      <span class="d-flex align-items-center justify-content-between gap-1 fw-medium text-secondary w-100"><span class="d-flex align-items-center gap-1"><span class="rounded-circle" style="display:inline-block; width:10px; height:10px; background-color:#6b7280; flex-shrink:0;"></span> ชำระเงิน/พรบ.</span><span class="fw-bold text-dark legend-val"></span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table: Rights Breakdown -->
+            <div class="d-flex justify-content-end mb-2">
+              <button class="btn btn-sm btn-success rounded-pill px-3 shadow-sm" id="btn-{{ $hospcode }}-inc">
+                <i class="fa-solid fa-file-excel me-1"></i> Excel
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table id="table{{ $hospcode }}_inc" class="table custom-table my-3" width="100%">
+                <thead>
+                  <tr>
+                    <th class="th-grey" rowspan="2" width="4%">เดือน</th>
+                    <th class="th-blue" colspan="4">UCS ใน CUP</th>
+                    <th class="th-blue" colspan="4">UCS ในจังหวัด</th>
+                    <th class="th-blue" colspan="4">UCS นอกจังหวัด</th>
+                    <th class="th-orange" colspan="4">OFC ข้าราชการ</th>
+                    <th class="th-purple" colspan="4">BKK กทม.</th>
+                    <th class="th-purple" colspan="4">BMT ขสมก.</th>
+                    <th class="th-green" colspan="4">SSS ประกันสังคม</th>
+                    <th class="th-green" colspan="4">LGO อปท.</th>
+                    <th class="th-cyan" colspan="4">FSS ต่างด้าว</th>
+                    <th class="th-cyan" colspan="4">STP Stateless</th>
+                    <th class="th-grey" colspan="4">ชำระเงิน/พรบ.</th>
+                  </tr>
+                  <tr>
+                    @for ($i = 0; $i < 3; $i++)
+                      <th class="th-blue">Visit</th><th class="th-blue">ค่ารักษารวม</th><th class="th-blue">ค่า Lab</th><th class="th-blue">ค่า ยา</th>
+                    @endfor
+                    <th class="th-orange">Visit</th><th class="th-orange">ค่ารักษารวม</th><th class="th-orange">ค่า Lab</th><th class="th-orange">ค่า ยา</th>
+                    @for ($i = 0; $i < 2; $i++)
+                      <th class="th-purple">Visit</th><th class="th-purple">ค่ารักษารวม</th><th class="th-purple">ค่า Lab</th><th class="th-purple">ค่า ยา</th>
+                    @endfor
+                    @for ($i = 0; $i < 2; $i++)
+                      <th class="th-green">Visit</th><th class="th-green">ค่ารักษารวม</th><th class="th-green">ค่า Lab</th><th class="th-green">ค่า ยา</th>
+                    @endfor
+                    @for ($i = 0; $i < 2; $i++)
+                      <th class="th-cyan">Visit</th><th class="th-cyan">ค่ารักษารวม</th><th class="th-cyan">ค่า Lab</th><th class="th-cyan">ค่า ยา</th>
+                    @endfor
+                    <th class="th-grey">Visit</th><th class="th-grey">ค่ารักษารวม</th><th class="th-grey">ค่า Lab</th><th class="th-grey">ค่า ยา</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach ($opd_records as $row)
+                  <tr>
+                    <td class="text-center">{{ $row->month }}</td>
+                    <td class="text-end">{{ number_format($row->visit_ucs_incup ?? 0) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_ucs_incup ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_lab_ucs_incup ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_drug_ucs_incup ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->visit_ucs_inprov ?? 0) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_ucs_inprov ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_lab_ucs_inprov ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_drug_ucs_inprov ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->visit_ucs_outprov ?? 0) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_ucs_outprov ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_lab_ucs_outprov ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_drug_ucs_outprov ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->visit_ofc ?? 0) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_ofc ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_lab_ofc ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_drug_ofc ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->visit_bkk ?? 0) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_bkk ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_lab_bkk ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_drug_bkk ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->visit_bmt ?? 0) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_bmt ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_lab_bmt ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_drug_bmt ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->visit_sss ?? 0) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_sss ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_lab_sss ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_drug_sss ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->visit_lgo ?? 0) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_lgo ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_lab_lgo ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_drug_lgo ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->visit_fss ?? 0) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_fss ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_lab_fss ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_drug_fss ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->visit_stp ?? 0) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_stp ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_lab_stp ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_drug_stp ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->visit_pay ?? 0) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_pay ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_lab_pay ?? 0, 2) }}</td>
+                    <td class="text-end">{{ number_format($row->inc_drug_pay ?? 0, 2) }}</td>
+                  </tr>
+                  @endforeach
+                  <tr class="tr-total">
+                    <td class="text-center fw-bold">รวม</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('visit_ucs_incup')) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_ucs_incup'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_lab_ucs_incup'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_drug_ucs_incup'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('visit_ucs_inprov')) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_ucs_inprov'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_lab_ucs_inprov'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_drug_ucs_inprov'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('visit_ucs_outprov')) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_ucs_outprov'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_lab_ucs_outprov'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_drug_ucs_outprov'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('visit_ofc')) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_ofc'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_lab_ofc'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_drug_ofc'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('visit_bkk')) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_bkk'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_lab_bkk'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_drug_bkk'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('visit_bmt')) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_bmt'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_lab_bmt'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_drug_bmt'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('visit_sss')) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_sss'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_lab_sss'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_drug_sss'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('visit_lgo')) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_lgo'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_lab_lgo'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_drug_lgo'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('visit_fss')) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_fss'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_lab_fss'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_drug_fss'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('visit_stp')) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_stp'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_lab_stp'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_drug_stp'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('visit_pay')) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_pay'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_lab_pay'), 2) }}</td>
+                    <td class="text-end">{{ number_format($opd_records->sum('inc_drug_pay'), 2) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
         @endforeach
 
@@ -733,7 +1011,96 @@
         return chart;
       };
 
-      // Loop each hospital and render 3 ApexCharts
+      // Donut Chart Helpers & Configs
+      const rightsLabels = [
+        'UCS ใน CUP', 'UCS ในจังหวัด', 'UCS นอกจังหวัด', 'OFC ข้าราชการ', 
+        'BKK กทม.', 'BMT ขสมก.', 'SSS ประกันสังคม', 'LGO อปท.', 
+        'FSS ต่างด้าว', 'STP Stateless', 'ชำระเงิน/พรบ.'
+      ];
+      const rightsColors = ['#2563eb', '#3b82f6', '#60a5fa', '#10b981', '#a855f7', '#ec4899', '#f59e0b', '#f97316', '#06b6d4', '#84cc16', '#6b7280'];
+
+      const updateLegend = (chartSelector, series, suffix) => {
+        const chartEl = document.querySelector(chartSelector);
+        if (!chartEl) return;
+        const cardEl = chartEl.closest('.card');
+        if (!cardEl) return;
+        const valSpans = cardEl.querySelectorAll('.legend-val');
+        series.forEach((val, idx) => {
+          if (valSpans[idx]) {
+            valSpans[idx].textContent = `${Math.round(val).toLocaleString('th-TH')} ${suffix}`;
+          }
+        });
+      };
+
+      const createApexDonut = (elementId, seriesData, labels, colors, totalLabel, isCurrency) => {
+        const el = document.querySelector(elementId);
+        if (!el) return null;
+        const options = {
+          series: seriesData,
+          labels: labels,
+          chart: {
+            type: 'donut',
+            height: 220,
+            animations: { enabled: true }
+          },
+          stroke: { show: false },
+          legend: { show: false },
+          dataLabels: { enabled: false },
+          plotOptions: {
+            pie: {
+              donut: {
+                size: '70%',
+                labels: {
+                  show: true,
+                  name: {
+                    show: true,
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    color: '#6c757d',
+                    offsetY: -5
+                  },
+                  value: {
+                    show: true,
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#212529',
+                    offsetY: 5,
+                    formatter: val => isCurrency 
+                      ? parseFloat(val).toLocaleString('th-TH', { maximumFractionDigits: 0 }) 
+                      : Math.round(val).toLocaleString('th-TH')
+                  },
+                  total: {
+                    show: true,
+                    label: totalLabel,
+                    fontSize: '10px',
+                    fontWeight: 600,
+                    color: '#6c757d',
+                    formatter: w => {
+                      const sum = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                      return isCurrency 
+                        ? parseFloat(sum).toLocaleString('th-TH', { maximumFractionDigits: 0 })
+                        : Math.round(sum).toLocaleString('th-TH');
+                    }
+                  }
+                }
+              }
+            }
+          },
+          tooltip: {
+            y: {
+              formatter: val => isCurrency
+                ? parseFloat(val).toLocaleString('th-TH', { minimumFractionDigits: 2 }) + ' บาท'
+                : Math.round(val).toLocaleString('th-TH') + ' ราย'
+            }
+          },
+          colors: colors
+        };
+        const chart = new ApexCharts(el, options);
+        chart.render();
+        return chart;
+      };
+
+      // Loop each hospital and render ApexCharts and DataTables
       Object.entries(opdData).forEach(([code, h]) => {
         const rows = h.total || [];
         const months = rows.map(r => r.month);
@@ -798,6 +1165,71 @@
           });
           $(`#btn-${code}-opd`).on('click', () => {
             dt.button('.buttons-excel').trigger();
+          });
+        }
+
+        // Helpers for Donut Charts
+        const sumCol = (colName) => rows.reduce((acc, item) => acc + parseFloat(item[colName] || 0), 0);
+
+        // Donut 1: Visits by Rights Group
+        const visitSeries = [
+          sumCol('visit_ucs_incup'), sumCol('visit_ucs_inprov'), sumCol('visit_ucs_outprov'),
+          sumCol('visit_ofc'), sumCol('visit_bkk'), sumCol('visit_bmt'),
+          sumCol('visit_sss'), sumCol('visit_lgo'), sumCol('visit_fss'),
+          sumCol('visit_stp'), sumCol('visit_pay')
+        ];
+        createApexDonut(`#chart_${code}_inc_visit`, visitSeries, rightsLabels, rightsColors, 'ทั้งหมด (Visit)', false);
+        updateLegend(`#chart_${code}_inc_visit`, visitSeries, 'ราย');
+
+        // Donut 2: Income by Rights Group
+        const incomeSeries = [
+          sumCol('inc_ucs_incup'), sumCol('inc_ucs_inprov'), sumCol('inc_ucs_outprov'),
+          sumCol('inc_ofc'), sumCol('inc_bkk'), sumCol('inc_bmt'),
+          sumCol('inc_sss'), sumCol('inc_lgo'), sumCol('inc_fss'),
+          sumCol('inc_stp'), sumCol('inc_pay')
+        ];
+        createApexDonut(`#chart_${code}_inc_total`, incomeSeries, rightsLabels, rightsColors, 'ทั้งหมด (บาท)', true);
+        updateLegend(`#chart_${code}_inc_total`, incomeSeries, 'บาท');
+
+        // Donut 3: Lab Income by Rights Group
+        const labSeries = [
+          sumCol('inc_lab_ucs_incup'), sumCol('inc_lab_ucs_inprov'), sumCol('inc_lab_ucs_outprov'),
+          sumCol('inc_lab_ofc'), sumCol('inc_lab_bkk'), sumCol('inc_lab_bmt'),
+          sumCol('inc_lab_sss'), sumCol('inc_lab_lgo'), sumCol('inc_lab_fss'),
+          sumCol('inc_lab_stp'), sumCol('inc_lab_pay')
+        ];
+        createApexDonut(`#chart_${code}_inc_lab`, labSeries, rightsLabels, rightsColors, 'ทั้งหมด (บาท)', true);
+        updateLegend(`#chart_${code}_inc_lab`, labSeries, 'บาท');
+
+        // Donut 4: Drug Income by Rights Group
+        const drugSeries = [
+          sumCol('inc_drug_ucs_incup'), sumCol('inc_drug_ucs_inprov'), sumCol('inc_drug_ucs_outprov'),
+          sumCol('inc_drug_ofc'), sumCol('inc_drug_bkk'), sumCol('inc_drug_bmt'),
+          sumCol('inc_drug_sss'), sumCol('inc_drug_lgo'), sumCol('inc_drug_fss'),
+          sumCol('inc_drug_stp'), sumCol('inc_drug_pay')
+        ];
+        createApexDonut(`#chart_${code}_inc_drug`, drugSeries, rightsLabels, rightsColors, 'ทั้งหมด (บาท)', true);
+        updateLegend(`#chart_${code}_inc_drug`, drugSeries, 'บาท');
+
+        // DataTables init for Rights Breakdown Table (#table${code}_inc)
+        const incTblId = `#table${code}_inc`;
+        if ($.fn.DataTable && $(incTblId).length) {
+          const incDt = $(incTblId).DataTable({
+            paging: false,
+            searching: false,
+            info: false,
+            ordering: false,
+            buttons: [
+              {
+                extend: 'excelHtml5',
+                text: 'Excel',
+                title: `ข้อมูลค่ารักษาพยาบาลผู้ป่วยนอก OPD แยกกลุ่มสิทธิ [${code}] ${h.hospname} ปีงบประมาณ {{ $budget_year }}`,
+                className: 'd-none'
+              }
+            ]
+          });
+          $(`#btn-${code}-inc`).on('click', () => {
+            incDt.button('.buttons-excel').trigger();
           });
         }
       });
