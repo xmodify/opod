@@ -361,7 +361,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($docStats as $row)
+                                @foreach($docStats as $row)
                                 @php
                                     $doc = $row['doctor'];
                                     $specColor = $specialties[$doc->spclty_code]['color'] ?? '#0284c7';
@@ -424,14 +424,7 @@
                                         {{ $row['amnat_visits'] > 0 ? number_format($row['amnat_visits']) : '-' }}
                                     </td>
                                 </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="{{ 5 + count($hospitalsList) }}" class="text-center py-4 text-muted">
-                                        <i class="fa-solid fa-inbox fs-2 mb-2 d-block"></i>
-                                        ยังไม่มีข้อมูลการออกตรวจในช่วงเวลาที่เลือก
-                                    </td>
-                                </tr>
-                                @endforelse
+                                @endforeach
                             </tbody>
                             <tfoot>
                                 {{-- แถวรวมที่ 1: รวมเฉพาะแพทย์ OPOH --}}
@@ -501,7 +494,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($docIpdStats as $row)
+                                @foreach($docIpdStats as $row)
                                 @php
                                     $doc = $row['doctor'];
                                     $specColor = $specialties[$doc->spclty_code]['color'] ?? '#e11d48';
@@ -570,14 +563,7 @@
                                         {{ $row['amnat_ans'] > 0 ? number_format($row['amnat_ans']) : '-' }}
                                     </td>
                                 </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="{{ 7 + count($hospitalsList) }}" class="text-center py-4 text-muted">
-                                        <i class="fa-solid fa-inbox fs-2 mb-2 d-block"></i>
-                                        ยังไม่มีข้อมูลการจำหน่ายผู้ป่วยใน (IPD) ในช่วงเวลาที่เลือก
-                                    </td>
-                                </tr>
-                                @endforelse
+                                @endforeach
                             </tbody>
                             <tfoot>
                                 {{-- แถวรวมที่ 1: รวมเฉพาะแพทย์ OPOH (หมายเหตุ: ยอดรวมตามแพทย์อาจนับ AN ซ้ำได้หากแพทย์ร่วมดูแลคนไข้คนเดียวกัน ให้ดูยอด AN จริงที่แถวรวมทั้งหมด) --}}
@@ -691,7 +677,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($allDoctors as $index => $doc)
+                            @foreach($allDoctors as $index => $doc)
                             @php
                                 $specColor = $specialties[$doc->spclty_code]['color'] ?? '#0284c7';
                                 $specIcon = $specialties[$doc->spclty_code]['icon'] ?? 'fa-user-doctor';
@@ -754,14 +740,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            @empty
-                            <tr>
-                                <td colspan="8" class="text-center py-4 text-muted">
-                                    <i class="fa-solid fa-inbox fs-2 mb-2 d-block"></i>
-                                    ยังไม่มีข้อมูลแพทย์ในระบบ
-                                </td>
-                            </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
