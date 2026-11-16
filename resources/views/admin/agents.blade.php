@@ -1,7 +1,10 @@
+@php
+    $brandName = $brandName ?? \App\Models\MainSetting::get('system_short_name', config('app.name', 'YSOPOD'));
+@endphp
 @extends('layouts.admin')
 
-@section('title', 'จัดการ Agent โรงพยาบาล - AOPOD')
-@section('header_title', 'จัดการ Agent โรงพยาบาล (AOPOD Agents)')
+@section('title', 'จัดการ Agent โรงพยาบาล - ' . $brandName)
+@section('header_title', 'จัดการ Agent โรงพยาบาล (' . $brandName . ' Agents)')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('assets/vendor/flatpickr/flatpickr.min.css') }}">
@@ -104,10 +107,10 @@
         <div class="glass-card bg-white p-3 p-md-4 rounded-4 border shadow-sm">
             <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="{{ asset('images/aopod-agent-logo.png') }}" alt="AOPOD Agent" style="width: 52px; height: 52px; border-radius: 12px; box-shadow: 0 4px 12px rgba(24, 165, 115, 0.2);">
+                    <img src="{{ file_exists(public_path('images/' . strtolower($brandName) . '-agent-logo.png')) ? asset('images/' . strtolower($brandName) . '-agent-logo.png') : asset('images/aopod-agent-logo.png') }}" alt="{{ $brandName }} Agent" style="width: 52px; height: 52px; border-radius: 12px; box-shadow: 0 4px 12px rgba(24, 165, 115, 0.2);">
                     <div>
                         <div class="d-flex align-items-center gap-2 flex-wrap">
-                            <h5 class="fw-bold text-dark mb-0">ระบบจัดการ AOPOD Agent ประจำโรงพยาบาล</h5>
+                            <h5 class="fw-bold text-dark mb-0">ระบบจัดการ {{ $brandName }} Agent ประจำโรงพยาบาล</h5>
                             <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2.5 py-1" style="font-size: 0.78rem; font-weight: 700;">
                                 <i class="fa-solid fa-code-branch me-1"></i> v{{ $latestAgentVersion }}
                             </span>
@@ -526,7 +529,7 @@
                                 </div>
                                 <div>
                                     <h5 class="fw-bold text-dark mb-1">ตั้งเวลาส่งข้อมูลอัตโนมัติ (Schedule Policy)</h5>
-                                    <p class="text-secondary small mb-0">กำหนดรอบเวลาที่ AOPOD Agent แต่ละโรงพยาบาลจะส่งข้อมูลเข้าสู่ระบบโดยอัตโนมัติ</p>
+                                    <p class="text-secondary small mb-0">กำหนดรอบเวลาที่ {{ $brandName }} Agent แต่ละโรงพยาบาลจะส่งข้อมูลเข้าสู่ระบบโดยอัตโนมัติ</p>
                                 </div>
                             </div>
 
@@ -988,10 +991,10 @@
                     <div class="text-muted small" id="tokenModalHospCode">รหัส: -</div>
                 </div>
 
-                <!-- 1. AOPOD Server URL -->
+                <!-- 1. Server URL -->
                 <div class="mb-3">
                     <label class="form-label fw-semibold text-secondary small">
-                        <i class="fa-solid fa-server text-primary me-1"></i> AOPOD Server URL (คัดลอกไปใส่ในช่อง AOPOD Server URL)
+                        <i class="fa-solid fa-server text-primary me-1"></i> {{ $brandName }} Server URL (คัดลอกไปใส่ในช่อง Server URL)
                     </label>
                     <div class="input-group">
                         <input type="text" class="form-control text-primary font-monospace bg-white" id="tokenModalServerUrl" value="{{ url('/') }}" readonly style="border-radius: 10px 0 0 10px; font-size: 0.88rem; font-weight: 600;">
@@ -1004,10 +1007,10 @@
                     </div>
                 </div>
 
-                <!-- 2. AOPOD API Token -->
+                <!-- 2. API Token -->
                 <div class="mb-3">
                     <label class="form-label fw-semibold text-secondary small">
-                        <i class="fa-solid fa-key text-success me-1"></i> AOPOD API Token (คัดลอกไปใส่ในช่อง AOPOD API Bearer Token)
+                        <i class="fa-solid fa-key text-success me-1"></i> {{ $brandName }} API Token (คัดลอกไปใส่ในช่อง API Bearer Token)
                     </label>
                     <div class="input-group">
                         <input type="text" class="form-control text-success font-monospace bg-white" id="tokenModalValue" readonly style="border-radius: 10px 0 0 10px; font-size: 0.88rem; font-weight: 600;">
@@ -1021,10 +1024,10 @@
                 </div>
 
                 <div class="p-3 bg-light bg-opacity-75 rounded-3 border small text-secondary">
-                    <i class="fa-solid fa-circle-info text-primary me-1"></i> <strong>วิธีเชื่อมต่อ AOPOD Agent:</strong>
+                    <i class="fa-solid fa-circle-info text-primary me-1"></i> <strong>วิธีเชื่อมต่อ {{ $brandName }} Agent:</strong>
                     <ol class="mb-0 ps-3 mt-1" style="line-height: 1.6;">
                         <li>คัดลอก <strong>Server URL</strong> และ <strong>API Token</strong> ข้างต้น</li>
-                        <li>เปิดโปรแกรม <strong>AOPOD Agent</strong> ที่เครื่อง รพ. นำไปวางในแท็บ <strong>"ตั้งค่าการเชื่อมต่อ"</strong> หมวดที่ 1 แล้วกดบันทึก</li>
+                        <li>เปิดโปรแกรม <strong>{{ $brandName }} Agent</strong> ที่เครื่อง รพ. นำไปวางในแท็บ <strong>"ตั้งค่าการเชื่อมต่อ"</strong> หมวดที่ 1 แล้วกดบันทึก</li>
                     </ol>
                 </div>
             </div>
@@ -1588,7 +1591,7 @@ function copyTextarea(id) {
 function handleRemoteUpdate(targetHcode, targetName) {
     Swal.fire({
         title: 'ยืนยันการส่งคำสั่งอัปเดต?',
-        html: `คุณต้องการสั่งให้ <b>${targetName}</b> ทำการอัปเดตตัวโปรแกรม <code>AOPOD-Agent.exe</code> เป็นเวอร์ชั่นล่าสุดจากเซิร์ฟเวอร์หรือไม่?<br><br><small class="text-muted"><i class="fa-solid fa-circle-info"></i> Agent ที่ออนไลน์อยู่จะดาวน์โหลดไฟล์และรีสตาร์ทตัวเองอัตโนมัติภายใน 1 นาที โดยค่าคอนฟิกเดิมไม่หาย</small>`,
+        html: `คุณต้องการสั่งให้ <b>${targetName}</b> ทำการอัปเดตตัวโปรแกรม <code>{{ $brandName }}-Agent.exe</code> เป็นเวอร์ชั่นล่าสุดจากเซิร์ฟเวอร์หรือไม่?<br><br><small class="text-muted"><i class="fa-solid fa-circle-info"></i> Agent ที่ออนไลน์อยู่จะดาวน์โหลดไฟล์และรีสตาร์ทตัวเองอัตโนมัติภายใน 1 นาที โดยค่าคอนฟิกเดิมไม่หาย</small>`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: '<i class="fa-solid fa-cloud-arrow-up me-1"></i> ยืนยันส่งคำสั่งอัปเดต',

@@ -86,8 +86,9 @@ class AgentWebController extends Controller
         $globalSchedule = \App\Models\AgentSchedule::getForHospital('ALL');
         $schedules = \App\Models\AgentSchedule::orderBy('hospcode')->get();
         $latestAgentVersion = self::getLatestAgentVersion();
+        $brandName = MainSetting::get('system_short_name', config('app.name', 'YSOPOD'));
 
-        return view('admin.agents', compact('agentList', 'settings', 'queries', 'queriesVersion', 'ppIcd10List', 'globalSchedule', 'schedules', 'latestAgentVersion'));
+        return view('admin.agents', compact('agentList', 'settings', 'queries', 'queriesVersion', 'ppIcd10List', 'globalSchedule', 'schedules', 'latestAgentVersion', 'brandName'));
     }
 
     /**
