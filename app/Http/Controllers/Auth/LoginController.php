@@ -22,12 +22,34 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
-        try {
-            if (Auth::guard('web')->attempt($credentials)) {
+        $user = \App\Models\User::where('email', $credentials['email'])->first();
+        if ($user) {
+            $authenticated = false;
+            try {
+                if (\Illuminate\Support\Facades\Hash::check($credentials['password'], $user->password)) {
+                    $authenticated = true;
+                }
+            } catch (\Throwable $e) {
+                // Legacy password format or non-bcrypt hash
+            }
+
+            // Fallback for legacy passwords (MD5, SHA1, or plain text)
+            if (!$authenticated) {
+                if (md5($credentials['password']) === $user->password ||
+                    sha1($credentials['password']) === $user->password ||
+                    $credentials['password'] === $user->password) {
+                    $authenticated = true;
+                    // Auto-upgrade to Bcrypt
+                    $user->password = \Illuminate\Support\Facades\Hash::make($credentials['password']);
+                    $user->save();
+                }
+            }
+
+            if ($authenticated) {
+                Auth::guard('web')->login($user);
                 $request->session()->regenerate();
 
                 $mophAlertActive = \App\Models\MainSetting::get('moph_alert_active', config('moph.alert.active', 'N'));
-                $user = Auth::guard('web')->user();
 
                 if ($mophAlertActive === 'Y' && !empty($user->cid)) {
                     session(['moph_alert_2fa_verified' => false]);
@@ -37,11 +59,6 @@ class LoginController extends Controller
                 session(['moph_alert_2fa_verified' => true]);
                 return redirect()->intended(route('manage.index'));
             }
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning('Login attempt error: ' . $e->getMessage());
-            return back()->withErrors([
-                'email' => 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
-            ])->onlyInput('email');
         }
 
         return back()->withErrors([

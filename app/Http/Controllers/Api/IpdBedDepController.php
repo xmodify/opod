@@ -98,7 +98,7 @@ public function ingest(Request $request)
         }
 
         $hospcode = $hospital->hospcode;
-        $superHospcodes = ['00025']; // ผู้ดูแลพิเศษ
+        $superHospcodes = ['00023', '00025']; // ผู้ดูแลพิเศษ
 
         $query = DB::table('ipd_bed_dep');
         if (!in_array($hospcode, $superHospcodes)) {

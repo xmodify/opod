@@ -283,8 +283,8 @@ class OpdController extends Controller
 
         $hospcode = $hospital->hospcode;
 
-        // ✅ รายชื่อ hospcode ที่ดูได้ทุก hospcode
-        $superHospcodes = ['00025']; // แก้ตามที่ต้องการ
+        // ✅ รายชื่อ hospcode ที่ดูได้ทุก hospcode (สสจ.ยโสธร 00023)
+        $superHospcodes = ['00023', '00025'];
 
         $start_date = $request->query('start_date') ?? Carbon::now()->subDays(10)->format('Y-m-d'); // 10 วันย้อนหลัง
         $end_date = $request->query('end_date') ?? Carbon::now()->format('Y-m-d'); // วันนี้

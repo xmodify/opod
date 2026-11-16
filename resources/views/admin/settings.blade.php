@@ -76,42 +76,196 @@
                     <div class="mt-4 pt-2">
                         <div class="p-4 bg-light rounded-4 border">
                             <div class="row g-4">
-                                {{-- Left Column: API info & URL --}}
-                                <div class="col-md-6">
-                                    <h5 class="fw-bold mb-3 text-dark"><i class="fa-solid fa-link text-primary me-2"></i> ลิงก์ API สำหรับดึงข้อมูลไปตรวจสอบที่ HOSxP ของแต่ละ รพ.</h5>
-                                    <p class="text-secondary mb-4" style="font-size: 0.9rem; line-height: 1.6;">โรงพยาบาลทั้ง 7 สามารถดึงข้อมูลการตายผ่าน API ด้านล่างนี้ โดยส่งคำขอแบบ **POST** และแนบ Token ประจำโรงพยาบาลมาใน **Authorization Header (Bearer token)** หรือแนบใน Body (<code>token</code>) เพื่อความปลอดภัยสูงสุด</p>
+                                {{-- Left Column: API info & List of Endpoints --}}
+                                <div class="col-lg-7 col-md-12">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="p-2 rounded-3" style="background: rgba(13, 110, 253, 0.1); color: #0d6efd;">
+                                            <i class="fa-solid fa-network-wired fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-0 text-dark">ลิงก์ API สำหรับดึงข้อมูลไปตรวจสอบที่ HOSxP ของแต่ละ รพ.</h5>
+                                            <span class="text-secondary small">บริการ API เชื่อมโยงข้อมูลระหว่างระบบกลางจังหวัด YSOPOD และโรงพยาบาลในเครือข่าย</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-secondary small mb-3" style="line-height: 1.6;">
+                                        โรงพยาบาลและหน่วยงานในจังหวัดยโสธร ทั้ง {{ $hospitals->count() }} แห่ง สามารถนำ API ด้านล่างนี้ไปเชื่อมต่อในโปรแกรมของ รพ. (เช่น HOSxP / Client APP) เพื่อดึงข้อมูลไปตรวจสอบ หรือสืบค้นข้อมูลสาเหตุการตาย โดยแนบ Token ประจำโรงพยาบาลใน <code>Authorization: Bearer &lt;Token&gt;</code> หรือ Request Body
+                                    </p>
                                     
-                                    <div class="mb-4">
-                                        <label class="form-label fw-semibold text-secondary" style="font-size: 0.95rem;">API Endpoint URL (POST Method)</label>
-                                        <div class="input-group">
-                                            <code class="form-control bg-white text-break d-flex align-items-center py-2 px-3 fs-6" id="api_endpoint_url" style="color: #0d6efd;">{{ url('/api/death-data') }}</code>
-                                            <button class="btn btn-primary px-4 fw-bold copy-api-btn" data-target="api_endpoint_url" type="button" style="border-radius: 0 12px 12px 0;">
-                                                <i class="fa-solid fa-copy me-2"></i> คัดลอกลิงก์ API
-                                            </button>
+                                    <div class="d-flex flex-column gap-3">
+                                        {{-- 1. Death Data API --}}
+                                        <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 fw-bold px-2 py-0.5" style="font-size: 0.75rem;">POST</span>
+                                                    <span class="fw-bold text-dark" style="font-size: 0.92rem;">1. ข้อมูลสาเหตุการตาย (Death Data)</span>
+                                                </div>
+                                                <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Authentication Token</span>
+                                            </div>
+                                            <p class="text-muted small mb-2" style="font-size: 0.8rem;">ดึงข้อมูลผู้เสียชีวิต เลขบัตร ปชช. วันที่เสียชีวิต และรหัสโรคสาเหตุการตาย (ICD-10) จากฐานข้อมูลกลางจังหวัด</p>
+                                            <div class="input-group input-group-sm">
+                                                <code class="form-control bg-light text-break py-1 px-2.5 fs-7" id="api_url_death" style="color: #0d6efd;">{{ url('/api/death-data') }}</code>
+                                                <button class="btn btn-outline-primary px-3 fw-bold copy-api-btn" data-target="api_url_death" type="button">
+                                                    <i class="fa-solid fa-copy me-1"></i> คัดลอก
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {{-- 2. OPD Verification API --}}
+                                        <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 fw-bold px-2 py-0.5" style="font-size: 0.75rem;">GET</span>
+                                                    <span class="fw-bold text-dark" style="font-size: 0.92rem;">2. ตรวจสอบข้อมูลบริการผู้ป่วยนอก (OPD Service)</span>
+                                                </div>
+                                                <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Bearer Token (Sanctum)</span>
+                                            </div>
+                                            <p class="text-muted small mb-2" style="font-size: 0.8rem;">ตรวจสอบยอดผู้ป่วยนอก ค่ารักษา ค่าแล็บ ค่ายา แยก 11 สิทธิ (รองรับ <code>?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD</code>)</p>
+                                            <div class="input-group input-group-sm">
+                                                <code class="form-control bg-light text-break py-1 px-2.5 fs-7" id="api_url_opd" style="color: #198754;">{{ url('/api/opd') }}</code>
+                                                <button class="btn btn-outline-success px-3 fw-bold copy-api-btn" data-target="api_url_opd" type="button">
+                                                    <i class="fa-solid fa-copy me-1"></i> คัดลอก
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {{-- 3. IPD Verification API --}}
+                                        <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 fw-bold px-2 py-0.5" style="font-size: 0.75rem;">GET</span>
+                                                    <span class="fw-bold text-dark" style="font-size: 0.92rem;">3. ตรวจสอบข้อมูลบริการผู้ป่วยใน (IPD Service)</span>
+                                                </div>
+                                                <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Bearer Token (Sanctum)</span>
+                                            </div>
+                                            <p class="text-muted small mb-2" style="font-size: 0.8rem;">ตรวจสอบจำนวน AN, วันนอนรวม, อัตราครองเตียง, CMI, AdjRW และค่ารักษาพยาบาล</p>
+                                            <div class="input-group input-group-sm">
+                                                <code class="form-control bg-light text-break py-1 px-2.5 fs-7" id="api_url_ipd" style="color: #198754;">{{ url('/api/ipd') }}</code>
+                                                <button class="btn btn-outline-success px-3 fw-bold copy-api-btn" data-target="api_url_ipd" type="button">
+                                                    <i class="fa-solid fa-copy me-1"></i> คัดลอก
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {{-- 4. Refer Verification API --}}
+                                        <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 fw-bold px-2 py-0.5" style="font-size: 0.75rem;">GET</span>
+                                                    <span class="fw-bold text-dark" style="font-size: 0.92rem;">4. ตรวจสอบสถิติการส่งต่อผู้ป่วย (Refer)</span>
+                                                </div>
+                                                <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Bearer Token (Sanctum)</span>
+                                            </div>
+                                            <p class="text-muted small mb-2" style="font-size: 0.8rem;">สถิติการส่งต่อ Refer In / Refer Out / Refer Back ทั้งในและนอกจังหวัด ทั้งผู้ป่วยนอกและใน</p>
+                                            <div class="input-group input-group-sm">
+                                                <code class="form-control bg-light text-break py-1 px-2.5 fs-7" id="api_url_refer" style="color: #198754;">{{ url('/api/refer') }}</code>
+                                                <button class="btn btn-outline-success px-3 fw-bold copy-api-btn" data-target="api_url_refer" type="button">
+                                                    <i class="fa-solid fa-copy me-1"></i> คัดลอก
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {{-- 5. Operation Verification API --}}
+                                        <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 fw-bold px-2 py-0.5" style="font-size: 0.75rem;">GET</span>
+                                                    <span class="fw-bold text-dark" style="font-size: 0.92rem;">5. ตรวจสอบสถิติการทำหัตถการผ่าตัด (Operation)</span>
+                                                </div>
+                                                <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Bearer Token (Sanctum)</span>
+                                            </div>
+                                            <p class="text-muted small mb-2" style="font-size: 0.8rem;">สถิติจำนวนเคสการผ่าตัดรายวันของโรงพยาบาล</p>
+                                            <div class="input-group input-group-sm">
+                                                <code class="form-control bg-light text-break py-1 px-2.5 fs-7" id="api_url_operation" style="color: #198754;">{{ url('/api/operation') }}</code>
+                                                <button class="btn btn-outline-success px-3 fw-bold copy-api-btn" data-target="api_url_operation" type="button">
+                                                    <i class="fa-solid fa-copy me-1"></i> คัดลอก
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {{-- 6. Bed Department Status API --}}
+                                        <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 fw-bold px-2 py-0.5" style="font-size: 0.75rem;">GET</span>
+                                                    <span class="fw-bold text-dark" style="font-size: 0.92rem;">6. สถานะเตียงรายแผนก Realtime (Bed Department)</span>
+                                                </div>
+                                                <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Bearer Token (Sanctum)</span>
+                                            </div>
+                                            <p class="text-muted small mb-2" style="font-size: 0.8rem;">จำนวนเตียงว่างและครองเตียง Realtime แยกตาม 42 แผนกมาตรฐาน</p>
+                                            <div class="input-group input-group-sm">
+                                                <code class="form-control bg-light text-break py-1 px-2.5 fs-7" id="api_url_bed_dep" style="color: #198754;">{{ url('/api/ipd_bed_dep') }}</code>
+                                                <button class="btn btn-outline-success px-3 fw-bold copy-api-btn" data-target="api_url_bed_dep" type="button">
+                                                    <i class="fa-solid fa-copy me-1"></i> คัดลอก
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {{-- 7. OPOH Doctors Lookup API --}}
+                                        <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge bg-info bg-opacity-10 text-dark border border-info border-opacity-25 fw-bold px-2 py-0.5" style="font-size: 0.75rem;">GET</span>
+                                                    <span class="fw-bold text-dark" style="font-size: 0.92rem;">7. ทำเนียบแพทย์เฉพาะทาง OPOH (Doctors Lookup)</span>
+                                                </div>
+                                                <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Public / Agent</span>
+                                            </div>
+                                            <p class="text-muted small mb-2" style="font-size: 0.8rem;">ดึงรายชื่อแพทย์เฉพาะทาง, เลข ว., CID, และสาขาความเชี่ยวชาญ ไปตั้งค่าหรือตรวจสอบใน HOSxP</p>
+                                            <div class="input-group input-group-sm">
+                                                <code class="form-control bg-light text-break py-1 px-2.5 fs-7" id="api_url_opoh_doctors" style="color: #0284c7;">{{ url('/api/agent/opoh-doctors') }}</code>
+                                                <button class="btn btn-outline-info px-3 fw-bold copy-api-btn" data-target="api_url_opoh_doctors" type="button">
+                                                    <i class="fa-solid fa-copy me-1"></i> คัดลอก
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {{-- 8. PP ICD-10 Lookup API --}}
+                                        <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge bg-info bg-opacity-10 text-dark border border-info border-opacity-25 fw-bold px-2 py-0.5" style="font-size: 0.75rem;">GET</span>
+                                                    <span class="fw-bold text-dark" style="font-size: 0.92rem;">8. รหัสโรคส่งเสริมสุขภาพ (PP ICD-10 Lookup)</span>
+                                                </div>
+                                                <span class="badge bg-light text-muted border" style="font-size: 0.72rem;">Public / Agent</span>
+                                            </div>
+                                            <p class="text-muted small mb-2" style="font-size: 0.8rem;">รายการรหัส ICD-10 กลุ่มงานส่งเสริมป้องกันโรค สำหรับใช้คัดกรองประเภทผู้ป่วย OP vs PP</p>
+                                            <div class="input-group input-group-sm">
+                                                <code class="form-control bg-light text-break py-1 px-2.5 fs-7" id="api_url_pp_icd10" style="color: #0284c7;">{{ url('/api/agent/lookups/icd10') }}</code>
+                                                <button class="btn btn-outline-info px-3 fw-bold copy-api-btn" data-target="api_url_pp_icd10" type="button">
+                                                    <i class="fa-solid fa-copy me-1"></i> คัดลอก
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {{-- Right Column: Active Hospitals Table --}}
-                                <div class="col-md-6">
-                                    <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-hospital text-slate-500 me-2"></i> รายชื่อโรงพยาบาลที่มีสิทธิ์ใช้งาน</h6>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover align-middle mb-0 bg-white border" style="font-size: 0.9rem;">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th style="width: 60%;">ชื่อโรงพยาบาล</th>
-                                                    <th style="width: 40%;">รหัส รพ. (hospcode)</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($hospitals as $hosp)
-                                                <tr>
-                                                    <td class="fw-bold text-dark">{{ $hosp->name }}</td>
-                                                    <td><code>{{ $hosp->hospcode }}</code></td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                <div class="col-lg-5 col-md-12">
+                                    <div class="bg-white p-3 p-md-4 rounded-3 border shadow-sm h-100">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-hospital text-success me-2"></i> โรงพยาบาลในเครือข่าย ({{ $hospitals->count() }} แห่ง)</h6>
+                                            <a href="{{ route('manage.agents.index') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3" style="font-size: 0.78rem;">
+                                                <i class="fa-solid fa-key me-1"></i> ดู API Token
+                                            </a>
+                                        </div>
+                                        <p class="text-secondary small mb-3" style="line-height: 1.5;">รหัสโรงพยาบาลที่ได้รับอนุญาตให้ใช้ Token ยืนยันตัวตนเพื่อสืบค้นข้อมูลผ่าน API</p>
+                                        <div class="table-responsive" style="max-height: 700px; overflow-y: auto;">
+                                            <table class="table table-hover align-middle mb-0 bg-white border" style="font-size: 0.88rem;">
+                                                <thead class="table-light sticky-top">
+                                                    <tr>
+                                                        <th style="width: 65%;">ชื่อโรงพยาบาล</th>
+                                                        <th style="width: 35%;">รหัส (hospcode)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($hospitals as $hosp)
+                                                    <tr>
+                                                        <td class="fw-bold text-dark">{{ $hosp->name }}</td>
+                                                        <td><code class="text-primary">{{ $hosp->hospcode }}</code></td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

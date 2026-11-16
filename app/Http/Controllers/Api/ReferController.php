@@ -137,7 +137,7 @@ class ReferController extends Controller
         }
 
         $hospcode = $hospital->hospcode ?? $hospital->hcode;
-        $superHospcodes = ['00025'];
+        $superHospcodes = ['00023', '00025'];
 
         $start_date = $request->query('start_date') ?? Carbon::now()->subDays(10)->format('Y-m-d');
         $end_date = $request->query('end_date') ?? Carbon::now()->format('Y-m-d');
