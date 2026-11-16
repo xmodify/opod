@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'การจัดการระบบ - AOPOD')
+@section('title', 'การจัดการระบบ - ' . config('app.app_abbr', 'YSOPOD'))
 @section('header_title', 'Dashboard')
 
 @section('content')
@@ -10,7 +10,7 @@
         <div class="glass-card p-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-3" style="background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(33, 192, 139, 0.1) 100%);">
             <div class="text-center text-md-start">
                 <h3 class="fw-bold mb-1" style="color: var(--admin-primary); word-break: break-word;">ยินดีต้อนรับกลับมา, {{ Auth::user()->name }}! 👋</h3>
-                <p class="text-secondary mb-0">ระบบการจัดการข้อมูล : AOPOD (Amnatcharoen One Province One Data)</p>
+                <p class="text-secondary mb-0">ระบบการจัดการข้อมูล : {{ config('app.app_abbr', 'YSOPOD') }} ({{ config('app.province_name', 'Yasothon') }} One Province One Data)</p>
             </div>
             <div>
                 <a href="{{ url('web') }}" class="btn btn-outline-primary px-4 py-2" style="border-radius: 12px; font-weight: 500;">
@@ -28,7 +28,7 @@
             </div>
             <div>
                 <h6 class="text-secondary mb-1">ผู้ใช้ทั้งหมดในระบบ</h6>
-                <h3 class="fw-bold mb-0">1</h3>
+                <h3 class="fw-bold mb-0">{{ \App\Models\User::count() }}</h3>
             </div>
         </div>
     </div>
@@ -40,7 +40,7 @@
             </div>
             <div>
                 <h6 class="text-secondary mb-1">โรงพยาบาลในเครือข่าย</h6>
-                <h3 class="fw-bold mb-0">7</h3>
+                <h3 class="fw-bold mb-0">{{ \App\Models\Hospital::count() }}</h3>
             </div>
         </div>
     </div>
