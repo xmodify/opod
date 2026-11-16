@@ -15,7 +15,7 @@ class DeathApiController extends Controller
     public function getDeathData(Request $request)
     {
         // Get token from Authorization header or request body
-        $token = $request->header('Authorization') ?? $request->input('token');
+        $token = $request->header('Authorization') ?? $request->input('token') ?? $request->input('api_token');
         if ($token) {
             if (str_starts_with($token, 'Bearer ')) {
                 $token = substr($token, 7);
@@ -29,10 +29,18 @@ class DeathApiController extends Controller
             ], 401);
         }
 
-        // Validate token in hospitals table
+        // 1. Validate token directly in hospitals table
         $hospital = Hospital::where('token_api', $token)->where('is_active', true)->first();
 
-        // Fallback to Sanctum auth if needed
+        // 2. Validate via Sanctum PersonalAccessToken
+        if (!$hospital && class_exists(\Laravel\Sanctum\PersonalAccessToken::class)) {
+            $accessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+            if ($accessToken && $accessToken->tokenable && ($accessToken->tokenable->is_active ?? true)) {
+                $hospital = $accessToken->tokenable;
+            }
+        }
+
+        // 3. Fallback to Sanctum auth if needed
         if (!$hospital && auth('sanctum')->check()) {
             $hospital = auth('sanctum')->user();
         }

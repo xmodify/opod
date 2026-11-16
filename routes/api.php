@@ -50,4 +50,4 @@ Route::get('/agent/lookups/icd10', [\App\Http\Controllers\Api\AgentApiController
 Route::get('/agent/opoh-doctors', [\App\Http\Controllers\Api\OpohApiController::class, 'getDoctors']);
 Route::get('/agent/download-latest', [\App\Http\Controllers\Web\AgentWebController::class, 'downloadExe']);
 
-Route::post('/death-data', [\App\Http\Controllers\Api\DeathApiController::class, 'getDeathData']);
+Route::match(['GET', 'POST'], '/death-data', [\App\Http\Controllers\Api\DeathApiController::class, 'getDeathData']);
