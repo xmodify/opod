@@ -1,23 +1,40 @@
-################## Almalinux 9.4 (AOPOD Setup Guide) ###################
+################## AlmaLinux 9 (YSOPOD Setup & Production Guide) ###################
 
-คู่มือการติดตั้งระบบ AOPOD (Laravel 12 / PHP 8.2) บน AlmaLinux 9 
-โดยอ้างอิงโครงสร้างสิทธิ์การใช้งานแบบเดียวกับโครงการที่ผ่านการรับรองแล้ว (Apache Owner Model)
+คู่มือการติดตั้งและอัปเดตระบบ YSOPOD (Laravel 12 / PHP 8.2) บน AlmaLinux 9 
+โครงสร้างสิทธิ์การใช้งานแบบ Apache Owner Model เพื่อความปลอดภัยสูงสุด
+
+================================================================================
+สารบัญ
+1. เตรียมระบบพื้นฐาน
+2. ติดตั้ง Apache + PHP 8.2 (REMI Repository)
+3. ติดตั้ง Composer
+4. Clone หรือ Setup โปรเจกต์ YSOPOD
+5. กำหนดสิทธิ์โฟลเดอร์ (File Permissions & SELinux)
+6. ติดตั้ง Dependencies (Composer & Node.js)
+7. ตั้งค่าสภาพแวดล้อม (.env) และ Database Migration
+8. ตั้งค่า Apache Web Server (Direct VirtualHost หรือ Reverse Proxy)
+9. คำสั่งสำหรับดึงโค้ดอัปเดตระบบในครั้งถัดไป (Force Fetch & Reset)
+================================================================================
 
 --------------------------------------------------------------------------------
-📌 1. เตรียมระบบพื้นฐาน (ถ้ายังไม่ได้ลง)
+📌 1. เตรียมระบบพื้นฐาน (หากยังไม่ได้ลง)
 --------------------------------------------------------------------------------
 sudo dnf update -y
-sudo dnf install -y git unzip
+sudo dnf install -y git unzip curl policycoreutils-python-utils
 
 --------------------------------------------------------------------------------
-📌 2. ติดตั้ง Apache + PHP (Laravel 12 แนะนำ PHP >= 8.2)
+📌 2. ติดตั้ง Apache + PHP 8.2
 --------------------------------------------------------------------------------
 sudo dnf install -y epel-release
 sudo dnf install -y https://rpms.remirepo.net/enterprise/remi-release-9.rpm
 
-# เปิดใช้งานโมดูล PHP 8.2 จาก REMI Repository (ต้องการ PHP >= 8.2 สำหรับ Laravel 12)
+# เปิดใช้งานโมดูล PHP 8.2 จาก REMI Repository (Laravel 12 ต้องการ PHP >= 8.2)
 sudo dnf module enable -y php:remi-8.2
-sudo dnf install -y php php-cli php-common php-mbstring php-xml php-bcmath php-curl php-zip php-mysqlnd php-pdo php-tokenizer php-opcache unzip git curl
+sudo dnf install -y php php-cli php-common php-mbstring php-xml php-bcmath php-curl \
+    php-zip php-mysqlnd php-pdo php-tokenizer php-opcache httpd
+
+sudo systemctl enable httpd
+sudo systemctl start httpd
 
 --------------------------------------------------------------------------------
 📌 3. ติดตั้ง Composer
@@ -29,105 +46,153 @@ sudo mv composer.phar /usr/local/bin/composer
 composer --version
 
 --------------------------------------------------------------------------------
-📌 4. Clone Project ลง /var/www/html/aopod
+📌 4. ติดตั้งโปรเจกต์ YSOPOD ลงใน /var/www/html/ysopod
 --------------------------------------------------------------------------------
+# กรณีที่ 1: ติดตั้งใหม่เอี่ยม (Fresh Clone)
 cd /var/www/html
-sudo git clone https://github.com/xmodify/aopod.git aopod
+sudo git clone https://github.com/xmodify/opod.git ysopod
+
+# กรณีที่ 2: มีโฟลเดอร์อยู่แล้วแต่ต้องการซิงก์ Git ใหม่หมด
+# sudo -u apache git -C /var/www/html/ysopod init
+# sudo -u apache git -C /var/www/html/ysopod remote add origin https://github.com/xmodify/opod.git
+# sudo -u apache git -C /var/www/html/ysopod fetch origin
+# sudo -u apache git -C /var/www/html/ysopod reset --hard origin/main
 
 --------------------------------------------------------------------------------
-📌 5. ตั้ง permission ให้ Apache ใช้งานได้
+📌 5. กำหนดสิทธิ์ความปลอดภัย (Apache Owner Model & SELinux)
 --------------------------------------------------------------------------------
-sudo chown -R apache:apache /var/www/html/aopod
-sudo chmod -R 775 /var/www/html/aopod
-sudo chmod -R 775 /var/www/html/aopod/storage
-sudo chmod -R 775 /var/www/html/aopod/bootstrap/cache
+sudo chown -R apache:apache /var/www/html/ysopod
+sudo chmod -R 775 /var/www/html/ysopod/storage
+sudo chmod -R 775 /var/www/html/ysopod/bootstrap/cache
+
+# ตั้งค่า SELinux ให้ Apache สามารถเขียนไฟล์ใน storage และ cache ได้
+sudo setsebool -P httpd_can_network_connect 1
+sudo setsebool -P httpd_can_network_connect_db 1
+sudo chcon -R -t httpd_sys_rw_content_t /var/www/html/ysopod/storage
+sudo chcon -R -t httpd_sys_rw_content_t /var/www/html/ysopod/bootstrap/cache
 
 --------------------------------------------------------------------------------
-📌 6. ติดตั้ง Laravel dependencies
+📌 6. ติดตั้ง Dependencies และ Build Frontend Assets
 --------------------------------------------------------------------------------
-cd /var/www/html/aopod
-sudo -u apache /usr/local/bin/composer install
-
---------------------------------------------------------------------------------
-📌 7. ตั้งค่าไฟล์ .env
---------------------------------------------------------------------------------
-sudo -u apache cp .env.example .env
-sudo -u apache php artisan key:generate
-sudo nano .env
-
---------------------------------------------------------------------------------
-📌 8. git pull ผ่าน User (คำสั่งอัปเดตและเคลียร์แคชระบบ)
---------------------------------------------------------------------------------
-sudo -u apache git -C /var/www/html/aopod reset --hard
-sudo -u apache git -C /var/www/html/aopod pull origin main
+# 6.1 ติดตั้ง Composer packages สำหรับ Production
+cd /var/www/html/ysopod
 sudo -u apache /usr/local/bin/composer install --no-dev --optimize-autoloader
-sudo -u apache rm -f /var/www/html/aopod/bootstrap/cache/*.php
-sudo -u apache php artisan optimize:clear
-	
---------------------------------------------------------------------------------
-📌 9. ตั้งค่า Apache Web Server
---------------------------------------------------------------------------------
-sudo dnf install -y httpd
-sudo systemctl enable httpd
-sudo systemctl start httpd
 
---------------------------------------------------------------------------------
-📌 10. Node.js Setup (สำหรับสร้างไฟล์ Frontend assets):
---------------------------------------------------------------------------------
+# 6.2 ติดตั้ง Node.js 20 และ Build Assets
 sudo dnf module reset nodejs -y
 sudo dnf module enable nodejs:20 -y
 sudo dnf install -y nodejs
-cd /var/www/html/aopod
+
+cd /var/www/html/ysopod
 sudo -u apache npm install
 sudo -u apache npm run build
 
-###########################################################
-# 11. การตั้งค่าแบบ Option B (แนะนำ - เชื่อมพอร์ตเสมือนผ่าน Proxy)
-# * ป้องกันพอร์ตชนกัน: rims ใช้พอร์ต 8883, โครงการ aopod จึงใช้พอร์ต 8884 *
-###########################################################
+--------------------------------------------------------------------------------
+📌 7. ตั้งค่าไฟล์ .env และ Database Migration
+--------------------------------------------------------------------------------
+cd /var/www/html/ysopod
 
-1. แก้ไขไฟล์ VirtualHost ของพอร์ต 8884 (เช่น /etc/httpd/conf.d/aopod.conf):
+# คัดลอกและสร้าง APP_KEY (ทำเฉพาะครั้งแรกที่ติดตั้ง)
+sudo -u apache cp .env.example .env
+sudo -u apache php artisan key:generate
+
+# แก้ไขไฟล์ .env ตามสภาพแวดล้อม Production จริง
+sudo nano .env
+
+# --- ตัวอย่างค่าใน .env สำหรับ Production ---
+# APP_NAME="YSOPOD"
+# APP_ENV=production
+# APP_DEBUG=false
+# APP_URL=http://192.168.0.4/ysopod
+# 
+# DB_CONNECTION=mysql
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=ysopod
+# DB_USERNAME=ysopod_user
+# DB_PASSWORD=your_secure_password
+# ---------------------------------------------
+
+# รัน Database Migration
+sudo -u apache php artisan migrate --force
+
+# สร้าง Symbolic Link สำหรับ Storage
+sudo -u apache php artisan storage:link
+
+# เคลียร์และแคช Config/Route/View
+sudo -u apache rm -f bootstrap/cache/*.php
+sudo -u apache php artisan optimize:clear
+sudo -u apache php artisan config:cache
+sudo -u apache php artisan route:cache
+sudo -u apache php artisan view:cache
+
+--------------------------------------------------------------------------------
+📌 8. การตั้งค่า Apache Web Server
+--------------------------------------------------------------------------------
+
+### รูปแบบ: เชื่อมต่อผ่าน Reverse Proxy / ซับพาธ /ysopod (พอร์ต 8884)
+(เหมาะสำหรับเซิร์ฟเวอร์ที่มีหลายระบบ เช่น rims พอร์ต 8883 และ ysopod พอร์ต 8884)
+
+1. สร้างไฟล์ VirtualHost สำหรับ ysopod:
+   sudo nano /etc/httpd/conf.d/ysopod.conf
+
+   -------------------------------------------------
    Listen 8884
    <VirtualHost *:8884>
        ServerName 192.168.0.4
-       Alias /aopod "/var/www/html/aopod/public"
-       DocumentRoot "/var/www/html/aopod/public"
-       <Directory "/var/www/html/aopod/public">
+       Alias /ysopod "/var/www/html/ysopod/public"
+       DocumentRoot "/var/www/html/ysopod/public"
+
+       <Directory "/var/www/html/ysopod/public">
            Options FollowSymLinks
            AllowOverride All
            Require all granted
-           FallbackResource /aopod/index.php
+           FallbackResource /ysopod/index.php
        </Directory>
-   </VirtualHost>
 
-2. แก้ไขไฟล์ Proxy (พอร์ต 80) ในไฟล์ config หลักของ Apache เพื่อชี้ลิ้งค์ภายนอก:
+       ErrorLog /var/log/httpd/ysopod_error.log
+       CustomLog /var/log/httpd/ysopod_access.log combined
+   </VirtualHost>
+   -------------------------------------------------
+
+2. แก้ไขไฟล์ Proxy หลัก (พอร์ต 80) เพื่อเชื่อมเส้นทาง /ysopod:
    <VirtualHost *:80>
        ServerName 192.168.0.4
 
-       # แก้ไขปัญหา 404 ด้วย Location Block สำหรับ aopod
-       <Location /aopod>
-           ProxyPass http://127.0.0.1:8884/aopod
-           ProxyPassReverse http://127.0.0.1:8884/aopod
+       <Location /ysopod>
+           ProxyPass http://127.0.0.1:8884/ysopod
+           ProxyPassReverse http://127.0.0.1:8884/ysopod
        </Location>
        
-       ProxyPassReverseCookiePath /aopod /aopod
+       ProxyPassReverseCookiePath /ysopod /ysopod
    </VirtualHost>
 
-3. คำสั่งสำคัญ เพื่อไม่ให้ติด 404 (SELinux และ Firewall):
-   sudo setsebool -P httpd_can_network_connect 1
-   sudo semanage port -a -t http_port_t -p tcp 8884
+3. เปิดพอร์ต Firewall และ SELinux:
+   sudo semanage port -a -t http_port_t -p tcp 8884 2>/dev/null || sudo semanage port -m -t http_port_t -p tcp 8884
    sudo firewall-cmd --permanent --add-port=8884/tcp
    sudo firewall-cmd --reload
-
-4. ตั้งค่าในไฟล์ .env บนเซิร์ฟเวอร์จริง:
-   APP_URL=http://192.168.0.4/aopod
-
-5. รีสตาร์ท Apache:
    sudo systemctl restart httpd
 
 --------------------------------------------------------------------------------
-📂 ไฟล์แนบ /public/.htaccess มาตรฐานความปลอดภัยสูง:
+📌 9. สำหรับการดึงอัปเดตระบบในครั้งถัด ๆ ไป (Update / Deploy Script)
 --------------------------------------------------------------------------------
+เมื่อมีการ Push โค้ดใหม่ขึ้น GitHub และต้องการอัปเดต Production ให้รันชุดคำสั่งนี้:
+
+cd /var/www/html/ysopod
+sudo -u apache git fetch origin
+sudo -u apache git reset --hard origin/main
+sudo -u apache /usr/local/bin/composer install --no-dev --optimize-autoloader
+sudo -u apache php artisan migrate --force
+sudo -u apache rm -f bootstrap/cache/*.php
+sudo -u apache php artisan optimize:clear
+sudo -u apache php artisan config:cache
+sudo -u apache php artisan route:cache
+sudo -u apache php artisan view:cache
+sudo systemctl restart httpd
+
+================================================================================
+📂 ไฟล์แนบ /public/.htaccess มาตรฐาน Laravel
+================================================================================
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-d
