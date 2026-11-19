@@ -9,7 +9,7 @@ import (
 
 const (
 	runKeyPath = `Software\Microsoft\Windows\CurrentVersion\Run`
-	appName    = "AOPODAgent"
+	appName    = "YSOPODAgent"
 )
 
 // Enable registers the current executable in HKCU\...\Run to launch on Windows startup.

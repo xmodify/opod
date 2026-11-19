@@ -78,7 +78,7 @@ func (s *Server) Start(port int) error {
 	})
 
 	addr := fmt.Sprintf("0.0.0.0:%d", port)
-	scheduler.AddLog("INFO", fmt.Sprintf("AOPOD Agent Web GUI เปิดให้บริการที่ http://localhost:%d", port))
+	scheduler.AddLog("INFO", fmt.Sprintf("YSOPOD Agent Web GUI เปิดให้บริการที่ http://localhost:%d", port))
 
 	return http.ListenAndServe(addr, mux)
 }

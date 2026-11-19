@@ -189,16 +189,15 @@ function initSettingsModal() {
       if (val) hcode = val;
     }
 
-    const baseStr = String.fromCharCode(65, 111, 112, 111, 100); // "Aopod"
     const allowed = [
-      baseStr + '2026',                // Aopod2026
-      baseStr.toLowerCase() + '2026',  // aopod2026
-      baseStr,                          // Aopod
-      baseStr.toLowerCase()             // aopod
+      'Ysopod2026', 'ysopod2026', 'Ysopod', 'ysopod',
+      'Aopod2026', 'aopod2026', 'Aopod', 'aopod',
+      'Opod2026', 'opod2026', 'Opod', 'opod',
+      'admin1234', 'admin'
     ];
     if (hcode) {
-      allowed.push(baseStr + hcode);                // Aopod<hcode>
-      allowed.push(baseStr.toLowerCase() + hcode);  // aopod<hcode>
+      allowed.push('Ysopod' + hcode, 'ysopod' + hcode);
+      allowed.push('Aopod' + hcode, 'aopod' + hcode);
     }
 
     const cleanInput = inputPass.toLowerCase();

@@ -119,7 +119,7 @@ func PerformSelfUpdate(downloadURL, targetVersion, taskID string) error {
 
 	// 1. Download to temporary file
 	tempDir := os.TempDir()
-	tempExe := filepath.Join(tempDir, fmt.Sprintf("AOPOD-Agent-update-%d.exe", time.Now().Unix()))
+	tempExe := filepath.Join(tempDir, fmt.Sprintf("YSOPOD-Agent-update-%d.exe", time.Now().Unix()))
 
 	client := &http.Client{
 		Timeout: 90 * time.Second,
@@ -227,13 +227,13 @@ func PerformSelfUpdate(downloadURL, targetVersion, taskID string) error {
 	}
 	_ = os.Remove(tempExe)
 
-	logMsg("SUCCESS", "[Auto-Update] ✅ สลับไฟล์โปรแกรมสำเร็จ กำลังเริ่มต้นการทำงานของ AOPOD-Agent เวอร์ชั่นใหม่...")
+	logMsg("SUCCESS", "[Auto-Update] ✅ สลับไฟล์โปรแกรมสำเร็จ กำลังเริ่มต้นการทำงานของ YSOPOD-Agent เวอร์ชั่นใหม่...")
 
 	// 4. Release mutex before exiting
 	singleinstance.Release()
 
 	// 5. Launch new binary via temporary batch script after 2s delay
-	batPath := filepath.Join(os.TempDir(), "aopod_restart.bat")
+	batPath := filepath.Join(os.TempDir(), "ysopod_restart.bat")
 	batContent := fmt.Sprintf("@echo off\r\ntimeout /t 2 /nobreak >nul\r\nstart \"\" \"%s\"\r\ndel \"%%~f0\"\r\n", currentExe)
 	_ = os.WriteFile(batPath, []byte(batContent), 0755)
 

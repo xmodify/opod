@@ -63,7 +63,7 @@ func main() {
 
 	scheduler.InitLogger()
 	scheduler.CleanOldLogs(30)
-	log.Println("Starting AOPOD Agent process...")
+	log.Println("Starting YSOPOD Agent process...")
 
 	var isServiceMode bool
 	var isAutoStart bool
@@ -76,9 +76,9 @@ func main() {
 	}
 
 	svcConfig := &service.Config{
-		Name:        "AOPODAgent",
-		DisplayName: "AOPOD Hospital Sync Agent",
-		Description: "AOPOD Automatic Hospital Data Synchronization Agent for HOSxP and AOPOD Server",
+		Name:        "YSOPODAgent",
+		DisplayName: "YSOPOD Hospital Sync Agent",
+		Description: "YSOPOD Automatic Hospital Data Synchronization Agent for HOSxP and YSOPOD Server",
 		Arguments:   []string{"--service"},
 	}
 
@@ -121,7 +121,7 @@ func main() {
 
 		case "test-api":
 			cfg, _ := config.Load()
-			fmt.Printf("🔍 Testing connection to AOPOD Server (%s)...\n", cfg.Hospital.ServerURL)
+			fmt.Printf("🔍 Testing connection to YSOPOD Server (%s)...\n", cfg.Hospital.ServerURL)
 			res, err := sender.TestApiConnection(cfg.Hospital.ServerURL, cfg.Hospital.Token, cfg.Hospital.Code)
 			if err != nil {
 				fmt.Printf("❌ Server connection failed: %v\n", err)
@@ -159,7 +159,7 @@ func main() {
 
 	// Interactive / Standalone Desktop Mode with System Tray & Single Instance Protection
 	// 1. Single Instance Protection (Prevent opening duplicate instances)
-	if !singleinstance.Lock("Local\\AOPOD_AGENT_SINGLE_INSTANCE_MUTEX") {
+	if !singleinstance.Lock("Local\\YSOPOD_AGENT_SINGLE_INSTANCE_MUTEX") {
 		log.Println("Another instance is already running. Opening browser and exiting duplicate instance.")
 		cfg, _ := config.Load()
 		port := cfg.Web.Port
@@ -180,7 +180,7 @@ func main() {
 	}
 	guiURL := fmt.Sprintf("http://localhost:%d", port)
 
-	log.Printf("Starting AOPOD Agent on port %d...\n", port)
+	log.Printf("Starting YSOPOD Agent on port %d...\n", port)
 
 	// 2. Ensure Windows Auto-Start (Starts automatically whenever Windows boots/restarts)
 	autostart.EnsureAutoStart()

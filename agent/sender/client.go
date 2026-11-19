@@ -217,7 +217,7 @@ func TestApiConnection(serverURL, token, hospcode string) (map[string]interface{
 	_ = json.Unmarshal(body, &resData)
 
 	if resp.StatusCode == http.StatusOK {
-		msg := "เชื่อมต่อเซิร์ฟเวอร์ AOPOD และยืนยัน Token สำเร็จ"
+		msg := "เชื่อมต่อเซิร์ฟเวอร์ YSOPOD และยืนยัน Token สำเร็จ"
 		if serverMsg, ok := resData["message"].(string); ok && serverMsg != "" {
 			msg = serverMsg
 		}

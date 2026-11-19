@@ -423,7 +423,7 @@ func PerformBedSync() (*sender.SyncSummary, error) {
 	return summary, nil
 }
 
-// SendHeartbeat sends live status to central AOPOD server.
+// SendHeartbeat sends live status to central YSOPOD server.
 func SendHeartbeat(lastSummary *sender.SyncSummary) {
 	cfg := config.Get()
 	if cfg.Hospital.ServerURL == "" || cfg.Hospital.Token == "" {
@@ -497,7 +497,7 @@ func SendHeartbeat(lastSummary *sender.SyncSummary) {
 	}
 }
 
-// PollRemoteTasks polls AOPOD server for any remote sync or update commands.
+// PollRemoteTasks polls YSOPOD server for any remote sync or update commands.
 func PollRemoteTasks() {
 	cfg := config.Get()
 	if cfg.Hospital.ServerURL == "" || cfg.Hospital.Token == "" {

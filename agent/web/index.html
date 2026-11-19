@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AOPOD : Amnatcharoen One Province One Data</title>
+  <title>YSOPOD : Yasothon One Province One Data</title>
   <link rel="icon" type="image/png" href="/images/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/css/flatpickr.min.css">
@@ -15,15 +15,15 @@
   <!-- Compact Header Area -->
   <header class="agent-header">
     <div class="logo-area">
-      <img src="/images/logo.png" alt="AOPOD Agent" class="logo-img" style="width: 44px; height: 44px; border-radius: 12px; box-shadow: 0 4px 14px rgba(24, 165, 115, 0.25);">
+      <img src="/images/logo.png" alt="YSOPOD Agent" class="logo-img" style="width: 44px; height: 44px; border-radius: 12px; box-shadow: 0 4px 14px rgba(24, 165, 115, 0.25);">
       <div class="logo-title">
-        <h2 id="mainTitle">AOPOD : Amnatcharoen One Province One Data</h2>
+        <h2 id="mainTitle">YSOPOD : Yasothon One Province One Data</h2>
         <p>โปรแกรมส่งข้อมูลผู้ป่วยนอก ผู้ป่วยใน ส่งต่อ ผ่าตัด และเตียง ประจำโรงพยาบาล</p>
       </div>
     </div>
     <div class="header-badges">
       <span class="badge badge-online" id="statusBadge"><i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> พร้อมทำงาน</span>
-      <span class="badge badge-version" id="versionBadge">v1.0.3</span>
+      <span class="badge badge-version" id="versionBadge">v1.0.0</span>
       <button type="button" class="btn-gear" id="btnOpenSettings" title="ตั้งค่าการเชื่อมต่อระบบ">
         <i class="fa-solid fa-gear"></i>
       </button>
@@ -51,7 +51,7 @@
       <div class="status-box">
         <div class="status-icon server"><i class="fa-solid fa-cloud"></i></div>
         <div class="status-info">
-          <h4>AOPOD Server</h4>
+          <h4>YSOPOD Server</h4>
           <p id="serverStatusText">กำลังตรวจสอบ...</p>
         </div>
       </div>
@@ -75,7 +75,7 @@
     <div class="glass-card">
       <h3 class="card-title"><i class="fa-solid fa-paper-plane"></i> ส่งข้อมูลบริการเข้าเซิร์ฟเวอร์กลาง (Sync Data)</h3>
       <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 12px;">
-        คุณสามารถสั่งดึงข้อมูลบริการย้อนหลังและส่งเข้าเซิร์ฟเวอร์กลาง AOPOD ได้ทันทีตามช่วงวันที่ระบุ
+        คุณสามารถสั่งดึงข้อมูลบริการย้อนหลังและส่งเข้าเซิร์ฟเวอร์กลาง YSOPOD ได้ทันทีตามช่วงวันที่ระบุ
       </p>
 
       <!-- Compact Date Presets -->
@@ -124,7 +124,7 @@
         </div>
       </div>
       <div class="log-terminal" id="logTerminal">
-        <div class="log-line INFO">[System] AOPOD Agent เริ่มต้นทำงานเรียบร้อยแล้ว</div>
+        <div class="log-line INFO">[System] YSOPOD Agent เริ่มต้นทำงานเรียบร้อยแล้ว</div>
       </div>
     </div>
   </div>
@@ -172,25 +172,25 @@
         <button type="button" class="modal-close" id="btnCloseSettingsModal">&times;</button>
       </div>
       <div class="modal-body modal-scroll">
-        <!-- 1. ข้อมูลโรงพยาบาลและเซิร์ฟเวอร์กลาง AOPOD -->
+        <!-- 1. ข้อมูลโรงพยาบาลและเซิร์ฟเวอร์กลาง YSOPOD -->
         <div class="glass-card" style="margin-bottom: 14px; padding: 14px 16px;">
-          <h3 class="card-title"><i class="fa-solid fa-hospital"></i> 1. ข้อมูลโรงพยาบาลและเซิร์ฟเวอร์กลาง AOPOD</h3>
+          <h3 class="card-title"><i class="fa-solid fa-hospital"></i> 1. ข้อมูลโรงพยาบาลและเซิร์ฟเวอร์กลาง YSOPOD</h3>
           <div class="form-grid">
             <div class="form-group">
               <label>รหัสสถานพยาบาล (Hospcode 5 หลัก)</label>
-              <input type="text" class="form-control" id="cfgHospCode" placeholder="เช่น 10989">
+              <input type="text" class="form-control" id="cfgHospCode" placeholder="เช่น 10670">
             </div>
             <div class="form-group">
               <label>ชื่อโรงพยาบาล</label>
-              <input type="text" class="form-control" id="cfgHospName" placeholder="เช่น รพช. หัวตะพาน">
+              <input type="text" class="form-control" id="cfgHospName" placeholder="เช่น โรงพยาบาลยโสธร">
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">
-              <label>AOPOD Server URL</label>
-              <input type="text" class="form-control" id="cfgServerUrl" placeholder="http://127.0.0.1/aopod">
+              <label>YSOPOD Server URL</label>
+              <input type="text" class="form-control" id="cfgServerUrl" placeholder="https://dcyasothon.moph.go.th/ysopod">
             </div>
           </div>
           <div class="form-group" style="margin-bottom: 12px;">
-            <label>AOPOD API Bearer Token (รับจากแอดมินกลาง)</label>
+            <label>YSOPOD API Bearer Token (รับจากแอดมินกลาง)</label>
             <input type="password" class="form-control" id="cfgToken" placeholder="วาง Token ที่นี่">
           </div>
           <button type="button" class="btn btn-outline" id="btnTestApi">
@@ -252,7 +252,7 @@
         </div>
 
         <div class="p-2 bg-light rounded mt-2 border" style="font-size: 0.74rem; color: var(--text-muted); background: #f8fafc; border-radius: 6px; padding: 6px 10px; margin-top: 8px;">
-          <i class="fa-solid fa-circle-info text-primary me-1"></i> ไฟล์ตั้งค่าจัดเก็บที่: <code id="cfgLocationPath">%APPDATA%\aopod-agent\config.yaml</code>
+          <i class="fa-solid fa-circle-info text-primary me-1"></i> ไฟล์ตั้งค่าจัดเก็บที่: <code id="cfgLocationPath">%APPDATA%\ysopod-agent\config.yaml</code>
         </div>
       </div>
       <div class="modal-footer">

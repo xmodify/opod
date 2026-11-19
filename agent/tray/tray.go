@@ -34,12 +34,12 @@ func onReady() {
 	}
 
 	systray.SetIcon(iconData)
-	systray.SetTitle("AOPOD Agent")
+	systray.SetTitle("YSOPOD Agent")
 	hospName := cfg.Hospital.Name
 	if hospName == "" {
-		hospName = "AOPOD Hospital Agent"
+		hospName = "YSOPOD Hospital Agent"
 	}
-	systray.SetTooltip(fmt.Sprintf("%s (%s) - AOPOD Agent", hospName, cfg.Hospital.Code))
+	systray.SetTooltip(fmt.Sprintf("%s (%s) - YSOPOD Agent", hospName, cfg.Hospital.Code))
 
 	// Menu Items
 	mHeader := systray.AddMenuItem(fmt.Sprintf("🏥 %s (%s)", hospName, cfg.Hospital.Code), "ข้อมูลโรงพยาบาล")
@@ -53,7 +53,7 @@ func onReady() {
 
 	systray.AddSeparator()
 
-	mQuit := systray.AddMenuItem("❌ Exit AOPOD Agent", "ปิดการทำงานของโปรแกรม AOPOD Agent")
+	mQuit := systray.AddMenuItem("❌ Exit YSOPOD Agent", "ปิดการทำงานของโปรแกรม YSOPOD Agent")
 
 	// Event handling loop
 	go func() {

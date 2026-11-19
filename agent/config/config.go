@@ -60,10 +60,10 @@ var (
 func GetDefaultConfig() *Config {
 	return &Config{
 		Hospital: HospitalConfig{
-			Code:      "10989",
-			Name:      "รพช. หัวตะพาน",
+			Code:      "10670",
+			Name:      "โรงพยาบาลยโสธร",
 			Token:     "",
-			ServerURL: "http://127.0.0.1/aopod",
+			ServerURL: "https://dcyasothon.moph.go.th/ysopod",
 		},
 		Database: DatabaseConfig{
 			Driver:   "mysql",
@@ -91,7 +91,7 @@ func GetDefaultConfig() *Config {
 	}
 }
 
-// GetConfigDir returns absolute path to Roaming AppData directory for AOPOD Agent.
+// GetConfigDir returns absolute path to Roaming AppData directory for YSOPOD Agent.
 func GetConfigDir() string {
 	baseDir, err := os.UserConfigDir()
 	if err != nil {
@@ -101,7 +101,7 @@ func GetConfigDir() string {
 			return filepath.Dir(exePath)
 		}
 	}
-	dir := filepath.Join(baseDir, "AOPOD-Agent")
+	dir := filepath.Join(baseDir, "YSOPOD-Agent")
 	_ = os.MkdirAll(dir, 0755)
 	return dir
 }
