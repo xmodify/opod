@@ -79,6 +79,7 @@ func StartReverseAemrWorker() {
 		}
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Authorization", "Bearer "+cfg.Hospital.Token)
+		req.Header.Set("X-Authorization", "Bearer "+cfg.Hospital.Token)
 
 		resp, err := client.Do(req)
 		if err != nil {
@@ -195,6 +196,7 @@ func submitAemrResult(taskID string, success bool, found bool, message string, d
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+cfg.Hospital.Token)
+	req.Header.Set("X-Authorization", "Bearer "+cfg.Hospital.Token)
 
 	resp, err := client.Do(req)
 	if err == nil {

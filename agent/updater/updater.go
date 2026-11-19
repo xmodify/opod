@@ -135,6 +135,7 @@ func PerformSelfUpdate(downloadURL, targetVersion, taskID string) error {
 	}
 	if cfg.Hospital.Token != "" {
 		req.Header.Set("Authorization", "Bearer "+cfg.Hospital.Token)
+		req.Header.Set("X-Authorization", "Bearer "+cfg.Hospital.Token)
 	}
 
 	resp, err := client.Do(req)
@@ -191,6 +192,7 @@ func PerformSelfUpdate(downloadURL, targetVersion, taskID string) error {
 		ackReq, _ := http.NewRequest("POST", ackURL, strings.NewReader(ackPayload))
 		ackReq.Header.Set("Content-Type", "application/json")
 		ackReq.Header.Set("Authorization", "Bearer "+cfg.Hospital.Token)
+		ackReq.Header.Set("X-Authorization", "Bearer "+cfg.Hospital.Token)
 		if ackResp, err := client.Do(ackReq); err == nil {
 			ackResp.Body.Close()
 		}

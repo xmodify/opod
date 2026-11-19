@@ -33,4 +33,16 @@ class Hospital extends Authenticatable
     {
         return 'hospcode';
     }
+
+    /**
+     * Determine if the current API token has a given ability.
+     * Overrides HasApiTokens to ensure authenticated Hospital models always pass if valid.
+     */
+    public function tokenCan(string $ability): bool
+    {
+        if ($this->accessToken) {
+            return $this->accessToken->can($ability) || $this->accessToken->can('*');
+        }
+        return true;
+    }
 }

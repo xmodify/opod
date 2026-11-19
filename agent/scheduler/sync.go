@@ -491,6 +491,8 @@ func SendHeartbeat(lastSummary *sender.SyncSummary) {
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+cfg.Hospital.Token)
+	req.Header.Set("X-Authorization", "Bearer "+cfg.Hospital.Token)
+	req.Header.Set("X-Authorization", "Bearer "+cfg.Hospital.Token)
 
 	resp, err := client.Do(req)
 	if err == nil {
@@ -518,6 +520,7 @@ func PollRemoteTasks() {
 		return
 	}
 	req.Header.Set("Authorization", "Bearer "+cfg.Hospital.Token)
+	req.Header.Set("X-Authorization", "Bearer "+cfg.Hospital.Token)
 
 	resp, err := client.Do(req)
 	if err != nil {

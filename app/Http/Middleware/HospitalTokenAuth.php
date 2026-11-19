@@ -19,6 +19,9 @@ class HospitalTokenAuth
     {
         // 1. If already authenticated via default/sanctum guard
         if (Auth::guard('sanctum')->check()) {
+            $user = Auth::guard('sanctum')->user();
+            Auth::setUser($user);
+            $request->setUserResolver(fn () => $user);
             return $next($request);
         }
 
@@ -44,12 +47,16 @@ class HospitalTokenAuth
             ], 401);
         }
 
+        $token = trim((string)$token);
+
         // 3. Try to resolve via Sanctum PersonalAccessToken directly
         $accessToken = PersonalAccessToken::findToken($token);
         if ($accessToken) {
             $hospital = $accessToken->tokenable;
             if ($hospital instanceof Hospital && ($hospital->is_active ?? true)) {
+                $hospital = $hospital->withAccessToken($accessToken);
                 Auth::setUser($hospital);
+                Auth::guard('sanctum')->setUser($hospital);
                 $request->setUserResolver(fn () => $hospital);
                 return $next($request);
             }
@@ -58,7 +65,9 @@ class HospitalTokenAuth
         // 4. Fallback: Check token_api directly in hospitals table
         $hospital = Hospital::where('token_api', $token)->where('is_active', true)->first();
         if ($hospital) {
+            $hospital = $hospital->withAccessToken(new \Laravel\Sanctum\TransientToken);
             Auth::setUser($hospital);
+            Auth::guard('sanctum')->setUser($hospital);
             $request->setUserResolver(fn () => $hospital);
             return $next($request);
         }

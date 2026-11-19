@@ -149,6 +149,7 @@ func postWithRetry(url, token, idempotencyKey string, payload interface{}, maxRe
 		req.Header.Set("Idempotency-Key", idempotencyKey)
 		if token != "" {
 			req.Header.Set("Authorization", "Bearer "+token)
+			req.Header.Set("X-Authorization", "Bearer "+token)
 		}
 
 		resp, err := client.Do(req)
@@ -202,6 +203,7 @@ func TestApiConnection(serverURL, token, hospcode string) (map[string]interface{
 	req.Header.Set("Accept", "application/json")
 	if token != "" {
 		req.Header.Set("Authorization", "Bearer "+token)
+		req.Header.Set("X-Authorization", "Bearer "+token)
 	}
 
 	start := time.Now()
