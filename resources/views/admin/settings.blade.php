@@ -41,7 +41,7 @@
                                     </div>
                                     <div>
                                         <h6 class="fw-bold text-dark mb-1">ดึงข้อมูลเวอร์ชันล่าสุด (Git Pull & Clear Cache)</h6>
-                                        <span class="text-secondary small">ระบบจะทำการรันคำสั่ง <code>git reset --hard</code>, <code>git pull origin main</code> และ <code>php artisan optimize:clear</code></span>
+                                        <span class="text-secondary small">ระบบจะทำการรันคำสั่ง <code>git fetch origin</code>, <code>git reset --hard origin/main</code> และ <code>php artisan optimize:clear</code></span>
                                     </div>
                                 </div>
                                 <div class="text-end mt-auto pt-2">

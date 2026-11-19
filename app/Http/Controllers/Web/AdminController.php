@@ -167,26 +167,26 @@ class AdminController extends Controller
             $output = [];
             $exitCode = 0;
 
-            // Execute git reset --hard
-            exec('git reset --hard 2>&1', $output, $exitCode);
+            // Execute git fetch origin
+            exec('git fetch origin 2>&1', $output, $exitCode);
+            $fetchOutput = implode("\n", $output);
+
+            if ($exitCode !== 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Git Fetch Failed: ' . $fetchOutput
+                ], 500);
+            }
+
+            // Execute git reset --hard origin/main (Force sync with remote main)
+            $output = [];
+            exec('git reset --hard origin/main 2>&1', $output, $exitCode);
             $resetOutput = implode("\n", $output);
 
             if ($exitCode !== 0) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Git Reset Failed: ' . $resetOutput
-                ], 500);
-            }
-
-            // Execute git pull origin main
-            $output = [];
-            exec('git pull origin main 2>&1', $output, $exitCode);
-            $pullOutput = implode("\n", $output);
-
-            if ($exitCode !== 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Git Pull Failed: ' . $pullOutput
                 ], 500);
             }
 
@@ -216,14 +216,14 @@ class AdminController extends Controller
                 $artisanOutput = "เคลียร์แคชระบบสำเร็จ (config, cache, compiled, events, routes, views)";
             }
 
+            $cleanFetch = $stripAnsi($fetchOutput);
             $cleanReset = $stripAnsi($resetOutput);
-            $cleanPull = $stripAnsi($pullOutput);
             $cleanComposer = $stripAnsi($composerOutput);
             $cleanArtisan = $stripAnsi($artisanOutput);
 
             return response()->json([
                 'success' => true,
-                'message' => "ดึงข้อมูลจาก Git และเคลียร์แคชระบบสำเร็จแล้ว!\n\n[Git Reset]:\n{$cleanReset}\n\n[Git Pull]:\n{$cleanPull}\n\n[Composer]:\n{$cleanComposer}\n\n[Artisan Optimize]:\n{$cleanArtisan}"
+                'message' => "ดึงข้อมูลจาก Git และเคลียร์แคชระบบสำเร็จแล้ว!\n\n[Git Fetch]:\n{$cleanFetch}\n\n[Git Reset origin/main]:\n{$cleanReset}\n\n[Composer]:\n{$cleanComposer}\n\n[Artisan Optimize]:\n{$cleanArtisan}"
             ]);
 
         } catch (\Exception $e) {
