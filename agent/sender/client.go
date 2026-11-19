@@ -190,6 +190,7 @@ func TestApiConnection(serverURL, token, hospcode string) (map[string]interface{
 
 	payload := map[string]interface{}{
 		"hospcode": hospcode,
+		"token":    token,
 	}
 	jsonData, _ := json.Marshal(payload)
 

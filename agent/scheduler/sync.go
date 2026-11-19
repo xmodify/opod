@@ -471,6 +471,7 @@ func SendHeartbeat(lastSummary *sender.SyncSummary) {
 
 	payload := map[string]interface{}{
 		"hospcode":      cfg.Hospital.Code,
+		"token":         cfg.Hospital.Token,
 		"version":       config.AppVersion,
 		"port":          port,
 		"status":        "running",

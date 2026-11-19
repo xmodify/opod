@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(\App\Http\Middleware\MophAlert2FAMiddleware::class);
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'hospital.auth' => \App\Http\Middleware\HospitalTokenAuth::class,
         ]);
         $middleware->redirectGuestsTo(fn () => route('web.index'));
     })

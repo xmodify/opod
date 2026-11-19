@@ -18,7 +18,7 @@ use App\Http\Controllers\Api\OperationController;
     // }
 // Route::delete('/hospitals/{hospcode}/tokens/{tokenId}', [HospitalTokenController::class, 'revoke']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['hospital.auth'])->group(function () {
     Route::post('/opd', [OpdController::class, 'opd']);
     Route::get('/opd', [OpdController::class, 'get_opd']);    
     Route::post('/ipd', [IpdController::class, 'ipd']);
