@@ -115,9 +115,9 @@ class AgentApiController extends Controller
 
         // Auto-clear pending update_agent task once agent reports target version
         $pendingTask = Cache::get("agent_remote_task_{$hospcode}");
-        if ($pendingTask && isset($pendingTask['type']) && $pendingTask['type'] === 'update_agent') {
+        if ($pendingTask && (isset($pendingTask['type']) && $pendingTask['type'] === 'update_agent' || isset($pendingTask['action']) && $pendingTask['action'] === 'update_client')) {
             $reportedVer = trim((string)$request->input('version', ''));
-            $targetVer = trim((string)($pendingTask['target_version'] ?? ''));
+            $targetVer = trim((string)($pendingTask['target_version'] ?? $pendingTask['version'] ?? ''));
             if ($reportedVer !== '' && $targetVer !== '' && version_compare($reportedVer, $targetVer, '>=')) {
                 Cache::forget("agent_remote_task_{$hospcode}");
             }

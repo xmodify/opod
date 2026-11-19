@@ -728,11 +728,13 @@ SQL,
 
         $latestVersion = self::getLatestAgentVersion();
         $taskPayload = [
-            'task_id'      => $taskId,
-            'action'       => 'update_client',
-            'download_url' => $downloadUrl,
-            'version'      => $latestVersion,
-            'created_at'   => now()->toDateTimeString(),
+            'task_id'        => $taskId,
+            'action'         => 'update_client',
+            'type'           => 'update_agent',
+            'download_url'   => $downloadUrl,
+            'version'        => $latestVersion,
+            'target_version' => $latestVersion,
+            'created_at'     => now()->toDateTimeString(),
         ];
 
         $dispatchedHospcodes = [];
